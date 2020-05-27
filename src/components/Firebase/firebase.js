@@ -71,6 +71,16 @@ class Firebase {
         });
     };
 
+    // Buckets API - buckets have time created, name.
+    bucket = (clientID, bucketID) => this.db.ref(`clients/${clientID}/buckets/${bucketID}`);
+    buckets = (clientID) => this.db.ref(`clients/${clientID}/buckets`);
+    doStoreBucket = (bucketName, timeCreated, clientID) => {
+        return this.bucket(clientID, uuid()).set({
+            bucketName,
+            timeCreated,
+        });
+    };
+
 }
 export default Firebase;
 

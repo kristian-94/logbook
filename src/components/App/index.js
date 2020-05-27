@@ -10,7 +10,7 @@ import AccountPage from '../Account';
 import AdminPage from '../Admin';
 import * as ROUTES from '../../constants/routes';
 import { withAuthentication } from '../Session';
-import ClientPage from "../Home";
+import ClientPage from "./ClientPage";
 import PageNotFound from "../Error";
 
 const App = () => (

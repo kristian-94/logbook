@@ -4,7 +4,7 @@ import { withRouter } from "react-router";
 import { useHistory } from "react-router-dom";
 import {withFirebase} from "../Firebase";
 
-const Side = ({firebase}) => {
+const Side = ({firebase, onClientClicked}) => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
     const [clientList, setClientList] = useState([]);
 
@@ -26,7 +26,6 @@ const Side = ({firebase}) => {
                     }));
                 // Make alphabetical order.
                 clientsList.sort((client1, client2) => client1['name'] > client2['name']);
-                console.log(clientsList);
                 setClientList(clientsList);
             }
         });
@@ -34,8 +33,9 @@ const Side = ({firebase}) => {
 
     const history = useHistory();
 
-    const onClientClicked = (client) => {
+    const onClientChanged = (client) => {
         history.push("/clients/" + client.clientID);
+        onClientClicked(client);
     }
     const onAddNewClientClicked = (client) => {
         history.push("/clients/new");
@@ -50,7 +50,7 @@ const Side = ({firebase}) => {
                 {clientList && clientList.map(client => {
                     return (
                         <Nav.Item key={client.clientID}>
-                            <Nav.Link onClick={() => onClientClicked(client)}>{client.name}</Nav.Link>
+                            <Nav.Link onClick={() => onClientChanged(client)}>{client.name}</Nav.Link>
                         </Nav.Item>
                     );
                 })}
