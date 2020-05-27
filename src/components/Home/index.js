@@ -1,7 +1,7 @@
 import React from 'react';
 import { withAuthorization } from '../Session';
 import Sidebar from "../Navigation/sidebar";
-import {Container, Row, Col, Card, Form, Button } from "react-bootstrap";
+import {Container, Row, Col } from "react-bootstrap";
 import * as ROUTES from '../../constants/routes';
 import NewClientForm from "../App/NewClientPage";
 

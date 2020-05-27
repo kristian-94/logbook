@@ -12,7 +12,6 @@ import * as ROUTES from '../../constants/routes';
 import { withAuthentication } from '../Session';
 import ClientPage from "../Home";
 import PageNotFound from "../Error";
-import NewClientPage from "./NewClientPage"
 
 const App = () => (
     <Router>
