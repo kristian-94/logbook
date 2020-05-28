@@ -6,7 +6,7 @@ import * as ROUTES from '../../constants/routes';
 import NewClientForm from "./NewClientPage";
 import SingleClientPage from "./SingleClientPage";
 
-const ClientPage = () => {
+const ClientPage = ({firebase}) => {
     const clientIDinurl = window.location.pathname.split('clients/').pop();
     const [viewClientID, setViewClientID] = useState(clientIDinurl);
 
@@ -26,8 +26,10 @@ const ClientPage = () => {
                     <Col xs={2} id="sidebar-wrapper">
                         <Sidebar onClientClicked={handleOnClientClicked}/>
                     </Col>
-                    {newClient && <NewClientForm/>}
-                    {!newClient && <SingleClientPage clientID={viewClientID}/> }
+                    <Col xs={10}>
+                        {newClient && <NewClientForm/>}
+                        {!newClient && <SingleClientPage firebase={firebase} clientID={viewClientID}/> }
+                    </Col>
                 </Row>
             </Container>
         </div>

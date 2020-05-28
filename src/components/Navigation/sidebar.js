@@ -25,7 +25,7 @@ const Side = ({firebase, onClientClicked}) => {
                         clientID: key,
                     }));
                 // Make alphabetical order.
-                clientsList.sort((client1, client2) => client1['name'] > client2['name']);
+                clientsList.sort((client1, client2) => client1['name'] - client2['name']);
                 setClientList(clientsList);
             }
         });
