@@ -70,6 +70,14 @@ class Firebase {
             name,
         });
     };
+    doUpdateClient = (clientID, name) => {
+        return this.client(clientID).set({
+            name,
+        });
+    };
+    doDeleteClient = (clientID) => {
+        return this.client(clientID).remove();
+    }
 
     // Buckets API - buckets have time created, name.
     bucket = (clientID, bucketID) => this.db.ref(`clients/${clientID}/buckets/${bucketID}`);

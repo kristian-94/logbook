@@ -1,13 +1,13 @@
-import React from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import React, {} from 'react';
+import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
 import { withFirebase } from '../Firebase';
-import moment from "moment";
 
-const AddBucketForm = ({firebase, clientID, onFinishSubmission, cancelForm}) => {
+const EditClientForm = ({firebase, clientData, onFinishSubmission, onDeleteClient}) => {
+
     return (
         <div className="col-10">
-            <h1>New bucket</h1>
+            <h1>Edit Client {clientData.name}</h1>
             <Formik
                 initialValues={{name: ""}}
                 validationSchema={Yup.object({
@@ -15,12 +15,11 @@ const AddBucketForm = ({firebase, clientID, onFinishSubmission, cancelForm}) => 
                 })}
                 onSubmit={(values, {setSubmitting}) => {
                     setSubmitting(true);
-                    const timeCreated = (new moment()).toJSON(); // Can't store the date as an object.
-                    // Store this bucket in firebase
-                    firebase.doStoreBucket(values.name, timeCreated, clientID)
+                    // Store this updated client in firebase
+                    firebase.doUpdateClient(clientData.clientID, values.name)
                         .then(() => {
                             setSubmitting(false);
-                            onFinishSubmission('successfully created bucket ' + values.name);
+                            onFinishSubmission('successfully updated client ' + values.name);
                         });
                 }}
             >
@@ -36,7 +35,7 @@ const AddBucketForm = ({firebase, clientID, onFinishSubmission, cancelForm}) => 
                                     className="form-control col-12 m-1"
                                     type="text"
                                     name="name"
-                                    placeholder="Name of bucket"
+                                    placeholder={clientData.name}
                                 />
                                 <ErrorMessage name="name"/>
                             </div>
@@ -51,8 +50,9 @@ const AddBucketForm = ({firebase, clientID, onFinishSubmission, cancelForm}) => 
                     );
                 }}
             </Formik>
-            <button onClick={onFinishSubmission} className="btn btn-danger m-1" type="submit">Cancel</button>
+            <button onClick={onFinishSubmission} className="btn btn-secondary m-1" type="submit">Cancel</button>
+            <button onClick={onDeleteClient} className="btn btn-danger m-1" type="submit">Delete client</button>
         </div>
     );
-}
-export default withFirebase(AddBucketForm);
+};
+export default withFirebase(EditClientForm);

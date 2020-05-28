@@ -1,11 +1,13 @@
 import React, {useEffect, useRef, useState} from 'react';
 import AddBucketForm from "./AddBucketForm";
+import EditClientForm from "./EditClientForm";
 
 const SingleClientPage = ({clientID, firebase}) => {
     const [addingNewBucket, setAddingNewBucket] = useState(false);
+    const [editingClient, setEditingClient] = useState(false);
     const [bucketsData, setBucketsData] = useState([]);
-    const [displayMessage, setDisplayMessage] = useState("No bucket saved yet, fill out the form above.");
     const _isMounted = useRef(true); // Initial value _isMounted = true
+    const [clientData, setClientData] = useState({});
 
     useEffect(() => {
         // Got to reset some state when switching clients.
@@ -39,25 +41,50 @@ const SingleClientPage = ({clientID, firebase}) => {
                 setBucketsData(bucketsData);
             }
         });
+        firebase.client(clientID).on('value', snapshot => {
+            if (_isMounted.current) { // Check always mounted component, don't change state if not mounted.
+                const clientDataObject = snapshot.val();
+                if (clientDataObject === null) {
+                    // No buckets in this client yet.
+                    return;
+                }
+                delete clientDataObject.buckets;
+                const clientData = {
+                    'name': clientDataObject.name,
+                    'clientID': clientID
+                };
+                setClientData(clientData);
+            }
+        });
     }, [clientID, firebase]);
 
     const onCreateBucket = () => {
         setAddingNewBucket(true);
     }
-
-    const handleOnFinishSubmission = (finishMessage) => {
-        setDisplayMessage(finishMessage);
-        setAddingNewBucket(false);
+    const onEditClient = () => {
+        setEditingClient(true);
     }
+
     const onBackToClientPage = () => {
         setAddingNewBucket(false);
+        setEditingClient(false);
+    }
+    const onDeleteClient = () => {
+        firebase.doDeleteClient(clientID).then(() => onBackToClientPage());
     }
 
     if (addingNewBucket) {
         return (
             <div>
-                <AddBucketForm cancelForm={onBackToClientPage} clientID={clientID} onFinishSubmission={handleOnFinishSubmission}/>
-                <p>{displayMessage}</p>
+                <AddBucketForm clientID={clientID} onFinishSubmission={onBackToClientPage}/>
+            </div>
+        );
+    }
+
+    if (editingClient) {
+        return (
+            <div>
+                <EditClientForm onDeleteClient={onDeleteClient} clientData={clientData} onFinishSubmission={onBackToClientPage}/>
             </div>
         );
     }
@@ -65,6 +92,10 @@ const SingleClientPage = ({clientID, firebase}) => {
     return (
         <div>
             <button onClick={onCreateBucket} className="btn btn-primary m-1 float-right" type="submit">Create a bucket</button>
+            <button onClick={onEditClient} className="btn btn-secondary m-1 float-right" type="submit">Edit Client</button>
+            <div className="d-1">
+                {clientData.name}
+            </div>
             <div>
                 {bucketsData && bucketsData.map(bucket => {
                     return (
