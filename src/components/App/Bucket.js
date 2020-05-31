@@ -5,7 +5,7 @@ import moment from "moment";
 const Bucket = ({clientID, bucket, firebase}) => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
     const [bucketData, setBucketData] = useState({});
-    const [hoursData, setHoursData] = useState({});
+    const [hoursData, setHoursData] = useState(false);
 
     // Need this to do a componentwillunmount and cleanup memory leaks.
     useEffect(() => {
@@ -30,8 +30,8 @@ const Bucket = ({clientID, bucket, firebase}) => {
         firebase.hoursData(clientID, bucket).on('value', snapshot => {
             if (_isMounted.current) { // Check always mounted component, don't change state if not mounted.
                 const hoursData = snapshot.val();
-                if (hoursData === false) {
-                    // No hours for this client yet.
+                if (hoursData === null) {
+                    setBucketData({});
                     return;
                 }
                 setHoursData(hoursData);
@@ -40,30 +40,50 @@ const Bucket = ({clientID, bucket, firebase}) => {
     }, [bucket, firebase, clientID]);
 
     const onAddMonth = (clientID, bucketData) => {
-        // Check existing hoursData first, what is our current month we have? Need to append the next month.
-        const currentmonthandyear = moment().format('MMM YYYY');
-        firebase.doAddMonth(clientID, bucketData, currentmonthandyear);
+        let monthtoadd;
+        // Check existing hoursData first, what is our current month we have? Need to append the previous month.
+        if (hoursData === false) {
+            // This means this is the first entry into this bucket, so we make it the current month.
+            monthtoadd = moment().format('MMM YYYY');
+        } else {
+            const hoursDataFormatted = Object.keys(hoursData)
+                .map(key => ({
+                    ...hoursData[key],
+                    monthID: key,
+                }));
+            // Go through the hoursData and find which month we need to add now.
+            const earliestMonth = moment(Math.min(...hoursDataFormatted.map(e => moment(e.monthandyear, 'MMM YYYY'))));
+            monthtoadd = earliestMonth.subtract(1, 'months').format('MMM YYYY');
+        }
+        firebase.doAddMonth(clientID, bucketData, monthtoadd);
     }
     const onDeleteBucket = (clientID, bucketData) => {
-        firebase.doDeleteBucket(clientID, bucketData);
+        firebase.doDeleteBucket(clientID, bucketData).then(r => {
+            console.log('deleted bucket ' + bucketData.bucketName);
+        });
     }
     const data = React.useMemo(() => {
         // Grab hoursData and format as array and output here.
-        return [
-            {
-                month: bucketData.bucketName,
-                invoice: 'World',
-            },
-            {
-                month: 'react-table',
-                invoice: 'rocks',
-            },
-            {
-                month: 'whatever',
-                invoice: 'you want',
-            },
-        ];
-    }, [bucketData]);
+        const hoursDataFormatted = Object.keys(hoursData)
+            .map(key => ({
+                ...hoursData[key],
+                monthID: key,
+            })).sort((month1, month2) => {
+                // We want to display the dates in ascending order in our table.
+                const date1 = moment(month1.monthandyear, 'MMM YYYY');
+                const date2 = moment(month2.monthandyear, 'MMM YYYY');
+                return date1 - date2;
+            });
+
+        return hoursDataFormatted.map((month) => {
+            return (
+                {
+                    month: month.monthandyear,
+                    invoice: month.invoice
+                }
+            )
+        });
+    }, [hoursData]);
 
     const columns = React.useMemo(
         () => [

@@ -30,6 +30,7 @@ const SingleClientPage = ({clientID, firebase}) => {
                 const bucketsDataObject = snapshot.val();
                 if (bucketsDataObject === null) {
                     // No buckets in this client yet.
+                    setBucketsData([]);
                     return;
                 }
                 const bucketsData = Object.keys(bucketsDataObject)
