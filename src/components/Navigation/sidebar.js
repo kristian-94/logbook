@@ -1,10 +1,9 @@
 import React, {useEffect, useState, useRef} from "react";
 import {Nav} from "react-bootstrap";
-import { withRouter } from "react-router";
 import { useHistory } from "react-router-dom";
 import {withFirebase} from "../Firebase";
 
-const Side = ({firebase, onClientClicked}) => {
+const Sidebar = ({firebase, onClientClicked}) => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
     const [clientList, setClientList] = useState([]);
 
@@ -63,6 +62,4 @@ const Side = ({firebase, onClientClicked}) => {
         </>
     );
 };
-const Sidebar = withRouter(Side);
-
 export default withFirebase(Sidebar);

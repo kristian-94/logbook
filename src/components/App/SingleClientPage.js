@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import AddBucketForm from "./AddBucketForm";
 import EditClientForm from "./EditClientForm";
+import Bucket from "./Bucket";
 
 const SingleClientPage = ({clientID, firebase}) => {
     const [addingNewBucket, setAddingNewBucket] = useState(false);
@@ -93,14 +94,14 @@ const SingleClientPage = ({clientID, firebase}) => {
         <div>
             <button onClick={onCreateBucket} className="btn btn-primary m-1 float-right" type="submit">Create a bucket</button>
             <button onClick={onEditClient} className="btn btn-secondary m-1 float-right" type="submit">Edit Client</button>
-            <div className="d-1">
+            <div className="h1">
                 {clientData.name}
             </div>
             <div>
                 {bucketsData && bucketsData.map(bucket => {
                     return (
                         <div key={bucket.bucketID}>
-                            <p>{bucket.bucketName}</p>
+                            <Bucket clientID={clientID} bucket={bucket} firebase={firebase}/>
                         </div>
                     );
                 })}
