@@ -44,10 +44,11 @@ const Bucket = ({clientID, bucket, firebase}) => {
         const currentmonthandyear = moment().format('MMM YYYY');
         firebase.doAddMonth(clientID, bucketData, currentmonthandyear);
     }
-
+    const onDeleteBucket = (clientID, bucketData) => {
+        firebase.doDeleteBucket(clientID, bucketData);
+    }
     const data = React.useMemo(() => {
         // Grab hoursData and format as array and output here.
-        console.log(hoursData);
         return [
             {
                 month: bucketData.bucketName,
@@ -148,6 +149,7 @@ const Bucket = ({clientID, bucket, firebase}) => {
                 })}
                 </tbody>
             </table>
+            <button onClick={() => onDeleteBucket(clientID, bucketData)} className="btn btn-danger m-1" type="submit">Delete bucket</button>
         </div>
     )
 }

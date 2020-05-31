@@ -89,6 +89,9 @@ class Firebase {
             'hoursData': false
         });
     };
+    doDeleteBucket = (clientID, bucketData) => {
+        return this.bucket(clientID, bucketData.bucketID).remove();
+    };
     hoursData = (clientID, bucketData) => this.db.ref(`clients/${clientID}/buckets/${bucketData.bucketID}/hoursData`);
     // Add an empty month into a bucket.
     doAddMonth = (clientID, bucketData, monthandyear) => {

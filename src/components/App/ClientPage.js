@@ -19,7 +19,6 @@ const ClientPage = ({firebase}) => {
         setViewClientID(client.clientID);
     }
 
-    console.log('here');
     return (
         <div>
             <Container fluid>
