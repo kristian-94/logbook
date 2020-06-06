@@ -71,7 +71,7 @@ class Firebase {
         });
     };
     doUpdateClient = (clientID, name) => {
-        return this.client(clientID).set({
+        return this.client(clientID).update({
             name,
         });
     };

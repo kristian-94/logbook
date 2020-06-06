@@ -135,7 +135,7 @@ const Bucket = ({clientID, bucket, firebase}) => {
                 {bucketData.bucketName}
             </div>
             <button onClick={() => onAddMonth(clientID, bucketData)} className="btn btn-success m-1" type="submit">Add month</button>
-            <button onClick={() => onRemoveMonth(clientID, bucketData)} className="btn btn-secondary m-1" type="submit">Remove last month</button>}
+            <button onClick={() => onRemoveMonth(clientID, bucketData)} className="btn btn-secondary m-1" type="submit">Remove last month</button>
             <table {...getTableProps()} style={{ border: 'solid 1px blue' }}>
                 <thead>
                 {headerGroups.map(headerGroup => (
