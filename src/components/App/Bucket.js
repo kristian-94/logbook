@@ -57,6 +57,16 @@ const Bucket = ({clientID, bucket, firebase}) => {
         }
         firebase.doAddMonth(clientID, bucketData, monthtoadd);
     }
+    const onRemoveMonth = (clientID, bucketData) => {
+        const hoursDataFormatted = Object.keys(hoursData)
+            .map(key => ({
+                ...hoursData[key],
+                monthID: key,
+            }));
+        const earliestMonth = moment(Math.min(...hoursDataFormatted.map(e => moment(e.monthandyear, 'MMM YYYY'))));
+        const earliestMonthData = hoursDataFormatted.filter(e => e.monthandyear === earliestMonth.format('MMM YYYY'))[0];
+        firebase.doRemoveMonth(clientID, bucketData, earliestMonthData.monthID).then(r => console.log('deleted the month ' + earliestMonth.format('MMM YYYY')));
+    }
     const onDeleteBucket = (clientID, bucketData) => {
         firebase.doDeleteBucket(clientID, bucketData).then(r => {
             console.log('deleted bucket ' + bucketData.bucketName);
@@ -125,6 +135,7 @@ const Bucket = ({clientID, bucket, firebase}) => {
                 {bucketData.bucketName}
             </div>
             <button onClick={() => onAddMonth(clientID, bucketData)} className="btn btn-success m-1" type="submit">Add month</button>
+            <button onClick={() => onRemoveMonth(clientID, bucketData)} className="btn btn-secondary m-1" type="submit">Remove last month</button>}
             <table {...getTableProps()} style={{ border: 'solid 1px blue' }}>
                 <thead>
                 {headerGroups.map(headerGroup => (
