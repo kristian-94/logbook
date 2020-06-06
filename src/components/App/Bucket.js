@@ -6,6 +6,7 @@ const Bucket = ({clientID, bucket, firebase}) => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
     const [bucketData, setBucketData] = useState({});
     const [hoursData, setHoursData] = useState(false);
+    const [showRemove, setShowRemove] = useState(false);
 
     // Need this to do a componentwillunmount and cleanup memory leaks.
     useEffect(() => {
@@ -33,6 +34,12 @@ const Bucket = ({clientID, bucket, firebase}) => {
                 if (hoursData === null) {
                     setBucketData({});
                     return;
+                }
+                // We don't want to show the remove button if we can't remove.
+                if (Object.keys(hoursData).length > 1) {
+                    setShowRemove(true);
+                } else {
+                    setShowRemove(false);
                 }
                 setHoursData(hoursData);
             }
@@ -135,7 +142,7 @@ const Bucket = ({clientID, bucket, firebase}) => {
                 {bucketData.bucketName}
             </div>
             <button onClick={() => onAddMonth(clientID, bucketData)} className="btn btn-success m-1" type="submit">Add month</button>
-            <button onClick={() => onRemoveMonth(clientID, bucketData)} className="btn btn-secondary m-1" type="submit">Remove last month</button>
+            {showRemove && <button onClick={() => onRemoveMonth(clientID, bucketData)} className="btn btn-secondary m-1" type="submit">Remove last month</button>}
             <table {...getTableProps()} style={{ border: 'solid 1px blue' }}>
                 <thead>
                 {headerGroups.map(headerGroup => (
