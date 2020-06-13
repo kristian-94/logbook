@@ -24,9 +24,15 @@ const BucketTable = ({data, updateData}) => {
         return <input value={value} onChange={onChange} onBlur={onBlur} />
     }
 
+    // Create a non editable cell renderer
+    const NonEditableCell = ({cell}) => {
+        return cell.value;
+    }
+
     // Set our editable cell renderer as the default Cell renderer
     const defaultColumn = {
         Cell: EditableCell,
+        NonEditCell: NonEditableCell,
     }
 
     // When our cell renderer calls updateMyData, we'll use
@@ -101,6 +107,20 @@ const BucketTable = ({data, updateData}) => {
             return (
                 <tr {...row.getRowProps()}>
                     {row.cells.map(cell => {
+                        if (cell.column.id === 'month' || cell.column.id === 'remaining') {
+                            return (
+                                <td
+                                    {...cell.getCellProps()}
+                                    style={{
+                                        padding: '10px',
+                                        border: 'solid 1px gray',
+                                        background: 'papayawhip',
+                                    }}
+                                >
+                                    {cell.render('NonEditCell')}
+                                </td>
+                            );
+                        }
                         return (
                             <td
                                 {...cell.getCellProps()}

@@ -100,6 +100,7 @@ const Bucket = ({clientID, bucket, firebase}) => {
                     invoice: month.invoice,
                     in: month.in,
                     out: month.out,
+                    remaining: month.remaining,
                 }
             )
         });
