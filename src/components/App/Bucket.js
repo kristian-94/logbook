@@ -1,6 +1,6 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {useTable} from 'react-table';
+import React, {useEffect, useRef, useState, useMemo} from 'react';
 import moment from "moment";
+import BucketTable from "./bucketTable";
 
 const Bucket = ({clientID, bucket, firebase}) => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
@@ -79,7 +79,8 @@ const Bucket = ({clientID, bucket, firebase}) => {
             console.log('deleted bucket ' + bucketData.bucketName);
         });
     }
-    const data = React.useMemo(() => {
+
+    const data = useMemo(() => {
         // Grab hoursData and format as array and output here.
         const hoursDataFormatted = Object.keys(hoursData)
             .map(key => ({
@@ -96,45 +97,26 @@ const Bucket = ({clientID, bucket, firebase}) => {
             return (
                 {
                     month: month.monthandyear,
-                    invoice: month.invoice
+                    invoice: month.invoice,
+                    in: month.in,
+                    out: month.out,
                 }
             )
         });
     }, [hoursData]);
 
-    const columns = React.useMemo(
-        () => [
-            {
-                Header: 'Month',
-                accessor: 'month', // accessor is the "key" in the data
-            },
-            {
-                Header: 'Invoice',
-                accessor: 'invoice',
-            },
-            {
-                Header: 'In',
-                accessor: 'in',
-            },
-            {
-                Header: 'Out',
-                accessor: 'out',
-            },
-            {
-                Header: 'Total left',
-                accessor: 'remaining',
-            },
-        ],
-        []
-    );
-
-    const {
-        getTableProps,
-        getTableBodyProps,
-        headerGroups,
-        rows,
-        prepareRow,
-    } = useTable({ columns, data })
+    const handleOnUpdateData = (rowData, column, value) => {
+        // Find the monthID for this month.
+        const monthID = Object.keys(hoursData)
+            .map(key => ({
+                ...hoursData[key],
+                monthID: key,
+            })).find(x => x.monthandyear === rowData.month).monthID;
+        let values = {};
+        values[column] = value;
+        // Send this data to firebase.
+        firebase.doUpdateHoursData(clientID, bucketData, monthID, values);
+    }
 
     return (
         <div>
@@ -143,50 +125,7 @@ const Bucket = ({clientID, bucket, firebase}) => {
             </div>
             <button onClick={() => onAddMonth(clientID, bucketData)} className="btn btn-success m-1" type="submit">Add month</button>
             {showRemove && <button onClick={() => onRemoveMonth(clientID, bucketData)} className="btn btn-secondary m-1" type="submit">Remove last month</button>}
-            <table {...getTableProps()} style={{ border: 'solid 1px blue' }}>
-                <thead>
-                {headerGroups.map(headerGroup => (
-                    <tr {...headerGroup.getHeaderGroupProps()}>
-                        {headerGroup.headers.map(column => (
-                            <th
-                                {...column.getHeaderProps()}
-                                style={{
-                                    borderBottom: 'solid 3px red',
-                                    background: 'aliceblue',
-                                    color: 'black',
-                                    fontWeight: 'bold',
-                                }}
-                            >
-                                {column.render('Header')}
-                            </th>
-                        ))}
-                    </tr>
-                ))}
-                </thead>
-                <tbody {...getTableBodyProps()}>
-                {rows.map(row => {
-                    prepareRow(row)
-                    return (
-                        <tr {...row.getRowProps()}>
-                            {row.cells.map(cell => {
-                                return (
-                                    <td
-                                        {...cell.getCellProps()}
-                                        style={{
-                                            padding: '10px',
-                                            border: 'solid 1px gray',
-                                            background: 'papayawhip',
-                                        }}
-                                    >
-                                        {cell.render('Cell')}
-                                    </td>
-                                )
-                            })}
-                        </tr>
-                    )
-                })}
-                </tbody>
-            </table>
+            <BucketTable data={data} updateData={handleOnUpdateData} />
             <button onClick={() => onDeleteBucket(clientID, bucketData)} className="btn btn-danger m-1" type="submit">Delete bucket</button>
         </div>
     )

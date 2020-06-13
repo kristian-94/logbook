@@ -94,6 +94,11 @@ class Firebase {
     };
     hoursData = (clientID, bucketData) => this.db.ref(`clients/${clientID}/buckets/${bucketData.bucketID}/hoursData`);
     monthOfHours = (clientID, bucketData, monthID) => this.db.ref(`clients/${clientID}/buckets/${bucketData.bucketID}/hoursData/${monthID}`);
+
+    doUpdateHoursData = (clientID, bucketData, monthID, newHoursData) => {
+        this.monthOfHours(clientID, bucketData, monthID).update(newHoursData).then(r => console.log('updated hours data'));
+    }
+
     // Add an empty month into a bucket.
     doAddMonth = (clientID, bucketData, monthandyear) => {
         return this.hoursData(clientID, bucketData).push({
