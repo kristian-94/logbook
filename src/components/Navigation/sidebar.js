@@ -2,8 +2,9 @@ import React, {useEffect, useState, useRef} from "react";
 import {Nav} from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import {withFirebase} from "../Firebase";
+import * as ROUTES from "../../constants/routes";
 
-const Sidebar = ({firebase, onClientClicked}) => {
+const Sidebar = ({firebase}) => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
     const [clientList, setClientList] = useState([]);
 
@@ -33,8 +34,11 @@ const Sidebar = ({firebase, onClientClicked}) => {
     const history = useHistory();
 
     const onClientChanged = (client) => {
-        history.push("/clients/" + client.clientID);
-        onClientClicked(client);
+        let section = ROUTES.CLIENTS;
+        if (window.location.pathname.substr(0, ROUTES.REPORT.length) === ROUTES.REPORT) {
+            section = ROUTES.REPORT;
+        }
+        history.push(section + "/" + client.clientID);
     }
     const onAddNewClientClicked = (client) => {
         history.push("/clients/new");

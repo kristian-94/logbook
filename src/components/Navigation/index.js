@@ -24,6 +24,9 @@ const NavigationAuth = () => (
             <Link className="btn btn-primary" to={ROUTES.CLIENTS}>
                 Clients
             </Link>
+            <Link className="btn btn-primary" to={ROUTES.REPORT}>
+                Reports
+            </Link>
         </Nav>
         <Link className="btn btn-primary" to={ROUTES.ADMIN}>
             Admin

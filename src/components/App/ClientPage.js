@@ -8,15 +8,9 @@ import SingleClientPage from "./SingleClientPage";
 
 const ClientPage = ({firebase}) => {
     const clientIDinurl = window.location.pathname.split('clients/').pop();
-    const [viewClientID, setViewClientID] = useState(clientIDinurl);
-
     let newClient = false;
     if (window.location.pathname === ROUTES.CLIENTS + ROUTES.NEW) {
         newClient = true;
-    }
-
-    const handleOnClientClicked = (client) => {
-        setViewClientID(client.clientID);
     }
 
     return (
@@ -24,11 +18,11 @@ const ClientPage = ({firebase}) => {
             <Container fluid>
                 <Row>
                     <Col xs={2} id="sidebar-wrapper">
-                        <Sidebar onClientClicked={handleOnClientClicked}/>
+                        <Sidebar/>
                     </Col>
                     <Col xs={10}>
                         {newClient && <NewClientForm/>}
-                        {!newClient && <SingleClientPage firebase={firebase} clientID={viewClientID}/> }
+                        {!newClient && <SingleClientPage firebase={firebase} clientID={clientIDinurl}/> }
                     </Col>
                 </Row>
             </Container>
