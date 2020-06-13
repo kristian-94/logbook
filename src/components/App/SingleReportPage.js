@@ -1,11 +1,10 @@
 import React, {useEffect, useRef, useState} from 'react';
-import AddBucketForm from "./AddBucketForm";
-import EditClientForm from "./EditClientForm";
-import Bucket from "./Bucket";
+import moment from "moment";
 
 const SingleReportPage = ({clientID, firebase}) => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
     const [bucketsData, setBucketsData] = useState([]);
+    const [clientData, setClientData] = useState({});
 
 
     // Need this to do a componentwillunmount and cleanup memory leaks.
@@ -32,23 +31,55 @@ const SingleReportPage = ({clientID, firebase}) => {
                     }));
                 // Make alphabetical order.
                 bucketsData.sort((bucket1, bucket2) => bucket1['name'] - bucket2['name']);
-                console.log(bucketsData);
                 setBucketsData(bucketsData);
+            }
+        });
+        firebase.client(clientID).on('value', snapshot => {
+            if (_isMounted.current) { // Check always mounted component, don't change state if not mounted.
+                const clientDataObject = snapshot.val();
+                if (clientDataObject === null) {
+                    // No buckets in this client yet.
+                    return;
+                }
+                delete clientDataObject.buckets;
+                const clientData = {
+                    'name': clientDataObject.name,
+                    'clientID': clientID
+                };
+                setClientData(clientData);
             }
         });
     }, [clientID, firebase]);
 
     return (
         <div>
-            <h1>Report</h1>
-            <h4>{clientID}</h4>
-            {bucketsData && bucketsData.map(bucket => {
-                return (
-                    <div key={bucket.bucketID}>
-                        {bucket.bucketName}
-                    </div>
-                );
-            })}
+            <h1>{clientData.name} Report</h1>
+            <table className="table">
+                <thead className="theat-dark">
+                <tr>
+                    <th scope="col">Bucket Name</th>
+                    <th scope="col">Total Remaining hours</th>
+                </tr>
+                </thead>
+                <tbody>
+                {bucketsData && bucketsData.map(bucket => {
+                    const hoursDataFormatted = Object.keys(bucket.hoursData)
+                        .map(key => ({
+                            ...bucket.hoursData[key],
+                            monthID: key,
+                        }));
+                    const currentMonth = moment(Math.max(...hoursDataFormatted.map(e => moment(e.monthandyear, 'MMM YYYY'))));
+                    const currentMonthData = hoursDataFormatted.filter(e => e.monthandyear === currentMonth.format('MMM YYYY'))[0];
+                    const remainingCurrent = currentMonthData.remaining;
+                    return (
+                        <tr key={bucket.bucketID}>
+                            <td>{bucket.bucketName}</td>
+                            <td>{remainingCurrent}</td>
+                        </tr>
+                    );
+                })}
+                </tbody>
+            </table>
         </div>
     );
 }
