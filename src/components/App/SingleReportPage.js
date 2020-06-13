@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import moment from "moment";
 import uuid from 'react-uuid'
+import ReportPieChart from "./ReportPieChart";
 
 const SingleReportPage = ({clientID, firebase}) => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
@@ -53,6 +54,7 @@ const SingleReportPage = ({clientID, firebase}) => {
     }, [clientID, firebase]);
 
     let total = 0;
+    let chartData = {};
     return (
         <div>
             <h1>{clientData.name} Report</h1>
@@ -74,6 +76,7 @@ const SingleReportPage = ({clientID, firebase}) => {
                     const currentMonthData = hoursDataFormatted.filter(e => e.monthandyear === currentMonth.format('MMM YYYY'))[0];
                     const remainingCurrent = currentMonthData.remaining;
                     total = total + remainingCurrent;
+                    chartData[bucket.bucketName] = remainingCurrent;
                     return (
                         <tr key={bucket.bucketID}>
                             <td>{bucket.bucketName}</td>
@@ -87,6 +90,9 @@ const SingleReportPage = ({clientID, firebase}) => {
                 </tr>
                 </tbody>
             </table>
+            <div className="w-25" style={{ marginLeft: 300 }}>
+                <ReportPieChart chartData={chartData} clientName={clientData.name}/>
+            </div>
         </div>
     );
 }

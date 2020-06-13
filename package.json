@@ -44,6 +44,7 @@
     "formik": "^2.1.4",
     "react-router-dom": "^5.2.0",
     "react-uuid": "^1.0.2",
+    "victory": "^34.3.11",
     "yup": "^0.29.0"
   }
 }
