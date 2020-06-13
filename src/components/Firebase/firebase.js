@@ -2,8 +2,7 @@ import app from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
 import uuid from 'react-uuid'
-
-
+import moment from "moment";
 
 const config = {
     apiKey: process.env.REACT_APP_API_KEY,
@@ -94,9 +93,38 @@ class Firebase {
     };
     hoursData = (clientID, bucketData) => this.db.ref(`clients/${clientID}/buckets/${bucketData.bucketID}/hoursData`);
     monthOfHours = (clientID, bucketData, monthID) => this.db.ref(`clients/${clientID}/buckets/${bucketData.bucketID}/hoursData/${monthID}`);
+    monthRemaining = (clientID, bucketData, monthID) => this.db.ref(`clients/${clientID}/buckets/${bucketData.bucketID}/hoursData/${monthID}/remaining`);
 
     doUpdateHoursData = (clientID, bucketData, monthID, newHoursData) => {
         this.monthOfHours(clientID, bucketData, monthID).update(newHoursData).then(r => console.log('updated hours data'));
+        // We also need to update the 'total left' column here.
+        this.recalculateTotalLeftData(clientID, bucketData);
+    }
+
+    recalculateTotalLeftData = (clientID, bucketData) => {
+        // Get the hoursData from the bucket in firebase.
+        this.hoursData(clientID, bucketData).once(('value')).then(snapshot => {
+            const hoursData = snapshot.val();
+            const hoursDataFormatted = Object.keys(hoursData)
+                .map(key => ({
+                    ...hoursData[key],
+                    monthID: key,
+                })).sort((month1, month2) => {
+                    // We want to sort the dates in ascending order.
+                    const date1 = moment(month1.monthandyear, 'MMM YYYY');
+                    const date2 = moment(month2.monthandyear, 'MMM YYYY');
+                    return date1 - date2;
+                });
+            // Loop through and calculate and update the remaining value line by line.
+            let previousTotal = 0;
+            hoursDataFormatted.map(monthData => {
+                console.log('here3')
+                const newRemaining = monthData.in - monthData.out + previousTotal;
+                this.monthRemaining(clientID, bucketData, monthData.monthID).set(newRemaining).then(r => console.log('updated time remaining'));
+                previousTotal = newRemaining;
+                return true;
+            });
+        });
     }
 
     // Add an empty month into a bucket.
