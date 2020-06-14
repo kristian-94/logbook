@@ -5,12 +5,17 @@ import {Container, Row, Col } from "react-bootstrap";
 import * as ROUTES from '../../constants/routes';
 import NewClientForm from "./NewClientPage";
 import SingleClientPage from "./SingleClientPage";
+import ClientBlankPage from "./ClientBlankPage";
 
 const ClientPage = ({firebase}) => {
     const clientIDinurl = window.location.pathname.split('clients/').pop();
     let newClient = false;
+    let noClient = false;
     if (window.location.pathname === ROUTES.CLIENTS + ROUTES.NEW) {
         newClient = true;
+    }
+    if (window.location.pathname === ROUTES.CLIENTS) {
+        noClient = true;
     }
 
     return (
@@ -21,8 +26,9 @@ const ClientPage = ({firebase}) => {
                         <Sidebar/>
                     </Col>
                     <Col xs={10}>
+                        {noClient && <ClientBlankPage />}
                         {newClient && <NewClientForm/>}
-                        {!newClient && <SingleClientPage firebase={firebase} clientID={clientIDinurl}/> }
+                        {!newClient && !noClient && <SingleClientPage firebase={firebase} clientID={clientIDinurl}/> }
                     </Col>
                 </Row>
             </Container>
