@@ -74,6 +74,11 @@ class Firebase {
             name,
         });
     };
+    doUpdateClientNote = (clientID, noteData) => {
+        return this.client(clientID).update({
+            noteData,
+        });
+    };
     doDeleteClient = (clientID) => {
         return this.client(clientID).remove();
     }
