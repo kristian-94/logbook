@@ -98,6 +98,7 @@ const Bucket = ({clientID, bucket, firebase}) => {
                 {
                     month: month.monthandyear,
                     invoice: month.invoice,
+                    description: month.description,
                     in: month.in,
                     out: month.out,
                     remaining: month.remaining,
@@ -122,8 +123,8 @@ const Bucket = ({clientID, bucket, firebase}) => {
     return (
         <div>
             <h5 className='ml-3'>{bucketData.bucketName}</h5>
-            <button onClick={() => onAddMonth(clientID, bucketData)} className="btn btn-success m-1" type="submit">Add month</button>
-            {showRemove && <button onClick={() => onRemoveMonth(clientID, bucketData)} className="btn btn-secondary m-1" type="submit">Remove last month</button>}
+            <button onClick={() => onAddMonth(clientID, bucketData)} className="btn btn-success m-1" type="submit">Add previous month</button>
+            {showRemove && <button onClick={() => onRemoveMonth(clientID, bucketData)} className="btn btn-secondary m-1" type="submit">Remove oldest month</button>}
             <BucketTable data={data} updateData={handleOnUpdateData} />
             <button onClick={() => onDeleteBucket(clientID, bucketData)} className="btn btn-danger m-1" type="submit">Delete bucket</button>
         </div>

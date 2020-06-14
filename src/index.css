@@ -42,3 +42,8 @@ code {
 .singlebucket {
   width: 70%;
 }
+.bucketcell {
+  padding: 10px;
+  border: solid 1px gray;
+  background: papayawhip;
+}

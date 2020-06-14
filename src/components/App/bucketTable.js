@@ -15,13 +15,17 @@ const BucketTable = ({data, updateData}) => {
         const onChange = e => {
             setValue(e.target.value)
         }
-        // We'll only update the external data when the input is blurred
+        // We'll only update the external data when the input is blurred.
         const onBlur = () => updateMyData(values, id, value);
-        // If the initialValue is changed external, sync it up with our state
+        // If the initialValue is changed external, sync it up with our state.
         useEffect(() => {
             setValue(initialValue)
         }, [initialValue])
-        return <input value={value} onChange={onChange} onBlur={onBlur} />
+        let width = '150px';
+        if (id === 'in' || id === 'out') {
+            width = '60px';
+        }
+        return <input value={value} onChange={onChange} onBlur={onBlur} style={{width: width}}/>
     }
 
     // Create a non editable cell renderer
@@ -29,10 +33,39 @@ const BucketTable = ({data, updateData}) => {
         return cell.value;
     }
 
+    // Create an editable cell renderer
+    const EditMultiline = ({
+                              value: initialValue,
+                              row: { values },
+                              column: { id },
+                              updateMyData, // This is a custom function that we supplied to our table instance
+                          }) => {
+        // We need to keep and update the state of the cell normally
+        const [value, setValue] = useState(initialValue)
+        const onChange = e => {
+            setValue(e.target.value)
+        }
+        // We'll only update the external data when the input is blurred
+        const onBlur = () => updateMyData(values, id, value);
+        // If the initialValue is changed external, sync it up with our state
+        useEffect(() => {
+            setValue(initialValue)
+        }, [initialValue])
+        return <textarea
+            className="form-control"
+            onChange={onChange}
+            onBlur={onBlur}
+            value={value}
+            placeholder="Write a description"
+            style={{height: '2.5rem'}}
+        />
+    }
+
     // Set our editable cell renderer as the default Cell renderer
     const defaultColumn = {
         Cell: EditableCell,
         NonEditCell: NonEditableCell,
+        EditMultiline: EditMultiline,
     }
 
     // When our cell renderer calls updateMyData, we'll use
@@ -52,6 +85,10 @@ const BucketTable = ({data, updateData}) => {
                 accessor: 'invoice',
             },
             {
+                Header: 'Description',
+                accessor: 'description',
+            },
+            {
                 Header: 'In',
                 accessor: 'in',
             },
@@ -60,7 +97,7 @@ const BucketTable = ({data, updateData}) => {
                 accessor: 'out',
             },
             {
-                Header: 'Total Left',
+                Header: 'Balance',
                 accessor: 'remaining',
             },
         ],
@@ -109,30 +146,23 @@ const BucketTable = ({data, updateData}) => {
                     {row.cells.map(cell => {
                         if (cell.column.id === 'month' || cell.column.id === 'remaining') {
                             return (
-                                <td
-                                    {...cell.getCellProps()}
-                                    style={{
-                                        padding: '10px',
-                                        border: 'solid 1px gray',
-                                        background: 'papayawhip',
-                                    }}
-                                >
+                                <td {...cell.getCellProps()} className="bucketcell">
                                     {cell.render('NonEditCell')}
                                 </td>
                             );
                         }
+                        if (cell.column.id === 'description') {
+                            return (
+                                <td {...cell.getCellProps()} className="bucketcell" style={{width: '400px'}}>
+                                    {cell.render('EditMultiline')}
+                                </td>
+                            );
+                        }
                         return (
-                            <td
-                                {...cell.getCellProps()}
-                                style={{
-                                    padding: '10px',
-                                    border: 'solid 1px gray',
-                                    background: 'papayawhip',
-                                }}
-                            >
+                            <td {...cell.getCellProps()} className="bucketcell">
                                 {cell.render('Cell')}
                             </td>
-                        )
+                        );
                     })}
                 </tr>
             )

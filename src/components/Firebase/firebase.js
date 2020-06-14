@@ -134,6 +134,7 @@ class Firebase {
             out: 0,
             remaining: 0,
             invoice: '',
+            description: '',
             monthandyear: monthandyear
         });
     };
