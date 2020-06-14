@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import AddBucketForm from "./AddBucketForm";
 import EditClientForm from "./EditClientForm";
 import Bucket from "./Bucket";
+import MonthlySupportHours from "./MonthlySupportHours";
 
 const SingleClientPage = ({clientID, firebase}) => {
     const [addingNewBucket, setAddingNewBucket] = useState(false);
@@ -9,11 +10,11 @@ const SingleClientPage = ({clientID, firebase}) => {
     const [bucketsData, setBucketsData] = useState([]);
     const _isMounted = useRef(true); // Initial value _isMounted = true
     const [clientData, setClientData] = useState({});
-    const [clientNote, setClientNote] = useState('')
 
     useEffect(() => {
         // Got to reset some state when switching clients.
         setAddingNewBucket(false);
+        setEditingClient(false);
         setBucketsData([]);
     }, [clientID]);
 
@@ -54,10 +55,11 @@ const SingleClientPage = ({clientID, firebase}) => {
                 delete clientDataObject.buckets;
                 const clientData = {
                     'name': clientDataObject.name,
-                    'clientID': clientID
+                    'clientID': clientID,
+                    'noteData': clientDataObject.noteData,
+                    'monthlysupport': clientDataObject.monthlysupport,
                 };
                 setClientData(clientData);
-                setClientNote(clientDataObject.noteData);
             }
         });
     }, [clientID, firebase]);
@@ -69,10 +71,11 @@ const SingleClientPage = ({clientID, firebase}) => {
         setEditingClient(true);
     }
     const onEditClientNote = e => {
-        setClientNote(e.target.value);
+        const noteData = e.target.value;
+        setClientData((prevState) => ({...prevState, noteData}));
     }
     const updateClientNote = e => {
-        firebase.doUpdateClientNote(clientID, clientNote).then(r => console.log('updated client note'));
+        firebase.doUpdateClientNote(clientID, clientData.noteData).then(r => console.log('updated client note'));
     }
 
     const onBackToClientPage = () => {
@@ -104,12 +107,13 @@ const SingleClientPage = ({clientID, firebase}) => {
             <button onClick={onCreateBucket} className="btn btn-primary m-1 float-right" type="submit">Create a bucket</button>
             <button onClick={onEditClient} className="btn btn-secondary m-1 float-right" type="submit">Edit Client</button>
             <h1>{clientData.name}</h1>
+            <MonthlySupportHours clientData={clientData} />
             <div>
                 <textarea
                     className="form-control"
                     onChange={onEditClientNote}
                     onBlur={updateClientNote}
-                    value={clientNote}
+                    value={clientData.noteData}
                     placeholder="Notes"
                     style={{height: '7rem', width: '50rem'}}
                 />

@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import moment from "moment";
 import uuid from 'react-uuid'
 import ReportPieChart from "./ReportPieChart";
+import MonthlySupportHours from "./MonthlySupportHours";
 
 const SingleReportPage = ({clientID, firebase}) => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
@@ -46,7 +47,9 @@ const SingleReportPage = ({clientID, firebase}) => {
                 delete clientDataObject.buckets;
                 const clientData = {
                     'name': clientDataObject.name,
-                    'clientID': clientID
+                    'clientID': clientID,
+                    'noteData': clientDataObject.noteData,
+                    'monthlysupport': clientDataObject.monthlysupport,
                 };
                 setClientData(clientData);
             }
@@ -58,6 +61,7 @@ const SingleReportPage = ({clientID, firebase}) => {
     return (
         <div>
             <h1>{clientData.name} Report</h1>
+            <MonthlySupportHours clientData={clientData} />
             <table className="table">
                 <thead className="theat-dark">
                 <tr>

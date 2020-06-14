@@ -9,14 +9,14 @@ const EditClientForm = ({firebase, clientData, onFinishSubmission, onDeleteClien
         <div className="col-10">
             <h1>Edit Client {clientData.name}</h1>
             <Formik
-                initialValues={{name: ""}}
+                initialValues={{name: clientData.name, monthlysupport: clientData.monthlysupport}}
                 validationSchema={Yup.object({
                     name: Yup.string().required("Required to enter a name"),
                 })}
                 onSubmit={(values, {setSubmitting}) => {
                     setSubmitting(true);
                     // Store this updated client in firebase
-                    firebase.doUpdateClient(clientData.clientID, values.name)
+                    firebase.doUpdateClient(clientData.clientID, values.name, values.monthlysupport)
                         .then(() => {
                             setSubmitting(false);
                             onFinishSubmission('successfully updated client ' + values.name);
@@ -38,6 +38,14 @@ const EditClientForm = ({firebase, clientData, onFinishSubmission, onDeleteClien
                                     placeholder={clientData.name}
                                 />
                                 <ErrorMessage name="name"/>
+                            </div>
+                            <div className="form-group">
+                                <Field
+                                    className="form-control col-12 m-1"
+                                    type="text"
+                                    name="monthlysupport"
+                                    placeholder={clientData.monthlysupport}
+                                />
                             </div>
                             <button
                                 className="btn btn-primary m-1"
