@@ -1,6 +1,10 @@
 import React, {useEffect, useRef, useState, useMemo} from 'react';
 import moment from "moment";
 import BucketTable from "./bucketTable";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faTrash} from "@fortawesome/free-solid-svg-icons";
+import {faPlus} from "@fortawesome/free-solid-svg-icons";
+import {faMinus} from "@fortawesome/free-solid-svg-icons";
 
 const Bucket = ({clientID, bucket, firebase}) => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
@@ -123,10 +127,16 @@ const Bucket = ({clientID, bucket, firebase}) => {
     return (
         <div>
             <h5 className='ml-3'>{bucketData.bucketName}</h5>
-            <button onClick={() => onAddMonth(clientID, bucketData)} className="btn btn-success m-1" type="submit">Add previous month</button>
-            {showRemove && <button onClick={() => onRemoveMonth(clientID, bucketData)} className="btn btn-secondary m-1" type="submit">Remove oldest month</button>}
+            <button onClick={() => onAddMonth(clientID, bucketData)} className="btn btn-success m-1" type="submit">
+                <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faPlus} />
+            </button>
+            {showRemove && <button onClick={() => onRemoveMonth(clientID, bucketData)} className="btn btn-secondary m-1" type="submit">
+                <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faMinus} />
+            </button>}
             <BucketTable data={data} updateData={handleOnUpdateData} />
-            <button onClick={() => onDeleteBucket(clientID, bucketData)} className="btn btn-danger m-1" type="submit">Delete bucket</button>
+            <button onClick={() => onDeleteBucket(clientID, bucketData)} className="btn btn-danger m-1" type="submit">
+                <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faTrash} />
+            </button>
         </div>
     )
 }
