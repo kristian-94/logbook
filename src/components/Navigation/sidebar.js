@@ -25,7 +25,15 @@ const Sidebar = ({firebase}) => {
                         clientID: key,
                     }));
                 // Make alphabetical order.
-                clientsList.sort((client1, client2) => client1['name'] - client2['name']);
+                clientsList.sort((client1, client2) => {
+                    const name1 = client1.name.toLowerCase();
+                    const name2 = client2.name.toLowerCase();
+                    if (name1 < name2) //sort string ascending
+                        return -1;
+                    if (name1 > name2)
+                        return 1;
+                    return 0; //default return value (no sorting)
+                });
                 setClientList(clientsList);
             }
         });
