@@ -60,7 +60,7 @@ const BucketTable = ({data, updateData}) => {
                 accessor: 'out',
             },
             {
-                Header: 'Total left',
+                Header: 'Total Left',
                 accessor: 'remaining',
             },
         ],
@@ -81,7 +81,7 @@ const BucketTable = ({data, updateData}) => {
     })
 
     return (
-        <table {...getTableProps()} style={{ border: 'solid 1px blue' }}>
+        <table {...getTableProps()} style={{ border: 'solid 1px black' }}>
         <thead>
         {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>

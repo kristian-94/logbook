@@ -121,9 +121,7 @@ const Bucket = ({clientID, bucket, firebase}) => {
 
     return (
         <div>
-            <div className='h5'>
-                {bucketData.bucketName}
-            </div>
+            <h5 className='ml-3'>{bucketData.bucketName}</h5>
             <button onClick={() => onAddMonth(clientID, bucketData)} className="btn btn-success m-1" type="submit">Add month</button>
             {showRemove && <button onClick={() => onRemoveMonth(clientID, bucketData)} className="btn btn-secondary m-1" type="submit">Remove last month</button>}
             <BucketTable data={data} updateData={handleOnUpdateData} />

@@ -95,14 +95,13 @@ const SingleClientPage = ({clientID, firebase}) => {
         <div>
             <button onClick={onCreateBucket} className="btn btn-primary m-1 float-right" type="submit">Create a bucket</button>
             <button onClick={onEditClient} className="btn btn-secondary m-1 float-right" type="submit">Edit Client</button>
-            <div className="h1">
-                {clientData.name}
-            </div>
+            <h1>{clientData.name}</h1>
             <div>
                 {bucketsData && bucketsData.map(bucket => {
                     return (
-                        <div key={bucket.bucketID}>
+                        <div key={bucket.bucketID} className="singlebucket">
                             <Bucket clientID={clientID} bucket={bucket} firebase={firebase}/>
+                            <hr/>
                         </div>
                     );
                 })}
