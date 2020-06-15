@@ -1,13 +1,33 @@
-import React, {} from 'react';
+import React, {useState} from 'react';
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
 import { withFirebase } from '../Firebase';
+import SweetAlert from 'react-bootstrap-sweetalert';
 
 const EditClientForm = ({firebase, clientData, onFinishSubmission, onDeleteClient}) => {
+    const [confirmModal, setConfirmModal] = useState(null);
 
+    const onClickDeleteClient = () => {
+        const modal = (
+            <SweetAlert
+                warning
+                showCancel
+                confirmBtnText="Yes, delete it!"
+                confirmBtnBsStyle="danger"
+                title="Are you sure?"
+                onConfirm={() => onDeleteClient()}
+                onCancel={() => setConfirmModal(null)}
+                focusCancelBtn
+            >
+                You will not be able to recover any data for this client!
+            </SweetAlert>
+        );
+        setConfirmModal(modal);
+    }
     return (
         <div className="col-10">
             <h1>Edit Client {clientData.name}</h1>
+            {confirmModal}
             <Formik
                 initialValues={{name: clientData.name, monthlysupport: clientData.monthlysupport}}
                 validationSchema={Yup.object({
@@ -59,7 +79,7 @@ const EditClientForm = ({firebase, clientData, onFinishSubmission, onDeleteClien
                 }}
             </Formik>
             <button onClick={onFinishSubmission} className="btn btn-secondary m-1" type="submit">Cancel</button>
-            <button onClick={onDeleteClient} className="btn btn-danger m-1" type="submit">Delete client</button>
+            <button onClick={() => onClickDeleteClient()} className="btn btn-danger m-1" type="submit">Delete client</button>
         </div>
     );
 };

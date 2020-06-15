@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState, useMemo} from 'react';
 import moment from "moment";
 import BucketTable from "./bucketTable";
+import SweetAlert from 'react-bootstrap-sweetalert';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTrash} from "@fortawesome/free-solid-svg-icons";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
@@ -11,6 +12,7 @@ const Bucket = ({clientID, bucket, firebase}) => {
     const [bucketData, setBucketData] = useState({});
     const [hoursData, setHoursData] = useState(false);
     const [showRemove, setShowRemove] = useState(false);
+    const [confirmModal, setConfirmModal] = useState(null);
 
     // Need this to do a componentwillunmount and cleanup memory leaks.
     useEffect(() => {
@@ -81,7 +83,26 @@ const Bucket = ({clientID, bucket, firebase}) => {
     const onDeleteBucket = (clientID, bucketData) => {
         firebase.doDeleteBucket(clientID, bucketData).then(r => {
             console.log('deleted bucket ' + bucketData.bucketName);
+            setConfirmModal(null);
         });
+    }
+
+    const onClickDelete = (clientID, bucketData) => {
+        const modal = (
+            <SweetAlert
+                warning
+                showCancel
+                confirmBtnText="Yes, delete it!"
+                confirmBtnBsStyle="danger"
+                title="Are you sure?"
+                onConfirm={() => onDeleteBucket(clientID, bucketData)}
+                onCancel={() => setConfirmModal(null)}
+                focusCancelBtn
+            >
+                You will not be able to recover this bucket data!
+            </SweetAlert>
+        );
+        setConfirmModal(modal);
     }
 
     const data = useMemo(() => {
@@ -127,6 +148,7 @@ const Bucket = ({clientID, bucket, firebase}) => {
     return (
         <div>
             <h5 className='ml-3'>{bucketData.bucketName}</h5>
+            {confirmModal}
             <button onClick={() => onAddMonth(clientID, bucketData)} className="btn btn-success m-1" type="submit">
                 <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faPlus} />
             </button>
@@ -134,7 +156,7 @@ const Bucket = ({clientID, bucket, firebase}) => {
                 <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faMinus} />
             </button>}
             <BucketTable data={data} updateData={handleOnUpdateData} />
-            <button onClick={() => onDeleteBucket(clientID, bucketData)} className="btn btn-danger m-1" type="submit">
+            <button onClick={() => onClickDelete(clientID, bucketData)} className="btn btn-danger m-1" type="submit">
                 <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faTrash} />
             </button>
         </div>
