@@ -13,6 +13,7 @@
     "moment": "^2.26.0",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",
+    "react-datepicker": "^3.0.0",
     "react-dom": "^16.13.1",
     "react-firebase-file-uploader": "^2.4.3",
     "react-router": "^5.2.0",
@@ -45,7 +46,7 @@
   },
   "devDependencies": {
     "formik": "^2.1.4",
-    "react-bootstrap-sweetalert": "^5.1.11",
+    "react-bootstrap-sweetalert": "^5.1.12",
     "react-router-dom": "^5.2.0",
     "react-uuid": "^1.0.2",
     "victory": "^34.3.11",

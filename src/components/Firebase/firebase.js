@@ -83,6 +83,18 @@ class Firebase {
     doDeleteClient = (clientID) => {
         return this.client(clientID).remove();
     }
+    // Communications
+    comms = (clientID) => this.db.ref(`clients/${clientID}/communcations`);
+    comm = (clientID, commsID) => this.db.ref(`clients/${clientID}/communcations/${commsID}`);
+    doStoreComm = (clientID, note, date) => {
+        return this.comm(clientID, uuid()).set({
+            note,
+            date,
+        });
+    };
+    doDeleteComm = (clientID, id) => {
+        return this.comm(clientID, id).remove();
+    };
 
     // Buckets API - buckets have time created, name.
     bucket = (clientID, bucketID) => this.db.ref(`clients/${clientID}/buckets/${bucketID}`);

@@ -3,6 +3,7 @@ import AddBucketForm from "./AddBucketForm";
 import EditClientForm from "./EditClientForm";
 import Bucket from "./Bucket";
 import MonthlySupportHours from "./MonthlySupportHours";
+import Communications from "./Communications"
 
 const SingleClientPage = ({clientID, firebase}) => {
     const [addingNewBucket, setAddingNewBucket] = useState(false);
@@ -119,15 +120,22 @@ const SingleClientPage = ({clientID, firebase}) => {
                 />
             </div>
             <hr/>
-            <div>
-                {bucketsData && bucketsData.map(bucket => {
-                    return (
-                        <div key={bucket.bucketID} className="singlebucket">
-                            <Bucket clientID={clientID} bucket={bucket} firebase={firebase}/>
-                            <hr/>
-                        </div>
-                    );
-                })}
+            <div className="container-fluid">
+                <div className="row">
+                    <div className="col-8">
+                        {bucketsData && bucketsData.map(bucket => {
+                            return (
+                                <div key={bucket.bucketID} className="singlebucket">
+                                    <Bucket clientID={clientID} bucket={bucket} firebase={firebase}/>
+                                    <hr/>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <div className="col-4">
+                        <Communications firebase={firebase} clientID={clientID} />
+                    </div>
+                </div>
             </div>
         </div>
     );

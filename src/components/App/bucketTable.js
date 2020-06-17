@@ -118,7 +118,7 @@ const BucketTable = ({data, updateData}) => {
     })
 
     return (
-        <table {...getTableProps()} style={{ border: 'solid 1px black' }}>
+        <table {...getTableProps()} style={{ border: 'solid 1px black', width: '98%' }}>
             <thead>
             {headerGroups.map(headerGroup => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
