@@ -103,11 +103,22 @@ class Firebase {
         return this.bucket(clientID, uuid()).set({
             bucketName,
             timeCreated,
+            archived: false,
             'hoursData': false
         });
     };
     doDeleteBucket = (clientID, bucketData) => {
         return this.bucket(clientID, bucketData.bucketID).remove();
+    };
+    doArchiveBucket = (clientID, bucketData) => {
+        return this.bucket(clientID, bucketData.bucketID).update({
+            archived: true
+        });
+    };
+    doUnArchiveBucket = (clientID, bucketData) => {
+        return this.bucket(clientID, bucketData.bucketID).update({
+            archived: false
+        });
     };
     hoursData = (clientID, bucketData) => this.db.ref(`clients/${clientID}/buckets/${bucketData.bucketID}/hoursData`);
     monthOfHours = (clientID, bucketData, monthID) => this.db.ref(`clients/${clientID}/buckets/${bucketData.bucketID}/hoursData/${monthID}`);

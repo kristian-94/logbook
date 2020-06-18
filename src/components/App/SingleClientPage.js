@@ -5,11 +5,14 @@ import Bucket from "./Bucket";
 import MonthlySupportHours from "./MonthlySupportHours";
 import Communications from "./Communications"
 import moment from "moment";
+import ArchivePage from "./ArchivePage";
 
 const SingleClientPage = ({clientID, firebase}) => {
     const [addingNewBucket, setAddingNewBucket] = useState(false);
     const [editingClient, setEditingClient] = useState(false);
+    const [viewingArchive, setViewingArchive] = useState(false);
     const [bucketsData, setBucketsData] = useState([]);
+    const [archivedBucketsData, setArchivedBucketsData] = useState([]);
     const _isMounted = useRef(true); // Initial value _isMounted = true
     const [clientData, setClientData] = useState({});
 
@@ -17,6 +20,7 @@ const SingleClientPage = ({clientID, firebase}) => {
         // Got to reset some state when switching clients.
         setAddingNewBucket(false);
         setEditingClient(false);
+        setViewingArchive(false);
         setBucketsData([]);
     }, [clientID]);
 
@@ -42,10 +46,17 @@ const SingleClientPage = ({clientID, firebase}) => {
                         ...bucketsDataObject[key],
                         bucketID: key,
                     }));
+                const archivedBucketData = bucketsData.filter(bucket => {
+                    return bucket.archived === true;
+                });
+                const activeBucketData = bucketsData.filter(bucket => {
+                    return bucket.archived !== true;
+                });
                 // Make alphabetical order.
-                bucketsData.sort((bucket1, bucket2) => bucket1['name'] - bucket2['name']);
+                activeBucketData.sort((bucket1, bucket2) => bucket1['name'] - bucket2['name']);
+                archivedBucketData.sort((bucket1, bucket2) => bucket1['name'] - bucket2['name']);
                 // Check each bucket to see if we need to add the current month now.
-                bucketsData.map(bucket => {
+                activeBucketData.map(bucket => {
                     const hoursDataFormatted = Object.keys(bucket.hoursData)
                         .map(key => ({
                             ...bucket.hoursData[key],
@@ -57,8 +68,10 @@ const SingleClientPage = ({clientID, firebase}) => {
                     if (currentMonth !== latestMonthinBucket) {
                         firebase.doAddMonth(clientID, bucket, currentMonth).then(r => console.log('added month ' + currentMonth));
                     }
+                    return true;
                 });
-                setBucketsData(bucketsData);
+                setBucketsData(activeBucketData);
+                setArchivedBucketsData(archivedBucketData);
             }
         });
         firebase.client(clientID).on('value', snapshot => {
@@ -86,6 +99,9 @@ const SingleClientPage = ({clientID, firebase}) => {
     const onEditClient = () => {
         setEditingClient(true);
     }
+    const onViewArchive = () => {
+        setViewingArchive(true);
+    }
     const onEditClientNote = e => {
         const noteData = e.target.value;
         setClientData((prevState) => ({...prevState, noteData}));
@@ -97,6 +113,7 @@ const SingleClientPage = ({clientID, firebase}) => {
     const onBackToClientPage = () => {
         setAddingNewBucket(false);
         setEditingClient(false);
+        setViewingArchive(false);
     }
     const onDeleteClient = () => {
         firebase.doDeleteClient(clientID).then(() => onBackToClientPage());
@@ -117,11 +134,17 @@ const SingleClientPage = ({clientID, firebase}) => {
             </div>
         );
     }
+    if (viewingArchive) {
+        return (
+            <ArchivePage archivedBucketsData={archivedBucketsData} onBackToClientPage={onBackToClientPage} clientID={clientID} firebase={firebase} />
+        )
+    }
 
     return (
         <div>
             <button onClick={onCreateBucket} className="btn btn-primary m-1 float-right" type="submit">Create a bucket</button>
             <button onClick={onEditClient} className="btn btn-secondary m-1 float-right" type="submit">Edit Client</button>
+            <button onClick={onViewArchive} className="btn btn-warning m-1 float-right" type="submit">View Bucket Archive</button>
             <h1>{clientData.name}</h1>
             <MonthlySupportHours clientData={clientData} />
             <div>

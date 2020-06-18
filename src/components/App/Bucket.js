@@ -3,9 +3,9 @@ import moment from "moment";
 import BucketTable from "./bucketTable";
 import SweetAlert from 'react-bootstrap-sweetalert';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faTrash} from "@fortawesome/free-solid-svg-icons";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import {faMinus} from "@fortawesome/free-solid-svg-icons";
+import {faArchive} from "@fortawesome/free-solid-svg-icons";
 
 const Bucket = ({clientID, bucket, firebase}) => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
@@ -80,26 +80,28 @@ const Bucket = ({clientID, bucket, firebase}) => {
         const earliestMonthData = hoursDataFormatted.filter(e => e.monthandyear === earliestMonth.format('MMM YYYY'))[0];
         firebase.doRemoveMonth(clientID, bucketData, earliestMonthData.monthID).then(r => console.log('deleted the month ' + earliestMonth.format('MMM YYYY')));
     }
-    const onDeleteBucket = (clientID, bucketData) => {
-        firebase.doDeleteBucket(clientID, bucketData).then(r => {
-            console.log('deleted bucket ' + bucketData.bucketName);
+
+    const onArchiveBucket = (clientID, bucketData) => {
+        firebase.doArchiveBucket(clientID, bucketData).then(r => {
+            console.log('archived bucket ' + bucketData.bucketName);
             setConfirmModal(null);
         });
     }
 
-    const onClickDelete = (clientID, bucketData) => {
+    const onClickArchive = (clientID, bucketData) => {
         const modal = (
             <SweetAlert
                 warning
                 showCancel
-                confirmBtnText="Yes, delete it!"
+                confirmBtnText="Yes, archive it!"
                 confirmBtnBsStyle="danger"
                 title="Are you sure?"
-                onConfirm={() => onDeleteBucket(clientID, bucketData)}
+                onConfirm={() => onArchiveBucket(clientID, bucketData)}
                 onCancel={() => setConfirmModal(null)}
                 focusCancelBtn
             >
-                You will not be able to recover this bucket data!
+                This will archive the bucket. It won't appear on the main page or in reports.
+                You can undo this action later.
             </SweetAlert>
         );
         setConfirmModal(modal);
@@ -157,8 +159,8 @@ const Bucket = ({clientID, bucket, firebase}) => {
                 <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faMinus} />
             </button>}
             <BucketTable data={data} updateData={handleOnUpdateData} />
-            <button onClick={() => onClickDelete(clientID, bucketData)} className="btn btn-danger m-1" type="submit">
-                <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faTrash} />
+            <button onClick={() => onClickArchive(clientID, bucketData)} className="btn btn-warning m-1" type="submit">
+                <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faArchive} />
             </button>
         </div>
     )

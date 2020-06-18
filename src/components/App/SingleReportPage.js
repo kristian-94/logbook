@@ -31,7 +31,9 @@ const SingleReportPage = ({clientID, firebase}) => {
                     .map(key => ({
                         ...bucketsDataObject[key],
                         bucketID: key,
-                    }));
+                    })).filter(bucket => {
+                        return bucket.archived !== true;
+                    });
                 // Make alphabetical order.
                 bucketsData.sort((bucket1, bucket2) => bucket1['name'] - bucket2['name']);
                 setBucketsData(bucketsData);

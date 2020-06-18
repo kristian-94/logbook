@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useTable} from 'react-table';
 
-const BucketTable = ({data, updateData}) => {
+const BucketTable = ({data, updateData, readOnly}) => {
 
     // Create an editable cell renderer
     const EditableCell = ({
@@ -148,7 +148,7 @@ const BucketTable = ({data, updateData}) => {
                 return (
                     <tr {...row.getRowProps()} className={rowColourTouchable}>
                         {row.cells.map(cell => {
-                            if (cell.column.id === 'month' || cell.column.id === 'remaining') {
+                            if ((cell.column.id === 'month' || cell.column.id === 'remaining') || readOnly === true) {
                                 return (
                                     <td {...cell.getCellProps()} className="bucketcell">
                                         {cell.render('NonEditCell')}
