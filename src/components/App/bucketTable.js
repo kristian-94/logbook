@@ -141,8 +141,12 @@ const BucketTable = ({data, updateData}) => {
             <tbody {...getTableBodyProps()}>
             {rows.map(row => {
                 prepareRow(row)
+                let rowColourTouchable = 'rowTouched';
+                if (row.original.touched !== true) {
+                    rowColourTouchable = 'rowNotTouched';
+                }
                 return (
-                    <tr {...row.getRowProps()}>
+                    <tr {...row.getRowProps()} className={rowColourTouchable}>
                         {row.cells.map(cell => {
                             if (cell.column.id === 'month' || cell.column.id === 'remaining') {
                                 return (

@@ -114,6 +114,7 @@ class Firebase {
     monthRemaining = (clientID, bucketData, monthID) => this.db.ref(`clients/${clientID}/buckets/${bucketData.bucketID}/hoursData/${monthID}/remaining`);
 
     doUpdateHoursData = (clientID, bucketData, monthID, newHoursData) => {
+        newHoursData.touched = true; // We set touched to true whenever we do any bucket update.
         this.monthOfHours(clientID, bucketData, monthID).update(newHoursData).then(r => console.log('updated hours data'));
         // We also need to update the 'total left' column here.
         this.recalculateTotalLeftData(clientID, bucketData);
@@ -136,7 +137,6 @@ class Firebase {
             // Loop through and calculate and update the remaining value line by line.
             let previousTotal = 0;
             hoursDataFormatted.map(monthData => {
-                console.log('here3')
                 const newRemaining = monthData.in - monthData.out + previousTotal;
                 this.monthRemaining(clientID, bucketData, monthData.monthID).set(newRemaining).then(r => console.log('updated time remaining'));
                 previousTotal = newRemaining;
@@ -151,6 +151,7 @@ class Firebase {
             in: 0,
             out: 0,
             remaining: 0,
+            touched: false,
             invoice: '',
             description: '',
             monthandyear: monthandyear

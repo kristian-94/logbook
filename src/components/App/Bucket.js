@@ -127,6 +127,7 @@ const Bucket = ({clientID, bucket, firebase}) => {
                     in: month.in,
                     out: month.out,
                     remaining: month.remaining,
+                    touched: month.touched,
                 }
             )
         });

@@ -44,5 +44,10 @@ code {
 .bucketcell {
   padding: 10px;
   border: solid 1px gray;
+}
+.rowNotTouched {
+  background-color: #e84747;
+}
+.rowTouched {
   background: papayawhip;
 }
