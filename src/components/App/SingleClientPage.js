@@ -4,6 +4,7 @@ import EditClientForm from "./EditClientForm";
 import Bucket from "./Bucket";
 import MonthlySupportHours from "./MonthlySupportHours";
 import Communications from "./Communications"
+import moment from "moment";
 
 const SingleClientPage = ({clientID, firebase}) => {
     const [addingNewBucket, setAddingNewBucket] = useState(false);
@@ -43,6 +44,20 @@ const SingleClientPage = ({clientID, firebase}) => {
                     }));
                 // Make alphabetical order.
                 bucketsData.sort((bucket1, bucket2) => bucket1['name'] - bucket2['name']);
+                // Check each bucket to see if we need to add the current month now.
+                bucketsData.map(bucket => {
+                    const hoursDataFormatted = Object.keys(bucket.hoursData)
+                        .map(key => ({
+                            ...bucket.hoursData[key],
+                            monthID: key,
+                        }));
+                    // Go through the hoursData and find latest and compare that to current to see if we need to add a month now.
+                    const latestMonthinBucket = moment(Math.max(...hoursDataFormatted.map(e => moment(e.monthandyear, 'MMM YYYY')))).format('MMM YYYY');
+                    const currentMonth = moment().format('MMM YYYY');
+                    if (currentMonth !== latestMonthinBucket) {
+                        firebase.doAddMonth(clientID, bucket, currentMonth).then(r => console.log('added month ' + currentMonth));
+                    }
+                });
                 setBucketsData(bucketsData);
             }
         });
