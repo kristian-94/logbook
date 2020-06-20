@@ -50,18 +50,20 @@ const EditClientForm = ({firebase, clientData, onFinishSubmission, onDeleteClien
                     } = props;
                     return (
                         <Form className="col-10 text-center container" onSubmit={handleSubmit}>
-                            <div className="form-group">
+                            <div className="form-group row">
+                                <label htmlFor="name" className="m-1 mt-2">Client Name</label>
                                 <Field
-                                    className="form-control col-12 m-1"
+                                    className="form-control col-8 m-1"
                                     type="text"
                                     name="name"
                                     placeholder={clientData.name}
                                 />
                                 <ErrorMessage name="name"/>
                             </div>
-                            <div className="form-group">
+                            <div className="form-group row">
+                                <label htmlFor="monthlysupport" className="m-1 mt-2">Monthly support hours</label>
                                 <Field
-                                    className="form-control col-12 m-1"
+                                    className="form-control col-8 m-1"
                                     type="text"
                                     name="monthlysupport"
                                     placeholder={clientData.monthlysupport}
