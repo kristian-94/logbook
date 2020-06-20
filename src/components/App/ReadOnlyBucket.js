@@ -53,7 +53,8 @@ const ReadOnlyBucket = ({clientID, bucket, firebase}) => {
                 title="Are you sure?"
                 onConfirm={() => onDeleteBucket(clientID, bucketData)}
                 onCancel={() => setConfirmModal(null)}
-                focusCancelBtn
+                focusCancelBtn={false}
+                focusConfirmBtn={false}
             >
                 You will not be able to recover this bucket data!
             </SweetAlert>
@@ -77,7 +78,8 @@ const ReadOnlyBucket = ({clientID, bucket, firebase}) => {
                 title="Are you sure?"
                 onConfirm={() => onUnArchiveBucket(clientID, bucketData)}
                 onCancel={() => setConfirmModal(null)}
-                focusCancelBtn
+                focusCancelBtn={false}
+                focusConfirmBtn={false}
             >
                 This will restore this bucket to the main page again.
             </SweetAlert>

@@ -99,7 +99,8 @@ const Bucket = ({clientID, bucket, firebase}) => {
                 title="Are you sure?"
                 onConfirm={() => onArchiveBucket(clientID, bucketData)}
                 onCancel={() => setConfirmModal(null)}
-                focusCancelBtn
+                focusCancelBtn={false}
+                focusConfirmBtn={false}
             >
                 This will archive the bucket. It won't appear on the main page or in reports.
                 You can undo this action later.

@@ -17,7 +17,8 @@ const EditClientForm = ({firebase, clientData, onFinishSubmission, onDeleteClien
                 title="Are you sure?"
                 onConfirm={() => onDeleteClient()}
                 onCancel={() => setConfirmModal(null)}
-                focusCancelBtn
+                focusCancelBtn={false}
+                focusConfirmBtn={false}
             >
                 You will not be able to recover any data for this client!
             </SweetAlert>
