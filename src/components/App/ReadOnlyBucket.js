@@ -39,7 +39,6 @@ const ReadOnlyBucket = ({clientID, bucket, firebase}) => {
     const onDeleteBucket = (clientID, bucketData) => {
         firebase.doDeleteBucket(clientID, bucketData).then(r => {
             console.log('deleted bucket ' + bucketData.bucketName);
-            setConfirmModal(null);
         });
     }
     const onClickDelete = (clientID, bucketData) => {

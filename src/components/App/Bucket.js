@@ -84,7 +84,6 @@ const Bucket = ({clientID, bucket, firebase}) => {
     const onArchiveBucket = (clientID, bucketData) => {
         firebase.doArchiveBucket(clientID, bucketData).then(r => {
             console.log('archived bucket ' + bucketData.bucketName);
-            setConfirmModal(null);
         });
     }
 
