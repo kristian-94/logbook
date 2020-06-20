@@ -46,6 +46,7 @@
   "devDependencies": {
     "bootstrap-scss": "^4.5.0",
     "formik": "^2.1.4",
+    "node-sass": "^4.14.1",
     "rc-tooltip": "^4.2.1",
     "react-bootstrap": "^1.0.1",
     "react-bootstrap-sweetalert": "^5.1.12",
