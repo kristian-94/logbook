@@ -6,6 +6,8 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArchive, faMinus, faPlus} from "@fortawesome/free-solid-svg-icons";
 import ContentEditable from "react-contenteditable";
 import stripHtml from "string-strip-html";
+import Tooltip from 'rc-tooltip';
+import 'rc-tooltip/assets/bootstrap.css';
 
 const Bucket = ({clientID, bucket, firebase}) => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
@@ -164,19 +166,43 @@ const Bucket = ({clientID, bucket, firebase}) => {
                     spellCheck={false}
                 />
             </h5>
-
             {confirmModal}
-            <button onClick={() => onAddMonth(clientID, bucketData)} className="btn btn-success m-1" type="submit">
-                <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faPlus} />
-            </button>
-            {showRemove && <button onClick={() => onRemoveMonth(clientID, bucketData)} className="btn btn-secondary m-1" type="submit">
-                <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faMinus} />
-            </button>}
-            <button onClick={() => onClickArchive(clientID, bucketData)} className="btn btn-warning m-1" type="submit">
-                <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faArchive} />
-            </button>
+            <Tooltip
+                placement="left"
+                mouseEnterDelay={0.5}
+                mouseLeaveDelay={0.1}
+                trigger="hover"
+                overlay={<div>Add month</div>}
+            >
+                <button onClick={() => onAddMonth(clientID, bucketData)} className="btn btn-success m-1" type="submit">
+                    <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faPlus} />
+                </button>
+            </Tooltip>
+            {showRemove && (
+                <Tooltip
+                    placement="top"
+                    mouseEnterDelay={0.5}
+                    mouseLeaveDelay={0.1}
+                    trigger="hover"
+                    overlay={<div>Remove oldest month</div>}
+                >
+                    <button onClick={() => onRemoveMonth(clientID, bucketData)} className="btn btn-secondary m-1" type="submit">
+                        <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faMinus} />
+                    </button>
+                </Tooltip>
+            )}
+            <Tooltip
+                placement="right"
+                mouseEnterDelay={0.5}
+                mouseLeaveDelay={0.1}
+                trigger="hover"
+                overlay={<div>Archive bucket</div>}
+            >
+                <button onClick={() => onClickArchive(clientID, bucketData)} className="btn btn-warning m-1" type="submit">
+                    <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faArchive} />
+                </button>
+            </Tooltip>
             <BucketTable data={data} updateData={handleOnUpdateData} />
-
         </div>
     )
 }

@@ -3,6 +3,9 @@ import DatePickerComms from "./DatePickerComms";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
+import Tooltip from 'rc-tooltip';
+import 'rc-tooltip/assets/bootstrap.css';
+
 const Communications = ({firebase, clientID}) => {
     const [clientComms, SetClientComms] = useState([]);
     const [newCommText, SetNewCommText] = useState('');
@@ -58,9 +61,17 @@ const Communications = ({firebase, clientID}) => {
                            placeholder="Your text here"
                            onChange={onNewCommChangeText}
                     />
-                    <button onClick={() => onAddComm()} className="btn btn-success m-1" type="submit">
-                        <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faPlus} />
-                    </button>
+                    <Tooltip
+                        placement="right"
+                        mouseEnterDelay={0.5}
+                        mouseLeaveDelay={0.1}
+                        trigger="hover"
+                        overlay={<div>Add comms record</div>}
+                    >
+                        <button onClick={() => onAddComm()} className="btn btn-success m-1" type="submit">
+                            <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faPlus} />
+                        </button>
+                    </Tooltip>
                 </div>
             </div>
             <table style={{ border: 'solid 1px black', width: '98%' }}>
@@ -91,9 +102,17 @@ const Communications = ({firebase, clientID}) => {
                                 {commObject.note}
                             </td>
                             <td>
-                                <button onClick={() => onDeleteComm(commObject.commsID)} className="btn btn-secondary m-1" type="submit">
-                                    <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faTrash} />
-                                </button>
+                                <Tooltip
+                                    placement="right"
+                                    mouseEnterDelay={0.5}
+                                    mouseLeaveDelay={0.1}
+                                    trigger="hover"
+                                    overlay={<div>Delete</div>}
+                                >
+                                    <button onClick={() => onDeleteComm(commObject.commsID)} className="btn btn-secondary m-1" type="submit">
+                                        <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faTrash} />
+                                    </button>
+                                </Tooltip>
                             </td>
                         </tr>
                     );

@@ -4,6 +4,8 @@ import BucketTable from "./bucketTable";
 import SweetAlert from 'react-bootstrap-sweetalert';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTrash, faTrashRestore} from "@fortawesome/free-solid-svg-icons";
+import Tooltip from 'rc-tooltip';
+import 'rc-tooltip/assets/bootstrap.css';
 
 const ReadOnlyBucket = ({clientID, bucket, firebase}) => {
     const [confirmModal, setConfirmModal] = useState(null);
@@ -88,12 +90,28 @@ const ReadOnlyBucket = ({clientID, bucket, firebase}) => {
             <h5 className='ml-3'>{bucket.bucketName}</h5>
             {confirmModal}
             <BucketTable data={data} readOnly={true} />
-            <button onClick={() => onClickDelete(clientID, bucket)} className="btn btn-danger m-1" type="submit">
-                <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faTrash} />
-            </button>
-            <button onClick={() => onClickUnarchive(clientID, bucket)} className="btn btn-success m-1" type="submit">
-                <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faTrashRestore} />
-            </button>
+            <Tooltip
+                placement="left"
+                mouseEnterDelay={0.5}
+                mouseLeaveDelay={0.1}
+                trigger="hover"
+                overlay={<div>Delete this bucket</div>}
+            >
+                <button onClick={() => onClickDelete(clientID, bucket)} className="btn btn-danger m-1" type="submit">
+                    <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faTrash} />
+                </button>
+            </Tooltip>
+            <Tooltip
+                placement="right"
+                mouseEnterDelay={0.5}
+                mouseLeaveDelay={0.1}
+                trigger="hover"
+                overlay={<div>Restore this bucket</div>}
+            >
+                <button onClick={() => onClickUnarchive(clientID, bucket)} className="btn btn-success m-1" type="submit">
+                    <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faTrashRestore} />
+                </button>
+            </Tooltip>
         </div>
     )
 }

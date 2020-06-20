@@ -46,6 +46,7 @@
   },
   "devDependencies": {
     "formik": "^2.1.4",
+    "rc-tooltip": "^4.2.1",
     "react-bootstrap-sweetalert": "^5.1.12",
     "react-contenteditable": "^3.3.5",
     "react-router-dom": "^5.2.0",
