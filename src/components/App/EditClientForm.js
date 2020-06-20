@@ -10,7 +10,7 @@ const EditClientForm = ({firebase, clientData, onFinishSubmission, onDeleteClien
     const onClickDeleteClient = () => {
         const modal = (
             <SweetAlert
-                warning
+                danger
                 showCancel
                 confirmBtnText="Yes, delete it!"
                 confirmBtnBsStyle="danger"

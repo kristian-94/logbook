@@ -45,7 +45,7 @@ const ReadOnlyBucket = ({clientID, bucket, firebase}) => {
     const onClickDelete = (clientID, bucketData) => {
         const modal = (
             <SweetAlert
-                warning
+                danger
                 showCancel
                 confirmBtnText="Yes, delete it!"
                 confirmBtnBsStyle="danger"
@@ -62,17 +62,17 @@ const ReadOnlyBucket = ({clientID, bucket, firebase}) => {
 
     const onUnArchiveBucket = (clientID, bucketData) => {
         firebase.doUnArchiveBucket(clientID, bucketData).then(r => {
-            console.log('archived bucket ' + bucketData.bucketName);
+            console.log('Unarchived bucket ' + bucketData.bucketName);
             setConfirmModal(null);
         });
     }
     const onClickUnarchive = (clientID, bucketData) => {
         const modal = (
             <SweetAlert
-                warning
+                success
                 showCancel
                 confirmBtnText="Yes, restore it!"
-                confirmBtnBsStyle="danger"
+                confirmBtnBsStyle="success"
                 title="Are you sure?"
                 onConfirm={() => onUnArchiveBucket(clientID, bucketData)}
                 onCancel={() => setConfirmModal(null)}

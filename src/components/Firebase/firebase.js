@@ -107,6 +107,11 @@ class Firebase {
             'hoursData': false
         });
     };
+    doUpdateBucket = (clientID, bucketData, newName) => {
+        return this.bucket(clientID, bucketData.bucketID).update({
+            bucketName: newName
+        });
+    };
     doDeleteBucket = (clientID, bucketData) => {
         return this.bucket(clientID, bucketData.bucketID).remove();
     };

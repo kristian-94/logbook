@@ -1,11 +1,11 @@
-import React, {useEffect, useRef, useState, useMemo} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import moment from "moment";
 import BucketTable from "./bucketTable";
 import SweetAlert from 'react-bootstrap-sweetalert';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPlus} from "@fortawesome/free-solid-svg-icons";
-import {faMinus} from "@fortawesome/free-solid-svg-icons";
-import {faArchive} from "@fortawesome/free-solid-svg-icons";
+import {faArchive, faMinus, faPlus} from "@fortawesome/free-solid-svg-icons";
+import ContentEditable from "react-contenteditable";
+import stripHtml from "string-strip-html";
 
 const Bucket = ({clientID, bucket, firebase}) => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
@@ -94,7 +94,7 @@ const Bucket = ({clientID, bucket, firebase}) => {
                 warning
                 showCancel
                 confirmBtnText="Yes, archive it!"
-                confirmBtnBsStyle="danger"
+                confirmBtnBsStyle="warning"
                 title="Are you sure?"
                 onConfirm={() => onArchiveBucket(clientID, bucketData)}
                 onCancel={() => setConfirmModal(null)}
@@ -147,10 +147,25 @@ const Bucket = ({clientID, bucket, firebase}) => {
         // Send this data to firebase.
         firebase.doUpdateHoursData(clientID, bucketData, monthID, values);
     }
-
+    const text = useRef(bucket.bucketName);
+    const bucketNameUpdated = (e) => {
+        text.current = stripHtml(e.target.value);
+    }
+    const updateBucketName = () => {
+        firebase.doUpdateBucket(clientID, bucket, text.current)
+            .then(r => console.log('bucket updated to have name ' + text.current));
+    }
     return (
         <div>
-            <h5 className='ml-3'>{bucketData.bucketName}</h5>
+            <h5 className='ml-3'>
+                <ContentEditable
+                    html={text.current}
+                    onChange={bucketNameUpdated}
+                    onBlur={updateBucketName}
+                    spellCheck={false}
+                />
+            </h5>
+
             {confirmModal}
             <button onClick={() => onAddMonth(clientID, bucketData)} className="btn btn-success m-1" type="submit">
                 <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faPlus} />
@@ -158,10 +173,11 @@ const Bucket = ({clientID, bucket, firebase}) => {
             {showRemove && <button onClick={() => onRemoveMonth(clientID, bucketData)} className="btn btn-secondary m-1" type="submit">
                 <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faMinus} />
             </button>}
-            <BucketTable data={data} updateData={handleOnUpdateData} />
             <button onClick={() => onClickArchive(clientID, bucketData)} className="btn btn-warning m-1" type="submit">
                 <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faArchive} />
             </button>
+            <BucketTable data={data} updateData={handleOnUpdateData} />
+
         </div>
     )
 }

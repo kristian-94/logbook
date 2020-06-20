@@ -47,8 +47,10 @@
   "devDependencies": {
     "formik": "^2.1.4",
     "react-bootstrap-sweetalert": "^5.1.12",
+    "react-contenteditable": "^3.3.5",
     "react-router-dom": "^5.2.0",
     "react-uuid": "^1.0.2",
+    "string-strip-html": "^4.5.0",
     "victory": "^34.3.11",
     "yup": "^0.29.0"
   }
