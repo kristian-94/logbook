@@ -8,7 +8,7 @@ const BucketTable = ({data, updateData, readOnly}) => {
                               value: initialValue,
                               row: { values },
                               column: { id },
-                              updateMyData, // This is a custom function that we supplied to our table instance
+                              updateMyData,
                           }) => {
         // We need to keep and update the state of the cell normally
         const [value, setValue] = useState(initialValue)
@@ -38,7 +38,7 @@ const BucketTable = ({data, updateData, readOnly}) => {
                                value: initialValue,
                                row: { values },
                                column: { id },
-                               updateMyData, // This is a custom function that we supplied to our table instance
+                               updateMyData,
                            }) => {
         // We need to keep and update the state of the cell normally
         const [value, setValue] = useState(initialValue)
@@ -78,7 +78,7 @@ const BucketTable = ({data, updateData, readOnly}) => {
         () => [
             {
                 Header: 'Month',
-                accessor: 'month', // accessor is the "key" in the data
+                accessor: 'month',
             },
             {
                 Header: 'Invoice',

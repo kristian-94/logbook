@@ -7,9 +7,9 @@ import { AuthUserContext } from '../Session';
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 
+// Here can probably make different auth navigations for different roles.
+// Eg. NavigationAuthAdmin, NavigationAuthHailey etc.
 const Navigation = () => (
-    // Here can probably make different auth navigations for different roles.
-    // Eg. NavigationAuthAdmin, NavigationAuthHailey etc.
     <AuthUserContext.Consumer>
         {authUser =>
             authUser ? <NavigationAuth /> : <NavigationNonAuth />
