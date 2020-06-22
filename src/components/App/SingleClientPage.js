@@ -155,6 +155,9 @@ const SingleClientPage = ({clientID, firebase}) => {
                     value={clientData.noteData}
                     placeholder="Notes"
                     style={{height: '7rem', width: '50rem'}}
+                    autoCorrect="off"
+                    autoCapitalize="off"
+                    spellCheck="false"
                 />
             </div>
             <hr/>
