@@ -12,6 +12,11 @@ const Communications = ({firebase, clientID}) => {
     const [newCommDate, SetNewCommDate] = useState(new Date());
     const _isMounted = useRef(true); // Initial value _isMounted = true
 
+    useEffect(() => {
+        // Got to reset some state when switching clients.
+        SetClientComms([]);
+    }, [clientID]);
+
     // Need this to do a componentwillunmount and cleanup memory leaks.
     useEffect(() => {
         // ComponentWillUnmount in Class Component

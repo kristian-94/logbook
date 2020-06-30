@@ -7,7 +7,7 @@ import Communications from "./Communications"
 import moment from "moment";
 import ArchivePage from "./ArchivePage";
 
-const SingleClientPage = ({clientID, firebase}) => {
+const SingleClientPage = ({clientID, firebase, resetPage}) => {
     const [addingNewBucket, setAddingNewBucket] = useState(false);
     const [editingClient, setEditingClient] = useState(false);
     const [viewingArchive, setViewingArchive] = useState(false);
@@ -22,7 +22,7 @@ const SingleClientPage = ({clientID, firebase}) => {
         setEditingClient(false);
         setViewingArchive(false);
         setBucketsData([]);
-    }, [clientID]);
+    }, [clientID, resetPage]);
 
 
     // Need this to do a componentwillunmount and cleanup memory leaks.

@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import {withFirebase} from "../Firebase";
 import * as ROUTES from "../../constants/routes";
 
-const Sidebar = ({firebase}) => {
+const Sidebar = ({firebase, resetPage}) => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
     const [clientList, setClientList] = useState([]);
 
@@ -47,6 +47,7 @@ const Sidebar = ({firebase}) => {
             section = ROUTES.REPORT;
         }
         history.push(section + "/" + client.clientID);
+        resetPage();
     }
     const onAddNewClientClicked = (client) => {
         history.push("/clients/new");

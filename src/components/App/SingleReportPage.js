@@ -4,11 +4,15 @@ import uuid from 'react-uuid'
 import ReportPieChart from "./ReportPieChart";
 import MonthlySupportHours from "./MonthlySupportHours";
 
-const SingleReportPage = ({clientID, firebase}) => {
+const SingleReportPage = ({clientID, firebase, resetPage}) => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
     const [bucketsData, setBucketsData] = useState([]);
     const [clientData, setClientData] = useState({});
 
+    useEffect(() => {
+        // Got to reset some state when switching clients.
+        setBucketsData([]);
+    }, [clientID, resetPage]);
 
     // Need this to do a componentwillunmount and cleanup memory leaks.
     useEffect(() => {
