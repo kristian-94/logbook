@@ -62,7 +62,7 @@ const EditClientForm = ({firebase, clientData, onFinishSubmission, onDeleteClien
                                 <ErrorMessage name="name"/>
                             </div>
                             <div className="form-group row">
-                                <label htmlFor="monthlysupport" className="m-1 mt-2">Monthly support hours</label>
+                                <label htmlFor="monthlysupport" className="m-1 mt-2">Suport hours per month</label>
                                 <Field
                                     className="form-control col-8 m-1"
                                     type="text"
