@@ -153,7 +153,8 @@ class Firebase {
             // Loop through and calculate and update the remaining value line by line.
             let previousTotal = 0;
             hoursDataFormatted.map(monthData => {
-                const newRemaining = monthData.in - monthData.out + previousTotal;
+                // Round to 1 decimal place.
+                const newRemaining = Math.round(((monthData.in - monthData.out + previousTotal) * 10 ))  / 10;
                 this.monthRemaining(clientID, bucketData, monthData.monthID).set(newRemaining).then(r => console.log('updated time remaining'));
                 previousTotal = newRemaining;
                 return true;
