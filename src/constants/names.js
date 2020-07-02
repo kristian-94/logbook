@@ -1,1 +1,1 @@
-export const SITENAME = 'client-hours';
+export const SITENAME = 'Client Hours';

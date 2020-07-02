@@ -6,7 +6,7 @@ import moment from "moment";
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
 
-const Communications = ({firebase, clientID}) => {
+const Communications = ({firebase, clientID, editable}) => {
     const [clientComms, SetClientComms] = useState([]);
     const [newCommText, SetNewCommText] = useState('');
     const [newCommDate, SetNewCommDate] = useState(new Date());
@@ -57,28 +57,33 @@ const Communications = ({firebase, clientID}) => {
     return (
         <div className="container-fluid">
             <h5>Communications notes</h5>
-            <div className="col-2" style={{width: '50px'}}>
-                <DatePickerComms handleChangeDate={handleChangeDate} displayDate={newCommDate}/>
-            </div>
-            <div className="col-8">
-                <div className="form-group row text-center">
-                    <input className="form-control m-1"
-                           placeholder="Your text here"
-                           onChange={onNewCommChangeText}
-                    />
-                    <Tooltip
-                        placement="right"
-                        mouseEnterDelay={0.5}
-                        mouseLeaveDelay={0.1}
-                        trigger="hover"
-                        overlay={<div>Add comms record</div>}
-                    >
-                        <button onClick={() => onAddComm()} className="btn btn-success m-1" type="submit">
-                            <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faPlus} />
-                        </button>
-                    </Tooltip>
+            {editable && (
+                <div>
+                    <div className="col-2" style={{width: '50px'}}>
+                        <DatePickerComms handleChangeDate={handleChangeDate} displayDate={newCommDate}/>
+                    </div>
+                    <div className="col-8">
+                        <div className="form-group row text-center">
+                            <input className="form-control m-1"
+                                   placeholder="Your text here"
+                                   onChange={onNewCommChangeText}
+                            />
+                            <Tooltip
+                                placement="right"
+                                mouseEnterDelay={0.5}
+                                mouseLeaveDelay={0.1}
+                                trigger="hover"
+                                overlay={<div>Add comms record</div>}
+                            >
+                                <button onClick={() => onAddComm()} className="btn btn-success m-1" type="submit">
+                                    <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faPlus} />
+                                </button>
+                            </Tooltip>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            )}
+
             <table style={{ border: 'solid 1px black', width: '98%' }}>
                 <thead>
                 <tr style={{
@@ -106,19 +111,21 @@ const Communications = ({firebase, clientID}) => {
                             <td>
                                 {commObject.note}
                             </td>
-                            <td>
-                                <Tooltip
-                                    placement="right"
-                                    mouseEnterDelay={0.5}
-                                    mouseLeaveDelay={0.1}
-                                    trigger="hover"
-                                    overlay={<div>Delete</div>}
-                                >
-                                    <button onClick={() => onDeleteComm(commObject.commsID)} className="btn btn-secondary m-1" type="submit">
-                                        <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faTrash} />
-                                    </button>
-                                </Tooltip>
-                            </td>
+                            {editable && (
+                                <td>
+                                    <Tooltip
+                                        placement="right"
+                                        mouseEnterDelay={0.5}
+                                        mouseLeaveDelay={0.1}
+                                        trigger="hover"
+                                        overlay={<div>Delete</div>}
+                                    >
+                                        <button onClick={() => onDeleteComm(commObject.commsID)} className="btn btn-secondary m-1" type="submit">
+                                            <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faTrash} />
+                                        </button>
+                                    </Tooltip>
+                                </td>
+                            )}
                         </tr>
                     );
                 })}

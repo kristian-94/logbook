@@ -1,15 +1,12 @@
 import React, {useEffect, useRef, useState} from 'react';
-import AddBucketForm from "./AddBucketForm";
-import EditClientForm from "./EditClientForm";
-import Bucket from "./Bucket";
-import MonthlySupportHours from "./MonthlySupportHours";
-import Communications from "./Communications"
 import moment from "moment";
+import MonthlySupportHours from "./MonthlySupportHours";
+import Communications from "./Communications";
 import ArchivePage from "./ArchivePage";
+import ReadOnlyBucket from "./ReadOnlyBucket";
 
-const SingleClientPage = ({clientID, firebase, resetPage}) => {
-    const [addingNewBucket, setAddingNewBucket] = useState(false);
-    const [editingClient, setEditingClient] = useState(false);
+// Display all the client information in a non editable way.
+const SingleClientReadOnlyPage = ({clientID, firebase, resetPage}) => {
     const [viewingArchive, setViewingArchive] = useState(false);
     const [bucketsData, setBucketsData] = useState([]);
     const [archivedBucketsData, setArchivedBucketsData] = useState([]);
@@ -18,8 +15,6 @@ const SingleClientPage = ({clientID, firebase, resetPage}) => {
 
     useEffect(() => {
         // Got to reset some state when switching clients.
-        setAddingNewBucket(false);
-        setEditingClient(false);
         setViewingArchive(false);
         setBucketsData([]);
     }, [clientID, resetPage]);
@@ -92,73 +87,24 @@ const SingleClientPage = ({clientID, firebase, resetPage}) => {
             }
         });
     }, [clientID, firebase]);
-
-    const onCreateBucket = () => {
-        setAddingNewBucket(true);
-    }
-    const onEditClient = () => {
-        setEditingClient(true);
-    }
     const onViewArchive = () => {
         setViewingArchive(true);
     }
-    const onEditClientNote = e => {
-        const noteData = e.target.value;
-        setClientData((prevState) => ({...prevState, noteData}));
-    }
-    const updateClientNote = e => {
-        firebase.doUpdateClientNote(clientID, clientData.noteData).then(r => console.log('updated client note'));
-    }
-
     const onBackToClientPage = () => {
-        setAddingNewBucket(false);
-        setEditingClient(false);
         setViewingArchive(false);
-    }
-    const onDeleteClient = () => {
-        firebase.doDeleteClient(clientID).then(() => onBackToClientPage());
-    }
-
-    if (addingNewBucket) {
-        return (
-            <div>
-                <AddBucketForm clientID={clientID} onFinishSubmission={onBackToClientPage}/>
-            </div>
-        );
-    }
-
-    if (editingClient) {
-        return (
-            <div>
-                <EditClientForm onDeleteClient={onDeleteClient} clientData={clientData} onFinishSubmission={onBackToClientPage}/>
-            </div>
-        );
     }
     if (viewingArchive) {
         return (
-            <ArchivePage archivedBucketsData={archivedBucketsData} onBackToClientPage={onBackToClientPage} clientID={clientID} firebase={firebase} restorable={true} />
+            <ArchivePage archivedBucketsData={archivedBucketsData} onBackToClientPage={onBackToClientPage} clientID={clientID} firebase={firebase} restorable={false} />
         )
     }
-
     return (
         <div>
-            <button onClick={onCreateBucket} className="btn btn-primary m-1 float-right" type="submit">Create a bucket</button>
-            <button onClick={onEditClient} className="btn btn-secondary m-1 float-right" type="submit">Edit Client</button>
             <button onClick={onViewArchive} className="btn btn-warning m-1 float-right" type="submit">View Bucket Archive</button>
             <h1>{clientData.name}</h1>
             <MonthlySupportHours clientData={clientData} />
             <div>
-                <textarea
-                    className="form-control"
-                    onChange={onEditClientNote}
-                    onBlur={updateClientNote}
-                    value={clientData.noteData}
-                    placeholder="Notes"
-                    style={{height: '7rem', width: '50rem'}}
-                    autoCorrect="off"
-                    autoCapitalize="off"
-                    spellCheck="false"
-                />
+                {clientData.noteData}
             </div>
             <hr/>
             <div className="container-fluid">
@@ -167,18 +113,18 @@ const SingleClientPage = ({clientID, firebase, resetPage}) => {
                         {bucketsData && bucketsData.map(bucket => {
                             return (
                                 <div key={bucket.bucketID} className="singlebucket">
-                                    <Bucket clientID={clientID} bucket={bucket} firebase={firebase}/>
+                                    <ReadOnlyBucket clientID={clientID} bucket={bucket} firebase={firebase} buttons={false}/>
                                     <hr/>
                                 </div>
                             );
                         })}
                     </div>
                     <div className="col-4">
-                        <Communications firebase={firebase} clientID={clientID} editable={true} />
+                        <Communications firebase={firebase} clientID={clientID} editable={false} />
                     </div>
                 </div>
             </div>
         </div>
     );
 }
-export default SingleClientPage;
+export default SingleClientReadOnlyPage;

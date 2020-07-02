@@ -3,6 +3,7 @@ import { Link, withRouter } from 'react-router-dom';
 import * as ROUTES from '../../constants/routes';
 import { withFirebase } from '../Firebase';
 import { compose } from 'recompose';
+import * as ROLES from '../../constants/roles';
 
 
 const SignUpPage = () => (
@@ -26,6 +27,9 @@ class SignUpFormBase extends Component {
     };
     onSubmit = event => {
         const { username, email, passwordOne } = this.state;
+        const roles = {};
+        // All new accounts get the basic role.
+        roles[ROLES.BASIC] = ROLES.BASIC;
         this.props.firebase
             .doCreateUserWithEmailAndPassword(email, passwordOne)
             .then(authUser => {
@@ -35,6 +39,7 @@ class SignUpFormBase extends Component {
                     .set({
                         username,
                         email,
+                        roles,
                     });
             })
             .then(authUser => {

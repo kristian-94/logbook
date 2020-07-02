@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import SignOutButton from '../SignOut';
 import * as ROUTES from '../../constants/routes';
 import * as NAMES from '../../constants/names';
+import * as ROLES from '../../constants/roles';
 import { AuthUserContext } from '../Session';
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
@@ -11,32 +12,63 @@ import Nav from "react-bootstrap/Nav";
 // Eg. NavigationAuthAdmin, NavigationAuthHailey etc.
 const Navigation = () => (
     <AuthUserContext.Consumer>
-        {authUser =>
-            authUser ? <NavigationAuth /> : <NavigationNonAuth />
-        }
+        {authUser => {
+            if (authUser === null) {
+                return <NavigationNonAuth />
+            }
+            if (authUser.roles[ROLES.ADMIN]) {
+                return <NavigationAdminAuth authUser={authUser} />
+            }
+            if (authUser.roles[ROLES.BASIC]) {
+                return <NavigationBasicAuth authUser={authUser} />
+            }
+            return <NavigationNonAuth />
+        }}
     </AuthUserContext.Consumer>
 );
 
-const NavigationAuth = () => (
+const NavigationAdminAuth = () => {
+    return (
+        <Navbar bg="primary" variant="dark">
+            <Navbar.Brand to="/">{NAMES.SITENAME}</Navbar.Brand>
+            <Nav className="mr-auto">
+                <Link className="btn btn-danger ml-1 mr-1" to={ROUTES.CLIENTADMIN}>
+                    Client Admin
+                </Link>
+                <Link className="btn btn-success ml-1 mr-1" to={ROUTES.CLIENTS}>
+                    View Clients
+                </Link>
+                <Link className="btn btn-success ml-1 mr-1" to={ROUTES.REPORT}>
+                    Reports
+                </Link>
+            </Nav>
+            <Link className="btn btn-primary" to={ROUTES.ADMIN}>
+                Admin
+            </Link>
+            <Link className="btn btn-primary" to={ROUTES.ACCOUNT}>
+                Account
+            </Link>
+            <SignOutButton />
+        </Navbar>
+    )};
+const NavigationBasicAuth = ({ authUser }) => (
     <Navbar bg="primary" variant="dark">
         <Navbar.Brand to="/">{NAMES.SITENAME}</Navbar.Brand>
         <Nav className="mr-auto">
-            <Link className="btn btn-primary" to={ROUTES.CLIENTS}>
+            <Link className="btn btn-success ml-1 mr-1" to={ROUTES.CLIENTS}>
                 Clients
             </Link>
-            <Link className="btn btn-primary" to={ROUTES.REPORT}>
+            <Link className="btn btn-success ml-1 mr-1" to={ROUTES.REPORT}>
                 Reports
             </Link>
         </Nav>
-        <Link className="btn btn-primary" to={ROUTES.ADMIN}>
-            Admin
-        </Link>
         <Link className="btn btn-primary" to={ROUTES.ACCOUNT}>
             Account
         </Link>
         <SignOutButton />
     </Navbar>
 );
+
 const NavigationNonAuth = () => (
     <Navbar bg="primary" variant="dark">
         <Navbar.Brand to="/">{NAMES.SITENAME}</Navbar.Brand>

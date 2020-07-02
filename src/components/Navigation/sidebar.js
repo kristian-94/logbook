@@ -46,11 +46,14 @@ const Sidebar = ({firebase, resetPage}) => {
         if (window.location.pathname.substr(0, ROUTES.REPORT.length) === ROUTES.REPORT) {
             section = ROUTES.REPORT;
         }
+        if (window.location.pathname.substr(0, ROUTES.CLIENTADMIN.length) === ROUTES.CLIENTADMIN) {
+            section = ROUTES.CLIENTADMIN;
+        }
         history.push(section + "/" + client.clientID);
         resetPage();
     }
     const onAddNewClientClicked = (client) => {
-        history.push("/clients/new");
+        history.push(ROUTES.CLIENTADMIN+ "/new");
     }
     return (
         <>

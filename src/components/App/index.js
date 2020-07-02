@@ -11,8 +11,10 @@ import AdminPage from '../Admin';
 import * as ROUTES from '../../constants/routes';
 import { withAuthentication } from '../Session';
 import ClientPage from "./ClientPage";
+import ClientReadOnlyPage from "./ClientReadOnlyPage";
 import PageNotFound from "../Error";
 import ReportPage from "./ReportPage";
+
 
 const App = () => (
     <Router>
@@ -23,8 +25,9 @@ const App = () => (
                 <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
                 <Route path={ROUTES.SIGN_IN} component={SignInPage} />
                 <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
-                <Route exact path={ROUTES.CLIENTS + ROUTES.NEW} component={ClientPage} />
-                <Route path={ROUTES.CLIENTS} component={ClientPage} />
+                <Route exact path={ROUTES.CLIENTADMIN + ROUTES.NEW} component={ClientPage} />
+                <Route path={ROUTES.CLIENTADMIN} component={ClientPage} />
+                <Route path={ROUTES.CLIENTS} component={ClientReadOnlyPage} />
                 <Route path={ROUTES.REPORT} component={ReportPage} />
                 <Route path={ROUTES.ACCOUNT} component={AccountPage} />
                 <Route path={ROUTES.ADMIN} component={AdminPage} />

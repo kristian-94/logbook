@@ -9,13 +9,13 @@ import ClientBlankPage from "./ClientBlankPage";
 
 const ClientPage = ({firebase}) => {
     const [reset, setReset] = useState(false);
-    const clientIDinurl = window.location.pathname.split('clients/').pop();
+    const clientIDinurl = window.location.pathname.split(ROUTES.CLIENTADMIN + '/').pop();
     let newClient = false;
     let noClient = false;
-    if (window.location.pathname === ROUTES.CLIENTS + ROUTES.NEW) {
+    if (window.location.pathname === ROUTES.CLIENTADMIN + ROUTES.NEW) {
         newClient = true;
     }
-    if (window.location.pathname === ROUTES.CLIENTS) {
+    if (window.location.pathname === ROUTES.CLIENTADMIN) {
         noClient = true;
     }
 
