@@ -6,6 +6,8 @@ import MonthlySupportHours from "./MonthlySupportHours";
 import Communications from "./Communications"
 import moment from "moment";
 import ArchivePage from "./ArchivePage";
+import * as ROUTES from "../../constants/routes";
+import {useHistory} from "react-router-dom";
 
 const SingleClientPage = ({clientID, firebase, resetPage}) => {
     const [addingNewBucket, setAddingNewBucket] = useState(false);
@@ -119,6 +121,11 @@ const SingleClientPage = ({clientID, firebase, resetPage}) => {
         firebase.doDeleteClient(clientID).then(() => onBackToClientPage());
     }
 
+    const history = useHistory();
+    const onViewClient = () => {
+        history.push(ROUTES.CLIENTS + '/' + clientID);
+    }
+
     if (addingNewBucket) {
         return (
             <div>
@@ -142,9 +149,10 @@ const SingleClientPage = ({clientID, firebase, resetPage}) => {
 
     return (
         <div>
+            <button onClick={onViewArchive} className="btn btn-warning m-1 float-right" type="submit">View Bucket Archive</button>
             <button onClick={onCreateBucket} className="btn btn-primary m-1 float-right" type="submit">Create a bucket</button>
             <button onClick={onEditClient} className="btn btn-secondary m-1 float-right" type="submit">Edit Client</button>
-            <button onClick={onViewArchive} className="btn btn-warning m-1 float-right" type="submit">View Bucket Archive</button>
+            <button onClick={onViewClient} className="btn btn-warning m-1 float-right" type="submit">To Client Page</button>
             <h1>{clientData.name}</h1>
             <MonthlySupportHours clientData={clientData} />
             <div>

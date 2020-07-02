@@ -4,6 +4,10 @@ import MonthlySupportHours from "./MonthlySupportHours";
 import Communications from "./Communications";
 import ArchivePage from "./ArchivePage";
 import ReadOnlyBucket from "./ReadOnlyBucket";
+import {useHistory} from "react-router-dom";
+import * as ROUTES from "../../constants/routes";
+import {AuthUserContext} from '../Session';
+import * as ROLES from "../../constants/roles";
 
 // Display all the client information in a non editable way.
 const SingleClientReadOnlyPage = ({clientID, firebase, resetPage}) => {
@@ -12,6 +16,7 @@ const SingleClientReadOnlyPage = ({clientID, firebase, resetPage}) => {
     const [archivedBucketsData, setArchivedBucketsData] = useState([]);
     const _isMounted = useRef(true); // Initial value _isMounted = true
     const [clientData, setClientData] = useState({});
+    const history = useHistory();
 
     useEffect(() => {
         // Got to reset some state when switching clients.
@@ -98,9 +103,30 @@ const SingleClientReadOnlyPage = ({clientID, firebase, resetPage}) => {
             <ArchivePage archivedBucketsData={archivedBucketsData} onBackToClientPage={onBackToClientPage} clientID={clientID} firebase={firebase} restorable={false} />
         )
     }
+
+    const onViewClientReport = () => {
+        history.push(ROUTES.REPORT + '/' + clientID);
+    }
+    const onViewClientAdmin = () => {
+        history.push(ROUTES.CLIENTADMIN + '/' + clientID);
+    }
+    const ToAdminPage = () => {
+        return (
+            <AuthUserContext.Consumer>
+                {authUser => {
+                    if (authUser.roles[ROLES.ADMIN]) {
+                        return <button onClick={onViewClientAdmin} className="btn btn-danger m-1 float-right" type="submit">To Client Admin</button>
+                    }
+                    return null;
+                }}
+            </AuthUserContext.Consumer>
+        )
+    }
     return (
         <div>
             <button onClick={onViewArchive} className="btn btn-warning m-1 float-right" type="submit">View Bucket Archive</button>
+            <button onClick={onViewClientReport} className="btn btn-warning m-1 float-right" type="submit">To Report</button>
+            <ToAdminPage />
             <h1>{clientData.name}</h1>
             <MonthlySupportHours clientData={clientData} />
             <div>

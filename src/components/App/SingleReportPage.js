@@ -3,6 +3,8 @@ import moment from "moment";
 import uuid from 'react-uuid'
 import ReportPieChart from "./ReportPieChart";
 import MonthlySupportHours from "./MonthlySupportHours";
+import {useHistory} from "react-router-dom";
+import * as ROUTES from "../../constants/routes";
 
 const SingleReportPage = ({clientID, firebase, resetPage}) => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
@@ -64,8 +66,14 @@ const SingleReportPage = ({clientID, firebase, resetPage}) => {
 
     let total = 0;
     let chartData = {};
+    const history = useHistory();
+    const onViewClient = () => {
+        history.push(ROUTES.CLIENTS + '/' + clientID);
+    }
+
     return (
         <div>
+            <button onClick={onViewClient} className="btn btn-warning m-1 float-right" type="submit">To Client Page</button>
             <h1>{clientData.name} Report</h1>
             <MonthlySupportHours clientData={clientData} />
             <table className="table">
