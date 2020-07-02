@@ -8,6 +8,7 @@ import moment from "moment";
 import ArchivePage from "./ArchivePage";
 import * as ROUTES from "../../constants/routes";
 import {useHistory} from "react-router-dom";
+import OwnerDisplay from "./OwnerDisplay";
 
 const SingleClientPage = ({clientID, firebase, resetPage}) => {
     const [addingNewBucket, setAddingNewBucket] = useState(false);
@@ -17,6 +18,7 @@ const SingleClientPage = ({clientID, firebase, resetPage}) => {
     const [archivedBucketsData, setArchivedBucketsData] = useState([]);
     const _isMounted = useRef(true); // Initial value _isMounted = true
     const [clientData, setClientData] = useState({});
+    const [owner, setOwner] = useState('');
 
     useEffect(() => {
         // Got to reset some state when switching clients.
@@ -24,6 +26,7 @@ const SingleClientPage = ({clientID, firebase, resetPage}) => {
         setEditingClient(false);
         setViewingArchive(false);
         setBucketsData([]);
+        setOwner('');
     }, [clientID, resetPage]);
 
 
@@ -84,6 +87,12 @@ const SingleClientPage = ({clientID, firebase, resetPage}) => {
                     return;
                 }
                 delete clientDataObject.buckets;
+                if (clientDataObject.owner !== undefined && clientDataObject.owner !== '') {
+                    firebase.user(clientDataObject.owner).once('value', snapshot => {
+                        const ownerValue = snapshot.val().username;
+                        setOwner(ownerValue);
+                    });
+                }
                 const clientData = {
                     'name': clientDataObject.name,
                     'clientID': clientID,
@@ -155,6 +164,7 @@ const SingleClientPage = ({clientID, firebase, resetPage}) => {
             <button onClick={onViewClient} className="btn btn-warning m-1 float-right" type="submit">To Client Page</button>
             <h1>{clientData.name}</h1>
             <MonthlySupportHours clientData={clientData} />
+            <OwnerDisplay owner={owner} firebase={firebase} />
             <div>
                 <textarea
                     className="form-control"

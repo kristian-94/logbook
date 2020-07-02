@@ -69,10 +69,11 @@ class Firebase {
             name,
         });
     };
-    doUpdateClient = (clientID, name, monthlysupport) => {
+    doUpdateClient = (clientID, name, monthlysupport, owner) => {
         return this.client(clientID).update({
             name,
             monthlysupport,
+            owner
         });
     };
     doUpdateClientNote = (clientID, noteData) => {

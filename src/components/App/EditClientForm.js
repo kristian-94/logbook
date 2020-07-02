@@ -1,11 +1,27 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
 import { withFirebase } from '../Firebase';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import * as ROLES from "../../constants/roles";
 
 const EditClientForm = ({firebase, clientData, onFinishSubmission, onDeleteClient}) => {
     const [confirmModal, setConfirmModal] = useState(null);
+    const [adminUsers, setAdminUsers] = useState([]);
+
+    useEffect(() => {
+        firebase.users().on('value', snapshot => {
+            const usersObject = snapshot.val();
+            const usersList = Object.keys(usersObject).map(key => ({
+                ...usersObject[key],
+                uid: key,
+            }));
+            const adminUsers = usersList.filter(user => {
+                return user.roles[ROLES.ADMIN] === ROLES.ADMIN;
+            });
+            setAdminUsers(adminUsers);
+        });
+    }, [firebase]);
 
     const onClickDeleteClient = () => {
         const modal = (
@@ -30,14 +46,14 @@ const EditClientForm = ({firebase, clientData, onFinishSubmission, onDeleteClien
             <h1>Edit Client {clientData.name}</h1>
             {confirmModal}
             <Formik
-                initialValues={{name: clientData.name, monthlysupport: clientData.monthlysupport}}
+                initialValues={{name: clientData.name, monthlysupport: clientData.monthlysupport, owner: ''}}
                 validationSchema={Yup.object({
                     name: Yup.string().required("Required to enter a name"),
                 })}
                 onSubmit={(values, {setSubmitting}) => {
                     setSubmitting(true);
                     // Store this updated client in firebase
-                    firebase.doUpdateClient(clientData.clientID, values.name, values.monthlysupport)
+                    firebase.doUpdateClient(clientData.clientID, values.name, values.monthlysupport, values.owner)
                         .then(() => {
                             setSubmitting(false);
                             onFinishSubmission('successfully updated client ' + values.name);
@@ -57,18 +73,29 @@ const EditClientForm = ({firebase, clientData, onFinishSubmission, onDeleteClien
                                     className="form-control col-8 m-1"
                                     type="text"
                                     name="name"
-                                    placeholder={clientData.name}
+                                    value={clientData.name}
                                 />
                                 <ErrorMessage name="name"/>
                             </div>
                             <div className="form-group row">
-                                <label htmlFor="monthlysupport" className="m-1 mt-2">Suport hours per month</label>
+                                <label htmlFor="monthlysupport" className="m-1 mt-2">Support hours per month</label>
                                 <Field
                                     className="form-control col-8 m-1"
                                     type="text"
                                     name="monthlysupport"
-                                    placeholder={clientData.monthlysupport}
+                                    value={clientData.monthlysupport}
                                 />
+                            </div>
+                            <div className="form-group row">
+                                <label htmlFor="owner" className="m-1 mt-2">Set Owner</label>
+                                <Field as="select"
+                                    name="owner"
+                                    value={adminUsers.username}
+                                    style={{ display: 'block' }}
+                                >
+                                    <option value="" label="Select an owner" />
+                                    {adminUsers && adminUsers.map(user => <option key={user.uid} value={user.uid} label={user.username} />)}
+                                </Field>
                             </div>
                             <button
                                 className="btn btn-primary m-1"

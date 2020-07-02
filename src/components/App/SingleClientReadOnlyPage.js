@@ -8,6 +8,7 @@ import {useHistory} from "react-router-dom";
 import * as ROUTES from "../../constants/routes";
 import {AuthUserContext} from '../Session';
 import * as ROLES from "../../constants/roles";
+import OwnerDisplay from "./OwnerDisplay";
 
 // Display all the client information in a non editable way.
 const SingleClientReadOnlyPage = ({clientID, firebase, resetPage}) => {
@@ -16,12 +17,14 @@ const SingleClientReadOnlyPage = ({clientID, firebase, resetPage}) => {
     const [archivedBucketsData, setArchivedBucketsData] = useState([]);
     const _isMounted = useRef(true); // Initial value _isMounted = true
     const [clientData, setClientData] = useState({});
+    const [owner, setOwner] = useState('');
     const history = useHistory();
 
     useEffect(() => {
         // Got to reset some state when switching clients.
         setViewingArchive(false);
         setBucketsData([]);
+        setOwner('');
     }, [clientID, resetPage]);
 
 
@@ -82,6 +85,12 @@ const SingleClientReadOnlyPage = ({clientID, firebase, resetPage}) => {
                     return;
                 }
                 delete clientDataObject.buckets;
+                if (clientDataObject.owner !== undefined && clientDataObject.owner !== '') {
+                    firebase.user(clientDataObject.owner).once('value', snapshot => {
+                        const ownerValue = snapshot.val().username;
+                        setOwner(ownerValue);
+                    });
+                }
                 const clientData = {
                     'name': clientDataObject.name,
                     'clientID': clientID,
@@ -129,6 +138,7 @@ const SingleClientReadOnlyPage = ({clientID, firebase, resetPage}) => {
             <ToAdminPage />
             <h1>{clientData.name}</h1>
             <MonthlySupportHours clientData={clientData} />
+            <OwnerDisplay owner={owner} firebase={firebase} />
             <div>
                 {clientData.noteData}
             </div>
