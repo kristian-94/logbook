@@ -162,9 +162,19 @@ const SingleClientPage = ({clientID, firebase, resetPage}) => {
             <button onClick={onCreateBucket} className="btn btn-primary m-1 float-right" type="submit">Create a bucket</button>
             <button onClick={onEditClient} className="btn btn-secondary m-1 float-right" type="submit">Edit Client</button>
             <button onClick={onViewClient} className="btn btn-warning m-1 float-right" type="submit">To Client Page</button>
-            <h1>{clientData.name}</h1>
-            <MonthlySupportHours clientData={clientData} />
-            <OwnerDisplay owner={owner} firebase={firebase} />
+            <div className="card mt-3 mb-3">
+                <div className="card-header">
+                    <h1>
+                        {clientData.name}
+                        <OwnerDisplay owner={owner}/>
+                    </h1>
+                </div>
+                <div className="card-body">
+                    <h5 className="card-title">
+                        <MonthlySupportHours clientData={clientData} />
+                    </h5>
+                </div>
+            </div>
             <div>
                 <textarea
                     className="form-control"

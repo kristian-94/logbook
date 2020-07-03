@@ -100,7 +100,7 @@ const SingleClientReadOnlyPage = ({clientID, firebase, resetPage}) => {
                 setClientData(clientData);
             }
         });
-    }, [clientID, firebase]);
+    }, [clientID, firebase, resetPage]);
     const onViewArchive = () => {
         setViewingArchive(true);
     }
@@ -136,11 +136,21 @@ const SingleClientReadOnlyPage = ({clientID, firebase, resetPage}) => {
             <button onClick={onViewArchive} className="btn btn-warning m-1 float-right" type="submit">View Bucket Archive</button>
             <button onClick={onViewClientReport} className="btn btn-warning m-1 float-right" type="submit">To Report</button>
             <ToAdminPage />
-            <h1>{clientData.name}</h1>
-            <MonthlySupportHours clientData={clientData} />
-            <OwnerDisplay owner={owner} firebase={firebase} />
-            <div>
-                {clientData.noteData}
+            <div className="card mt-3">
+                <div className="card-header">
+                    <h1>
+                        {clientData.name}
+                        <OwnerDisplay owner={owner}/>
+                    </h1>
+                </div>
+                <div className="card-body">
+                    <h5 className="card-title">
+                        <MonthlySupportHours clientData={clientData} />
+                    </h5>
+                    <div>
+                        {clientData.noteData}
+                    </div>
+                </div>
             </div>
             <hr/>
             <div className="container-fluid">
