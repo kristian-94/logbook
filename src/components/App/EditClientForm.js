@@ -5,7 +5,7 @@ import { withFirebase } from '../Firebase';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import * as ROLES from "../../constants/roles";
 
-const EditClientForm = ({firebase, clientData, onFinishSubmission, onDeleteClient}) => {
+const EditClientForm = ({firebase, clientData, onFinishSubmission, onDeleteClient, owner}) => {
     const [confirmModal, setConfirmModal] = useState(null);
     const [adminUsers, setAdminUsers] = useState([]);
 
@@ -46,7 +46,7 @@ const EditClientForm = ({firebase, clientData, onFinishSubmission, onDeleteClien
             <h1>Edit Client {clientData.name}</h1>
             {confirmModal}
             <Formik
-                initialValues={{name: clientData.name, monthlysupport: clientData.monthlysupport, owner: ''}}
+                initialValues={{name: clientData.name, monthlysupport: clientData.monthlysupport, owner: owner}}
                 validationSchema={Yup.object({
                     name: Yup.string().required("Required to enter a name"),
                 })}
@@ -73,7 +73,7 @@ const EditClientForm = ({firebase, clientData, onFinishSubmission, onDeleteClien
                                     className="form-control col-8 m-1"
                                     type="text"
                                     name="name"
-                                    value={clientData.name}
+                                    placeholder={clientData.name}
                                 />
                                 <ErrorMessage name="name"/>
                             </div>
@@ -83,14 +83,13 @@ const EditClientForm = ({firebase, clientData, onFinishSubmission, onDeleteClien
                                     className="form-control col-8 m-1"
                                     type="text"
                                     name="monthlysupport"
-                                    value={clientData.monthlysupport}
+                                    placeholder={clientData.monthlysupport}
                                 />
                             </div>
                             <div className="form-group row">
                                 <label htmlFor="owner" className="m-1 mt-2">Set Owner</label>
                                 <Field as="select"
                                     name="owner"
-                                    value={adminUsers.username}
                                     style={{ display: 'block' }}
                                 >
                                     <option value="" label="Select an owner" />

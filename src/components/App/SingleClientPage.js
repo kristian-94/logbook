@@ -89,8 +89,12 @@ const SingleClientPage = ({clientID, firebase, resetPage}) => {
                 delete clientDataObject.buckets;
                 if (clientDataObject.owner !== undefined && clientDataObject.owner !== '') {
                     firebase.user(clientDataObject.owner).once('value', snapshot => {
-                        const ownerValue = snapshot.val().username;
-                        setOwner(ownerValue);
+                        const value = snapshot.val();
+                        let ownerName = '';
+                        if (value !== null) {
+                            ownerName = snapshot.val().username;
+                        }
+                        setOwner(ownerName);
                     });
                 }
                 const clientData = {
@@ -146,7 +150,7 @@ const SingleClientPage = ({clientID, firebase, resetPage}) => {
     if (editingClient) {
         return (
             <div>
-                <EditClientForm onDeleteClient={onDeleteClient} clientData={clientData} onFinishSubmission={onBackToClientPage}/>
+                <EditClientForm onDeleteClient={onDeleteClient} clientData={clientData} onFinishSubmission={onBackToClientPage} owner={owner}/>
             </div>
         );
     }
