@@ -4,6 +4,8 @@ import { useHistory } from "react-router-dom";
 import {withFirebase} from "../Firebase";
 import * as ROUTES from "../../constants/routes";
 import {NOOWNER} from "../../constants/names";
+import {AuthUserContext} from "../Session";
+import * as ROLES from "../../constants/roles";
 
 const Sidebar = ({firebase, resetPage, adminusers}) => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
@@ -49,18 +51,18 @@ const Sidebar = ({firebase, resetPage, adminusers}) => {
 
         return (
             <DropdownButton id="dropdown-basic-button" variant="secondary" className="m-3 text-center" title="Filter by owner" size="sm">
-                    <Dropdown.Item onClick={() => onFilterClicked('')} >
-                        Reset
+                <Dropdown.Item onClick={() => onFilterClicked('')} >
+                    Reset
+                </Dropdown.Item>
+                <Dropdown.Divider />
+                {adminusers && adminusers.map(user => (
+                    <Dropdown.Item key={user.uid} onClick={() => onFilterClicked(user.uid)} >
+                        {user.username}
                     </Dropdown.Item>
-                    <Dropdown.Divider />
-                    {adminusers && adminusers.map(user => (
-                        <Dropdown.Item key={user.uid} onClick={() => onFilterClicked(user.uid)} >
-                            {user.username}
-                        </Dropdown.Item>
-                    ))}
-                    <Dropdown.Item onClick={() => onFilterClicked(NOOWNER)} >
-                        No owner
-                    </Dropdown.Item>
+                ))}
+                <Dropdown.Item onClick={() => onFilterClicked(NOOWNER)} >
+                    No owner
+                </Dropdown.Item>
             </DropdownButton>
         );
     };
@@ -97,6 +99,26 @@ const Sidebar = ({firebase, resetPage, adminusers}) => {
     const onAddNewClientClicked = (client) => {
         history.push(ROUTES.CLIENTADMIN+ "/new");
     }
+
+    const AddNewClientLink = () => {
+        return (
+            <AuthUserContext.Consumer>
+                {authUser => {
+                    if (authUser.roles[ROLES.ADMIN]) {
+                        return (
+                            <Nav.Item>
+                                <Nav.Link onClick={() => onAddNewClientClicked()}>
+                                    Add new client
+                                </Nav.Link>
+                            </Nav.Item>
+                        );
+                    }
+                    return null;
+                }}
+            </AuthUserContext.Consumer>
+        )
+    }
+
     return (
         <>
             <Nav className="col-md-12 d-none d-md-block bg-light sidebar"
@@ -123,11 +145,7 @@ const Sidebar = ({firebase, resetPage, adminusers}) => {
                         </Nav.Item>
                     );
                 })}
-                <Nav.Item>
-                    <Nav.Link onClick={() => onAddNewClientClicked()}>
-                        Add new client
-                    </Nav.Link>
-                </Nav.Item>
+                <AddNewClientLink />
             </Nav>
         </>
     );
