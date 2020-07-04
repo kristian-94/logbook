@@ -3,6 +3,7 @@ import {Nav, DropdownButton, Dropdown} from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import {withFirebase} from "../Firebase";
 import * as ROUTES from "../../constants/routes";
+import {NOOWNER} from "../../constants/names";
 
 const Sidebar = ({firebase, resetPage, adminusers}) => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
@@ -57,17 +58,26 @@ const Sidebar = ({firebase, resetPage, adminusers}) => {
                             {user.username}
                         </Dropdown.Item>
                     ))}
+                    <Dropdown.Item onClick={() => onFilterClicked(NOOWNER)} >
+                        No owner
+                    </Dropdown.Item>
             </DropdownButton>
         );
     };
 
     const filteringText = () => {
+        if (filterUser === NOOWNER) {
+            return (
+                <div className="text-center">
+                    <em>Clients with no owner</em>
+                </div>
+            );
+        }
         const filteredUser = adminusers.filter(user => user.uid === filterUser)[0];
         return (
             <div className="text-center">
                 <em>Filtering by {filteredUser.username}</em>
             </div>
-
         );
     }
 
@@ -98,6 +108,10 @@ const Sidebar = ({firebase, resetPage, adminusers}) => {
                 <hr/>
                 <div className="sidebar-sticky"/>
                 {clientList && clientList.filter(client => {
+                    if (filterUser === NOOWNER) {
+                        // Return clients that don't have an owner set.
+                        return client.owner === null || client.owner === undefined;
+                    }
                     if (filterUser) {
                         return client.owner === filterUser;
                     }
