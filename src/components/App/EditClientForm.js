@@ -1,27 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
 import { withFirebase } from '../Firebase';
 import SweetAlert from 'react-bootstrap-sweetalert';
-import * as ROLES from "../../constants/roles";
 
-const EditClientForm = ({firebase, clientData, onFinishSubmission, onDeleteClient, owner}) => {
+const EditClientForm = ({firebase, clientData, onFinishSubmission, onDeleteClient, owner, adminusers}) => {
     const [confirmModal, setConfirmModal] = useState(null);
-    const [adminUsers, setAdminUsers] = useState([]);
-
-    useEffect(() => {
-        firebase.users().on('value', snapshot => {
-            const usersObject = snapshot.val();
-            const usersList = Object.keys(usersObject).map(key => ({
-                ...usersObject[key],
-                uid: key,
-            }));
-            const adminUsers = usersList.filter(user => {
-                return user.roles[ROLES.ADMIN] === ROLES.ADMIN;
-            });
-            setAdminUsers(adminUsers);
-        });
-    }, [firebase]);
 
     const onClickDeleteClient = () => {
         const modal = (
@@ -93,7 +77,7 @@ const EditClientForm = ({firebase, clientData, onFinishSubmission, onDeleteClien
                                     style={{ display: 'block' }}
                                 >
                                     <option value="" label="Select an owner" />
-                                    {adminUsers && adminUsers.map(user => <option key={user.uid} value={user.uid} label={user.username} />)}
+                                    {adminusers && adminusers.map(user => <option key={user.uid} value={user.uid} label={user.username} />)}
                                 </Field>
                             </div>
                             <button

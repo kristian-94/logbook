@@ -1,12 +1,13 @@
 import React, {useEffect, useState, useRef} from "react";
-import {Nav} from "react-bootstrap";
+import {Nav, DropdownButton, Dropdown} from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import {withFirebase} from "../Firebase";
 import * as ROUTES from "../../constants/routes";
 
-const Sidebar = ({firebase, resetPage}) => {
+const Sidebar = ({firebase, resetPage, adminusers}) => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
     const [clientList, setClientList] = useState([]);
+    const [filterUser, setFilterUser] = useState('');
 
     // Need this to do a componentwillunmount and cleanup memory leaks.
     useEffect(() => {
@@ -39,6 +40,37 @@ const Sidebar = ({firebase, resetPage}) => {
         });
     }, [firebase]);
 
+    const Filter = () => {
+
+        const onFilterClicked = (uid) => {
+            setFilterUser(uid);
+        }
+
+        return (
+            <DropdownButton id="dropdown-basic-button" variant="secondary" className="m-3 text-center" title="Filter by owner" size="sm">
+                    <Dropdown.Item onClick={() => onFilterClicked('')} >
+                        Reset
+                    </Dropdown.Item>
+                    <Dropdown.Divider />
+                    {adminusers && adminusers.map(user => (
+                        <Dropdown.Item key={user.uid} onClick={() => onFilterClicked(user.uid)} >
+                            {user.username}
+                        </Dropdown.Item>
+                    ))}
+            </DropdownButton>
+        );
+    };
+
+    const filteringText = () => {
+        const filteredUser = adminusers.filter(user => user.uid === filterUser)[0];
+        return (
+            <div className="text-center">
+                <em>Filtering by {filteredUser.username}</em>
+            </div>
+
+        );
+    }
+
     const history = useHistory();
 
     const onClientChanged = (client) => {
@@ -61,8 +93,16 @@ const Sidebar = ({firebase, resetPage}) => {
                  activeKey="/home"
                  onSelect={selectedKey => alert(`selected ${selectedKey}`)}
             >
+                <Filter />
+                {filterUser && filteringText()}
+                <hr/>
                 <div className="sidebar-sticky"/>
-                {clientList && clientList.map(client => {
+                {clientList && clientList.filter(client => {
+                    if (filterUser) {
+                        return client.owner === filterUser;
+                    }
+                    return true;
+                }).map(client => {
                     return (
                         <Nav.Item key={client.clientID}>
                             <Nav.Link onClick={() => onClientChanged(client)}>{client.name}</Nav.Link>

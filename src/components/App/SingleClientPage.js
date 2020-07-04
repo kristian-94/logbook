@@ -10,7 +10,7 @@ import * as ROUTES from "../../constants/routes";
 import {useHistory} from "react-router-dom";
 import OwnerDisplay from "./OwnerDisplay";
 
-const SingleClientPage = ({clientID, firebase, resetPage}) => {
+const SingleClientPage = ({clientID, firebase, resetPage, adminusers}) => {
     const [addingNewBucket, setAddingNewBucket] = useState(false);
     const [editingClient, setEditingClient] = useState(false);
     const [viewingArchive, setViewingArchive] = useState(false);
@@ -150,7 +150,7 @@ const SingleClientPage = ({clientID, firebase, resetPage}) => {
     if (editingClient) {
         return (
             <div>
-                <EditClientForm onDeleteClient={onDeleteClient} clientData={clientData} onFinishSubmission={onBackToClientPage} owner={owner}/>
+                <EditClientForm onDeleteClient={onDeleteClient} clientData={clientData} onFinishSubmission={onBackToClientPage} owner={owner} adminusers={adminusers}/>
             </div>
         );
     }
