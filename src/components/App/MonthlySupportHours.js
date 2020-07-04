@@ -4,7 +4,7 @@ const MonthlySupportHours = ({clientData}) => {
     return (
         <div>
             {clientData.monthlysupport && <h5>{clientData.monthlysupport}</h5>}
-            {!clientData.monthlysupport && <h5>{clientData.name} has no support hours per month.</h5>}
+            {!clientData.monthlysupport && <h5>{clientData.name} has no support hours data set.</h5>}
         </div>
     );
 }
