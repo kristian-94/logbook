@@ -20,8 +20,8 @@ export default Landing;
 
 const NonAuth = () => {
     return (
-        <div className="text-center mt-5">
-            <h1>Sign up or sign in!</h1>
+        <div className="text-center mt-2">
+            <h1>Sign in</h1>
         </div>
     );
 }

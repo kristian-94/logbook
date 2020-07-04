@@ -7,9 +7,12 @@ import * as ROLES from '../../constants/roles';
 
 
 const SignUpPage = () => (
-    <div>
-        <h1>SignUp</h1>
+    <div className="text-center">
+        <h1 className="mt-2">Sign Up</h1>
         <SignUpForm />
+        <p className="mt-3">
+            Go back to <Link to={ROUTES.SIGN_IN}>Sign In</Link>
+        </p>
     </div>
 );
 const INITIAL_STATE = {
@@ -69,38 +72,48 @@ class SignUpFormBase extends Component {
             username === '';
 
         return (
-            <form onSubmit={this.onSubmit}>
-                <input
-                    name="username"
-                    value={username}
-                    onChange={this.onChange}
-                    type="text"
-                    placeholder="Full Name"
-                />
-                <input
-                    name="email"
-                    value={email}
-                    onChange={this.onChange}
-                    type="text"
-                    placeholder="Email Address"
-                />
-                <input
-                    name="passwordOne"
-                    value={passwordOne}
-                    onChange={this.onChange}
-                    type="password"
-                    placeholder="Password"
-                />
-                <input
-                    name="passwordTwo"
-                    value={passwordTwo}
-                    onChange={this.onChange}
-                    type="password"
-                    placeholder="Confirm Password"
-                />
-                <button disabled={isInvalid} type="submit">Sign Up</button>
-                {error && <p>{error.message}</p>}
-            </form>
+            <div className="text-center">
+                <form onSubmit={this.onSubmit}>
+                    <div className="form-group">
+                        <input
+                            name="username"
+                            value={username}
+                            onChange={this.onChange}
+                            type="text"
+                            placeholder="Full Name"
+                        />
+                    </div>
+                    <div className="form-group">
+                        <input
+                            name="email"
+                            value={email}
+                            onChange={this.onChange}
+                            type="text"
+                            placeholder="Email Address"
+                        />
+                    </div>
+                    <div className="form-group">
+                        <input
+                            name="passwordOne"
+                            value={passwordOne}
+                            onChange={this.onChange}
+                            type="password"
+                            placeholder="Password"
+                        />
+                    </div>
+                    <div className="form-group">
+                        <input
+                            name="passwordTwo"
+                            value={passwordTwo}
+                            onChange={this.onChange}
+                            type="password"
+                            placeholder="Confirm Password"
+                        />
+                    </div>
+                    <button className="btn btn-primary" disabled={isInvalid} type="submit">Sign Up</button>
+                    {error && <p>{error.message}</p>}
+                </form>
+            </div>
         );
     }
 }

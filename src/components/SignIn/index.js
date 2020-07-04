@@ -8,7 +8,7 @@ import { PasswordForgetLink } from '../PasswordForget';
 import Landing from '../Landing'
 
 const SignInPage = () => (
-    <div>
+    <div className="text-center">
         <Landing/>
         <SignInForm />
         <PasswordForgetLink />
@@ -45,26 +45,32 @@ class SignInFormBase extends Component {
         const { email, password, error } = this.state;
         const isInvalid = password === '' || email === '';
         return (
-            <form onSubmit={this.onSubmit}>
-                <input
-                    name="email"
-                    value={email}
-                    onChange={this.onChange}
-                    type="text"
-                    placeholder="Email Address"
-                />
-                <input
-                    name="password"
-                    value={password}
-                    onChange={this.onChange}
-                    type="password"
-                    placeholder="Password"
-                />
-                <button className="btn btn-primary" disabled={isInvalid} type="submit">
-                    Sign In
-                </button>
-                {error && <p>{error.message}</p>}
-            </form>
+            <div>
+                <form onSubmit={this.onSubmit}>
+                    <div className="form-group">
+                        <input
+                            name="email"
+                            value={email}
+                            onChange={this.onChange}
+                            type="text"
+                            placeholder="Email Address"
+                        />
+                    </div>
+                    <div className="form-group">
+                        <input
+                            name="password"
+                            value={password}
+                            onChange={this.onChange}
+                            type="password"
+                            placeholder="Password"
+                        />
+                    </div>
+                    <button className="btn btn-primary" disabled={isInvalid} type="submit">
+                        Sign In
+                    </button>
+                    {error && <p>{error.message}</p>}
+                </form>
+            </div>
         );
     }
 }

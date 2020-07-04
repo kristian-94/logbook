@@ -9,6 +9,9 @@ const withAuthorization = condition => Component => {
         componentDidMount() {
             this.listener = this.props.firebase.auth.onAuthStateChanged(
                 authUser => {
+                    if (authUser === null) {
+                        return;
+                    }
                     // Firebase returns some dumb authUser object that we need to ignore.
                     if (Object.keys(authUser).length > 5) {
                         return;

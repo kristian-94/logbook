@@ -81,7 +81,7 @@ const SingleClientReadOnlyPage = ({clientID, firebase, resetPage}) => {
             if (_isMounted.current) { // Check always mounted component, don't change state if not mounted.
                 const clientDataObject = snapshot.val();
                 if (clientDataObject === null) {
-                    // No buckets in this client yet.
+                    // No data in this client yet.
                     return;
                 }
                 delete clientDataObject.buckets;

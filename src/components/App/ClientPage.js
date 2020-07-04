@@ -59,7 +59,7 @@ const ClientPage = ({firebase}) => {
 };
 // role-based authorization
 const condition = authUser => {
-    if (authUser.roles === undefined) {
+    if (authUser === null || authUser.roles === undefined) {
         return false;
     }
     if (authUser.roles[ROLES.ADMIN] === undefined) {
