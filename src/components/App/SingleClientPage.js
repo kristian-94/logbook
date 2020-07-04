@@ -27,6 +27,7 @@ const SingleClientPage = ({clientID, firebase, resetPage, adminusers}) => {
         setViewingArchive(false);
         setBucketsData([]);
         setOwner('');
+        setClientData({});
     }, [clientID, resetPage]);
 
 
@@ -96,6 +97,10 @@ const SingleClientPage = ({clientID, firebase, resetPage, adminusers}) => {
                         }
                         setOwner(ownerName);
                     });
+                }
+                if (clientDataObject.noteData === undefined) {
+                    // No note data for this client yet. But set something so the value updates.
+                    clientDataObject.noteData = '';
                 }
                 const clientData = {
                     'name': clientDataObject.name,
