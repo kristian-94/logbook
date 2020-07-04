@@ -106,7 +106,7 @@ const SingleClientPage = ({clientID, firebase, resetPage, adminusers}) => {
                 setClientData(clientData);
             }
         });
-    }, [clientID, firebase]);
+    }, [clientID, firebase, resetPage]);
 
     const onCreateBucket = () => {
         setAddingNewBucket(true);
