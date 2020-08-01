@@ -45,7 +45,7 @@ const ClientReadOnlyPage = ({firebase}) => {
                         <Sidebar resetPage={resetPage} adminusers={adminUsers} />
                     </Col>
                     <Col xs={10}>
-                        {noClient && <ClientBlankPage />}
+                        {noClient && <ClientBlankPage type={'view'} />}
                         {!noClient && <SingleClientReadOnlyPage firebase={firebase} clientID={clientIDinurl} resetPage={reset} adminusers={adminUsers} /> }
                     </Col>
                 </Row>

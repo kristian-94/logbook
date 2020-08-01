@@ -48,7 +48,7 @@ const ClientPage = ({firebase}) => {
                         <Sidebar resetPage={resetPage} adminusers={adminUsers} />
                     </Col>
                     <Col xs={10}>
-                        {noClient && <ClientBlankPage />}
+                        {noClient && <ClientBlankPage type={'enter'} />}
                         {newClient && <NewClientForm/>}
                         {!newClient && !noClient && <SingleClientPage firebase={firebase} clientID={clientIDinurl} resetPage={reset} adminusers={adminUsers}/> }
                     </Col>
