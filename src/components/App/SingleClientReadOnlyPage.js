@@ -1,5 +1,4 @@
 import React, {useEffect, useRef, useState} from 'react';
-import moment from "moment";
 import MonthlySupportHours from "./MonthlySupportHours";
 import Communications from "./Communications";
 import ArchivePage from "./ArchivePage";
@@ -58,21 +57,9 @@ const SingleClientReadOnlyPage = ({clientID, firebase, resetPage}) => {
                 // Make alphabetical order.
                 activeBucketData.sort((bucket1, bucket2) => bucket1['name'] - bucket2['name']);
                 archivedBucketData.sort((bucket1, bucket2) => bucket1['name'] - bucket2['name']);
-                // Check each bucket to see if we need to add the current month now.
-                activeBucketData.map(bucket => {
-                    const hoursDataFormatted = Object.keys(bucket.hoursData)
-                        .map(key => ({
-                            ...bucket.hoursData[key],
-                            monthID: key,
-                        }));
-                    // Go through the hoursData and find latest and compare that to current to see if we need to add a month now.
-                    const latestMonthinBucket = moment(Math.max(...hoursDataFormatted.map(e => moment(e.monthandyear, 'MMM YYYY')))).format('MMM YYYY');
-                    const currentMonth = moment().format('MMM YYYY');
-                    if (currentMonth !== latestMonthinBucket) {
-                        firebase.doAddMonth(clientID, bucket, currentMonth).then(r => console.log('added month ' + currentMonth));
-                    }
-                    return true;
-                });
+
+                // Read only users can not and should not create new months.
+
                 setBucketsData(activeBucketData);
                 setArchivedBucketsData(archivedBucketData);
             }
