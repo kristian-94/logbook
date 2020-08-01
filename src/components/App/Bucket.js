@@ -3,7 +3,7 @@ import moment from "moment";
 import BucketTable from "./bucketTable";
 import SweetAlert from 'react-bootstrap-sweetalert';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faArchive, faMinus, faPlus} from "@fortawesome/free-solid-svg-icons";
+import {faArchive, faMinus, faPlus, faMoneyBill, faCheck} from "@fortawesome/free-solid-svg-icons";
 import ContentEditable from "react-contenteditable";
 import stripHtml from "string-strip-html";
 import Tooltip from 'rc-tooltip';
@@ -86,6 +86,12 @@ const Bucket = ({clientID, bucket, firebase}) => {
     const onArchiveBucket = (clientID, bucketData) => {
         firebase.doArchiveBucket(clientID, bucketData).then(r => {
             console.log('archived bucket ' + bucketData.bucketName);
+        });
+    }
+
+    const onClickMarkPrepaid = (clientID, bucketData) => {
+        firebase.doMarkBucketPrepaid(clientID, bucketData).then(r => {
+            console.log('Changed prepaid status of ' + bucketData.bucketName);
         });
     }
 
@@ -203,6 +209,30 @@ const Bucket = ({clientID, bucket, firebase}) => {
                     <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faArchive} />
                 </button>
             </Tooltip>
+            <Tooltip
+                placement="right"
+                mouseEnterDelay={0.5}
+                mouseLeaveDelay={0.1}
+                trigger="hover"
+                overlay={<div>Mark bucket as prepaid</div>}
+            >
+                <button onClick={() => onClickMarkPrepaid(clientID, bucketData)} className="btn btn-info m-1 mr-3 float-right" type="submit">
+                    <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faMoneyBill} />
+                </button>
+            </Tooltip>
+            {bucketData.prepaid === true && (
+                <Tooltip
+                    placement="right"
+                    mouseEnterDelay={0.5}
+                    mouseLeaveDelay={0.1}
+                    trigger="hover"
+                    overlay={<div>This bucket is marked as prepaid</div>}
+                >
+                    <button className="btn btn-success m-1 float-right" type="submit">
+                        <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faCheck} />
+                    </button>
+                </Tooltip>
+            )}
             <BucketTable data={data} updateData={handleOnUpdateData} />
         </div>
     )

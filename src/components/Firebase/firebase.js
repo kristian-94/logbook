@@ -126,6 +126,15 @@ class Firebase {
             archived: false
         });
     };
+    doMarkBucketPrepaid = (clientID, bucketData) => {
+        let prepaid = false;
+        if (bucketData.prepaid === false || bucketData.prepaid === undefined) {
+            prepaid = true;
+        }
+        return this.bucket(clientID, bucketData.bucketID).update({
+            prepaid: prepaid
+        });
+    };
     hoursData = (clientID, bucketData) => this.db.ref(`clients/${clientID}/buckets/${bucketData.bucketID}/hoursData`);
     monthOfHours = (clientID, bucketData, monthID) => this.db.ref(`clients/${clientID}/buckets/${bucketData.bucketID}/hoursData/${monthID}`);
     monthRemaining = (clientID, bucketData, monthID) => this.db.ref(`clients/${clientID}/buckets/${bucketData.bucketID}/hoursData/${monthID}/remaining`);
