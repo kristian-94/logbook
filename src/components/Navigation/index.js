@@ -44,6 +44,9 @@ const NavigationAdminAuth = () => {
                 <Link className="btn btn-success ml-1 mr-1" to={ROUTES.REPORT}>
                     Reports
                 </Link>
+                <Link className="btn btn-success ml-1 mr-1" to={ROUTES.SUMMARY}>
+                    Client Summary
+                </Link>
             </Nav>
             <Link className="btn btn-primary" to={ROUTES.ADMIN}>
                 Admin
@@ -63,6 +66,9 @@ const NavigationBasicAuth = ({ authUser }) => (
             </Link>
             <Link className="btn btn-success ml-1 mr-1" to={ROUTES.REPORT}>
                 Reports
+            </Link>
+            <Link className="btn btn-success ml-1 mr-1" to={ROUTES.SUMMARY}>
+                Client Summary
             </Link>
         </Nav>
         <Link className="btn btn-primary" to={ROUTES.ACCOUNT}>
