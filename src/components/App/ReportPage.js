@@ -44,7 +44,7 @@ const ReportPage = ({firebase}) => {
                     </Col>
                     <Col xs={10}>
                         {noClientSelected && <ReportBlankPage/>}
-                        {!noClientSelected && <SingleReportPage clientID={clientIDinurl} firebase={firebase} resetPage={resetPage} />}
+                        {!noClientSelected && <SingleReportPage clientID={clientIDinurl} firebase={firebase} resetPage={reset} />}
                     </Col>
                 </Row>
             </Container>

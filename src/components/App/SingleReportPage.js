@@ -14,6 +14,7 @@ const SingleReportPage = ({clientID, firebase, resetPage}) => {
     useEffect(() => {
         // Got to reset some state when switching clients.
         setBucketsData([]);
+        setClientData({});
     }, [clientID, resetPage]);
 
     // Need this to do a componentwillunmount and cleanup memory leaks.
