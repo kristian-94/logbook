@@ -55,7 +55,7 @@ const ClientPage = ({firebase}) => {
                 </Row>
             </Container>
         </div>
-    );
+    ); 
 };
 // role-based authorization
 const condition = authUser => {

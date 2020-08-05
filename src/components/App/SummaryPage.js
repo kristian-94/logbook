@@ -8,6 +8,7 @@ const SummaryPage = ({firebase}) => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
     const [clientData, setBucketData] = useState([]);
     const [lastthreemonths, setLastthreemonths] = useState([]);
+    const [adminUsers, setAdminUsers] = useState([]);
 
     // Need this to do a componentwillunmount and cleanup memory leaks.
     useEffect(() => {
@@ -80,6 +81,17 @@ const SummaryPage = ({firebase}) => {
                 setBucketData(clientBuckets)
             }
         });
+        firebase.users().on('value', snapshot => {
+            const usersObject = snapshot.val();
+            const usersList = Object.keys(usersObject).map(key => ({
+                ...usersObject[key],
+                uid: key,
+            }));
+            const adminUsers = usersList.filter(user => {
+                return user.roles[ROLES.ADMIN] === ROLES.ADMIN;
+            });
+            setAdminUsers(adminUsers);
+        });
     }, [firebase, lastthreemonths]);
 
     if (clientData.length === 0) {
@@ -92,11 +104,11 @@ const SummaryPage = ({firebase}) => {
     return (
         <div>
             <Container fluid>
-
                 <table className="table">
                     <thead className="theat-dark">
                     <tr>
                         <th scope="col">Client</th>
+                        <th scope="col">Owner</th>
                         <th scope="col">Bucket</th>
                         {lastthreemonths.map(month => {
                             return <th key={month} scope="col">{month}</th>
@@ -132,10 +144,15 @@ const SummaryPage = ({firebase}) => {
                                     </tr>
                         );
                     });
+
+                    let user = 'No owner';
+                    const something = adminUsers.find(user => user.uid === bucketandclient.client.owner);
+                    if (something !== undefined) {user = something.username}
                     return (
                         <tbody key={bucketandclient.client.clientID}>
                             <tr key={bucketandclient.client.clientID}>
                                 <th rowSpan="5">{bucketandclient.client.name}</th>
+                                <th rowSpan="5">{user}</th>
                             </tr>
                             {bucketRender}
                         </tbody>
