@@ -15,6 +15,7 @@ import ClientReadOnlyPage from "./ClientReadOnlyPage";
 import PageNotFound from "../Error";
 import ReportPage from "./ReportPage";
 import SummaryPage from "./SummaryPage";
+import OwnerPage from "./OwnerPage";
 
 
 const App = () => (
@@ -31,6 +32,7 @@ const App = () => (
                 <Route path={ROUTES.CLIENTS} component={ClientReadOnlyPage} />
                 <Route path={ROUTES.REPORT} component={ReportPage} />
                 <Route path={ROUTES.SUMMARY} component={SummaryPage} />
+                <Route path={ROUTES.OWNERS} component={OwnerPage} />
                 <Route path={ROUTES.ACCOUNT} component={AccountPage} />
                 <Route path={ROUTES.ADMIN} component={AdminPage} />
                 <Route component={PageNotFound} />

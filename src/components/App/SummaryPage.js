@@ -146,8 +146,8 @@ const SummaryPage = ({firebase}) => {
                     });
 
                     let user = 'No owner';
-                    const something = adminUsers.find(user => user.uid === bucketandclient.client.owner);
-                    if (something !== undefined) {user = something.username}
+                    const founduser = adminUsers.find(user => user.uid === bucketandclient.client.owner);
+                    if (founduser !== undefined) {user = founduser.username}
                     return (
                         <tbody key={bucketandclient.client.clientID}>
                             <tr key={bucketandclient.client.clientID}>

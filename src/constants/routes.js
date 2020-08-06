@@ -5,6 +5,7 @@ export const CLIENTS = '/clients';
 export const CLIENTADMIN = '/clientadmin';
 export const REPORT = '/report';
 export const SUMMARY = '/summary';
+export const OWNERS = '/owners';
 export const NEW = '/new';
 export const ACCOUNT = '/account';
 export const ADMIN = '/admin';

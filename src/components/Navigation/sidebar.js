@@ -6,6 +6,7 @@ import * as ROUTES from "../../constants/routes";
 import {NOOWNER} from "../../constants/names";
 import {AuthUserContext} from "../Session";
 import * as ROLES from "../../constants/roles";
+import { SortClientList } from "../App/LibFunctions"
 
 const Sidebar = ({firebase, resetPage, adminusers}) => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
@@ -28,17 +29,7 @@ const Sidebar = ({firebase, resetPage, adminusers}) => {
                         ...clientsObject[key],
                         clientID: key,
                     }));
-                // Make alphabetical order.
-                clientsList.sort((client1, client2) => {
-                    const name1 = client1.name.toLowerCase();
-                    const name2 = client2.name.toLowerCase();
-                    if (name1 < name2) //sort string ascending
-                        return -1;
-                    if (name1 > name2)
-                        return 1;
-                    return 0; //default return value (no sorting)
-                });
-                setClientList(clientsList);
+                setClientList(SortClientList(clientsList));
             }
         });
     }, [firebase]);
@@ -100,6 +91,10 @@ const Sidebar = ({firebase, resetPage, adminusers}) => {
         history.push(ROUTES.CLIENTADMIN+ "/new");
     }
 
+    const onViewAllClientsAndOwners = (client) => {
+        history.push(ROUTES.OWNERS);
+    }
+
     const AddNewClientLink = () => {
         return (
             <AuthUserContext.Consumer>
@@ -145,6 +140,9 @@ const Sidebar = ({firebase, resetPage, adminusers}) => {
                         </Nav.Item>
                     );
                 })}
+                <Nav.Item>
+                    <Nav.Link onClick={() => onViewAllClientsAndOwners()}>All clients and owners</Nav.Link>
+                </Nav.Item>
                 <AddNewClientLink />
             </Nav>
         </>
