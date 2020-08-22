@@ -1,2 +1,2 @@
-export const SITENAME = 'Client Hours';
+export const SITENAME = 'Client Hours Logbook';
 export const NOOWNER = 'NOOWNER';
