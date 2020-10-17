@@ -1,10 +1,10 @@
 import React from 'react';
 
-const MonthlySupportHours = ({clientData}) => {
+const MonthlySupportHours = ({activeClient}) => {
     return (
         <div>
-            {clientData.monthlysupport && <h5>{clientData.monthlysupport}</h5>}
-            {!clientData.monthlysupport && <h5>{clientData.name} has no support hours data set.</h5>}
+            {activeClient.support && <h5>{activeClient.support}</h5>}
+            {!activeClient.support && <h5>{activeClient.name} has no support hours data set.</h5>}
         </div>
     );
 }

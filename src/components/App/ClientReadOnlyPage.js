@@ -2,16 +2,18 @@ import React, {useEffect, useState} from 'react';
 import {Col, Container, Row} from "react-bootstrap";
 import Sidebar from "../Navigation/sidebar";
 import ClientBlankPage from "./ClientBlankPage";
-import {withAuthorization} from "../Session";
 import * as ROUTES from "../../constants/routes";
 import SingleClientReadOnlyPage from "./SingleClientReadOnlyPage";
 import * as ROLES from "../../constants/roles";
+import {useDispatch, useSelector} from 'react-redux';
+import * as clientActions from '../../store/actions/Clients';
+import * as authActions from '../../store/actions/Auth';
 
 
 // Display all the client information in a non editable way.
 const ClientReadOnlyPage = ({firebase}) => {
     const [reset, setReset] = useState(false);
-    const [adminUsers, setAdminUsers] = useState([]);
+    const dispatch = useDispatch();
 
     const clientIDinurl = window.location.pathname.split(ROUTES.CLIENTS + '/').pop();
     let noClient = false;
@@ -24,34 +26,24 @@ const ClientReadOnlyPage = ({firebase}) => {
     }
 
     useEffect(() => {
-        firebase.users().on('value', snapshot => {
-            const usersObject = snapshot.val();
-            const usersList = Object.keys(usersObject).map(key => ({
-                ...usersObject[key],
-                uid: key,
-            }));
-            const adminUsers = usersList.filter(user => {
-                return user.roles[ROLES.ADMIN] === ROLES.ADMIN;
-            });
-            setAdminUsers(adminUsers);
-        });
-    }, [firebase]);
+        dispatch(clientActions.fetchClients());
+        dispatch(authActions.fetchUsers());
+    }, [dispatch]);
 
     return (
         <div>
             <Container fluid>
                 <Row>
                     <Col xs={2} id="sidebar-wrapper">
-                        <Sidebar resetPage={resetPage} adminusers={adminUsers} />
+                        <Sidebar resetPage={resetPage} />
                     </Col>
                     <Col xs={10}>
                         {noClient && <ClientBlankPage type={'view'} />}
-                        {!noClient && <SingleClientReadOnlyPage firebase={firebase} clientID={clientIDinurl} resetPage={reset} adminusers={adminUsers} /> }
+                        {!noClient && <SingleClientReadOnlyPage clientID={clientIDinurl} resetPage={reset}/> }
                     </Col>
                 </Row>
             </Container>
         </div>
     );
 }
-const condition = authUser => !!authUser;
-export default withAuthorization(condition)(ClientReadOnlyPage);
+export default ClientReadOnlyPage;

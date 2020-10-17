@@ -2,15 +2,25 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
 import * as serviceWorker from './serviceWorker';
-import Firebase, { FirebaseContext } from './components/Firebase';
 import './index.scss';
 import './bootstrap-overrides.scss';
+import { Provider } from 'react-redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import ReduxThunk from 'redux-thunk';
+import authReducer from './store/reducers/Auth'
+import clientsReducer from './store/reducers/Clients'
+
+const rootReducer = combineReducers({
+    auth: authReducer,
+    clients: clientsReducer,
+});
+const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
 ReactDOM.render(
   <React.StrictMode>
-      <FirebaseContext.Provider value={new Firebase()}>
+      <Provider store={store}>
           <App />
-      </FirebaseContext.Provider>
+      </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

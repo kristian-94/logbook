@@ -59,7 +59,7 @@ const OwnerPage = ({firebase}) => {
                         const founduser = adminUsers.find(user => user.uid === client.owner);
                         if (founduser !== undefined) {user = founduser.username}
                         return (
-                            <tr key={client.clientID}>
+                            <tr key={client.id}>
                                 <td>{client.name}</td>
                                 <td>{user}</td>
                             </tr>

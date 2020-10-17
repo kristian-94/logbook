@@ -1,17 +1,15 @@
 import React, {useEffect, useState, useRef} from "react";
 import {Nav, DropdownButton, Dropdown} from "react-bootstrap";
 import { useHistory } from "react-router-dom";
-import {withFirebase} from "../Firebase";
 import * as ROUTES from "../../constants/routes";
 import {NOOWNER} from "../../constants/names";
-import {AuthUserContext} from "../Session";
-import * as ROLES from "../../constants/roles";
-import { SortClientList } from "../App/LibFunctions"
+import {useSelector} from 'react-redux';
 
-const Sidebar = ({firebase, resetPage, adminusers}) => {
+const Sidebar = ({resetPage}) => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
-    const [clientList, setClientList] = useState([]);
-    const [filterUser, setFilterUser] = useState('');
+    const [filterUserId, setFilterUser] = useState('');
+    const clientList = useSelector(state => state.clients.clients);
+    const adminUsers = useSelector(state => state.auth.adminUsers);
 
     // Need this to do a componentwillunmount and cleanup memory leaks.
     useEffect(() => {
@@ -20,34 +18,19 @@ const Sidebar = ({firebase, resetPage, adminusers}) => {
             _isMounted.current = false;
         }
     }, []);
-    useEffect(() => {
-        firebase.clients().on('value', snapshot => {
-            if (_isMounted.current) { // Check always mounted component, don't change state if not mounted.
-                const clientsObject = snapshot.val();
-                const clientsList = Object.keys(clientsObject)
-                    .map(key => ({
-                        ...clientsObject[key],
-                        clientID: key,
-                    }));
-                setClientList(SortClientList(clientsList));
-            }
-        });
-    }, [firebase]);
 
     const Filter = () => {
-
-        const onFilterClicked = (uid) => {
-            setFilterUser(uid);
+        const onFilterClicked = (id) => {
+            setFilterUser(id);
         }
-
         return (
             <DropdownButton id="dropdown-basic-button" variant="secondary" className="m-3 text-center" title="Filter by owner" size="sm">
                 <Dropdown.Item onClick={() => onFilterClicked('')} >
                     Reset
                 </Dropdown.Item>
                 <Dropdown.Divider />
-                {adminusers && adminusers.map(user => (
-                    <Dropdown.Item key={user.uid} onClick={() => onFilterClicked(user.uid)} >
+                {adminUsers && adminUsers.map(user => (
+                    <Dropdown.Item key={user.id} onClick={() => onFilterClicked(user.id)} >
                         {user.username}
                     </Dropdown.Item>
                 ))}
@@ -59,14 +42,14 @@ const Sidebar = ({firebase, resetPage, adminusers}) => {
     };
 
     const filteringText = () => {
-        if (filterUser === NOOWNER) {
+        if (filterUserId === NOOWNER) {
             return (
                 <div className="text-center">
                     <em>Clients with no owner</em>
                 </div>
             );
         }
-        const filteredUser = adminusers.filter(user => user.uid === filterUser)[0];
+        const filteredUser = adminUsers.filter(user => user.id === filterUserId)[0];
         return (
             <div className="text-center">
                 <em>Filtering by {filteredUser.username}</em>
@@ -84,34 +67,12 @@ const Sidebar = ({firebase, resetPage, adminusers}) => {
         if (window.location.pathname.substr(0, ROUTES.CLIENTADMIN.length) === ROUTES.CLIENTADMIN) {
             section = ROUTES.CLIENTADMIN;
         }
-        history.push(section + "/" + client.clientID);
+        history.push(section + "/" + client.id);
         resetPage();
-    }
-    const onAddNewClientClicked = (client) => {
-        history.push(ROUTES.CLIENTADMIN+ "/new");
     }
 
     const onViewAllClientsAndOwners = (client) => {
         history.push(ROUTES.OWNERS);
-    }
-
-    const AddNewClientLink = () => {
-        return (
-            <AuthUserContext.Consumer>
-                {authUser => {
-                    if (authUser.roles[ROLES.ADMIN]) {
-                        return (
-                            <Nav.Item>
-                                <Nav.Link onClick={() => onAddNewClientClicked()}>
-                                    Add new client
-                                </Nav.Link>
-                            </Nav.Item>
-                        );
-                    }
-                    return null;
-                }}
-            </AuthUserContext.Consumer>
-        )
     }
 
     return (
@@ -121,21 +82,21 @@ const Sidebar = ({firebase, resetPage, adminusers}) => {
                  onSelect={selectedKey => alert(`selected ${selectedKey}`)}
             >
                 <Filter />
-                {filterUser && filteringText()}
+                {filterUserId && filteringText()}
                 <hr/>
                 <div className="sidebar-sticky"/>
                 {clientList && clientList.filter(client => {
-                    if (filterUser === NOOWNER) {
+                    if (filterUserId === NOOWNER) {
                         // Return clients that don't have an owner set.
-                        return client.owner === null || client.owner === undefined;
+                        return client.ownerid === null || client.ownerid === undefined;
                     }
-                    if (filterUser) {
-                        return client.owner === filterUser;
+                    if (filterUserId) {
+                        return client.ownerid === filterUserId;
                     }
                     return true;
                 }).map(client => {
                     return (
-                        <Nav.Item key={client.clientID}>
+                        <Nav.Item key={client.id}>
                             <Nav.Link onClick={() => onClientChanged(client)}>{client.name}</Nav.Link>
                         </Nav.Item>
                     );
@@ -143,9 +104,8 @@ const Sidebar = ({firebase, resetPage, adminusers}) => {
                 <Nav.Item>
                     <Nav.Link onClick={() => onViewAllClientsAndOwners()}>All clients and owners</Nav.Link>
                 </Nav.Item>
-                <AddNewClientLink />
             </Nav>
         </>
     );
 };
-export default withFirebase(Sidebar);
+export default Sidebar;

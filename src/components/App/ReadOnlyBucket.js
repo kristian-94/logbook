@@ -7,26 +7,19 @@ import {faTrash, faTrashRestore} from "@fortawesome/free-solid-svg-icons";
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
 
-const ReadOnlyBucket = ({clientID, bucket, firebase, buttons}) => {
+const ReadOnlyBucket = ({clientID, bucket, buttons}) => {
     const [confirmModal, setConfirmModal] = useState(null);
 
     const data = useMemo(() => {
         // Grab hoursData and format as array and output here.
-        const hoursDataFormatted = Object.keys(bucket.hoursData)
-            .map(key => ({
-                ...bucket.hoursData[key],
-                monthID: key,
-            })).sort((month1, month2) => {
-                // We want to display the dates in ascending order in our table.
-                const date1 = moment(month1.monthandyear, 'MMM YYYY');
-                const date2 = moment(month2.monthandyear, 'MMM YYYY');
-                return date1 - date2;
-            });
+        const hoursDataFormatted = bucket.hours;
 
         return hoursDataFormatted.map((month) => {
+            console.log(month)
             return (
                 {
-                    month: month.monthandyear,
+                    month: month.month,
+                    year: month.year,
                     invoice: month.invoice,
                     description: month.description,
                     in: month.in,
@@ -34,14 +27,15 @@ const ReadOnlyBucket = ({clientID, bucket, firebase, buttons}) => {
                     remaining: month.remaining,
                     touched: month.touched,
                 }
-            )
+            );
         });
-    }, [bucket.hoursData]);
+    }, [bucket.hours]);
 
     const onDeleteBucket = (clientID, bucketData) => {
-        firebase.doDeleteBucket(clientID, bucketData).then(r => {
-            console.log('deleted bucket ' + bucketData.bucketName);
-        });
+        // Delete the bucket.
+        // firebase.doDeleteBucket(clientID, bucketData).then(r => {
+        //     console.log('deleted bucket ' + bucketData.bucketName);
+        // });
     }
     const onClickDelete = (clientID, bucketData) => {
         const modal = (
@@ -63,10 +57,11 @@ const ReadOnlyBucket = ({clientID, bucket, firebase, buttons}) => {
     }
 
     const onUnArchiveBucket = (clientID, bucketData) => {
-        firebase.doUnArchiveBucket(clientID, bucketData).then(r => {
-            console.log('Unarchived bucket ' + bucketData.bucketName);
-            setConfirmModal(null);
-        });
+        // Unarchive
+        // firebase.doUnArchiveBucket(clientID, bucketData).then(r => {
+        //     console.log('Unarchived bucket ' + bucketData.bucketName);
+        //     setConfirmModal(null);
+        // });
     }
     const onClickUnarchive = (clientID, bucketData) => {
         const modal = (

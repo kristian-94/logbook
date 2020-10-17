@@ -5,6 +5,8 @@ const Landing = () => {
     return (
         <AuthUserContext.Consumer>
             {authUser => {
+                // Temp hack to not do authentication stuff yet.
+                return <Auth authUser={authUser} />;
                 if (authUser === null) {
                     return <NonAuth />
                 }
@@ -38,10 +40,10 @@ const NewAuth = ({authUser}) => {
     );
 }
 
-const Auth = ({authUser}) => {
+const Auth = () => {
     return (
         <div className="text-center mt-5">
-            <h1>Hello <strong>{authUser.username}</strong></h1>
+            <h1>Hello <strong>user</strong></h1>
             <h5>Use the links at the top to view client hours information.</h5>
         </div>
     );

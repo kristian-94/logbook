@@ -30,7 +30,18 @@ const BucketTable = ({data, updateData, readOnly}) => {
 
     // Create a non editable cell renderer
     const NonEditableCell = ({cell}) => {
+        if (!cell.value) {
+            return null;
+        }
         return cell.value;
+    }
+
+    // When rendering months, we convert the integer to the human readable month name.
+    const NonEditableCellMonth = ({cell}) => {
+        if (!cell.value) {
+            return null;
+        }
+        return new Date(2020, cell.value - 1, 15).toLocaleString('default', {month: 'long'});
     }
 
     // Create an editable cell renderer
@@ -65,6 +76,7 @@ const BucketTable = ({data, updateData, readOnly}) => {
     const defaultColumn = {
         Cell: EditableCell,
         NonEditCell: NonEditableCell,
+        NonEditCellMonth: NonEditableCellMonth,
         EditMultiline: EditMultiline,
     }
 
@@ -79,6 +91,10 @@ const BucketTable = ({data, updateData, readOnly}) => {
             {
                 Header: 'Month',
                 accessor: 'month',
+            },
+            {
+                Header: 'Year',
+                accessor: 'year',
             },
             {
                 Header: 'Invoice',
@@ -148,7 +164,14 @@ const BucketTable = ({data, updateData, readOnly}) => {
                 return (
                     <tr {...row.getRowProps()} className={rowColourTouchable}>
                         {row.cells.map(cell => {
-                            if ((cell.column.id === 'month' || cell.column.id === 'remaining') || readOnly === true) {
+                            if (cell.column.id === 'month') {
+                                return (
+                                    <td {...cell.getCellProps()} className="bucketcell">
+                                        {cell.render('NonEditCellMonth')}
+                                    </td>
+                                );
+                            }
+                            if ((cell.column.id === 'year' || cell.column.id === 'remaining') || readOnly === true) {
                                 return (
                                     <td {...cell.getCellProps()} className="bucketcell">
                                         {cell.render('NonEditCell')}

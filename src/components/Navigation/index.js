@@ -13,6 +13,7 @@ import Nav from "react-bootstrap/Nav";
 const Navigation = () => (
     <AuthUserContext.Consumer>
         {authUser => {
+            return <NavigationAdminAuth authUser={authUser} />
             if (authUser === null) {
                 return <NavigationNonAuth />
             }
