@@ -12,7 +12,7 @@ const OwnerDisplay = ({owner}) => {
                 overlay={<div>Owner</div>}
             >
                 <div className="float-right bg-success p-2 rounded ownerbutton">
-                    <em>{owner}</em>
+                    <em>{owner.username}</em>
                 </div>
             </Tooltip>
         );

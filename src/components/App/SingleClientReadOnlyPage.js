@@ -63,7 +63,7 @@ const SingleClientReadOnlyPage = ({clientID, resetPage}) => {
                 <div className="card-header">
                     <h1>
                         {activeClient.name}
-                        <OwnerDisplay owner={activeClient.ownerid}/>
+                        <OwnerDisplay owner={activeClient.owner}/>
                     </h1>
                 </div>
                 <div className="card-body">
@@ -80,7 +80,6 @@ const SingleClientReadOnlyPage = ({clientID, resetPage}) => {
                 <div className="row">
                     <div className="col-8">
                         {activeClient.buckets && activeClient.buckets.map(bucket => {
-                            console.log(bucket)
                             return (
                                 <div key={bucket.id} className="singlebucket">
                                     <ReadOnlyBucket clientID={clientID} bucket={bucket} buttons={false}/>

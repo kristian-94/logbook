@@ -15,7 +15,6 @@ const ReadOnlyBucket = ({clientID, bucket, buttons}) => {
         const hoursDataFormatted = bucket.hours;
 
         return hoursDataFormatted.map((month) => {
-            console.log(month)
             return (
                 {
                     month: month.month,
