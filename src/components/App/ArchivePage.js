@@ -5,6 +5,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Tooltip from "rc-tooltip/es";
 
 const ArchivePage = ({archivedBucketsData, onBackToClientPage, clientID, firebase, restorable}) => {
+    // TODO filter out non archived buckets here.
     return (
         <div>
             <h2>This is the archive page</h2>

@@ -10,18 +10,17 @@ import * as clientActions from "../../store/actions/Clients";
 import {useDispatch, useSelector} from 'react-redux';
 
 // Display all the client information in a non editable way.
-const SingleClientReadOnlyPage = ({clientID, resetPage}) => {
+const SingleClientReadOnlyPage = ({clientID}) => {
     const [viewingArchive, setViewingArchive] = useState(false);
     const _isMounted = useRef(true); // Initial value _isMounted = true
     const history = useHistory();
     const dispatch = useDispatch();
     const activeClient = useSelector(state => state.clients.activeClient);
 
-    console.log(activeClient)
     useEffect(() => {
         // Got to reset some state when switching clients.
         setViewingArchive(false);
-    }, [clientID, resetPage]);
+    }, [clientID]);
 
     // Need this to do a componentwillunmount and cleanup memory leaks.
     useEffect(() => {

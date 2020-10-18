@@ -9,26 +9,26 @@ import ArchivePage from "./ArchivePage";
 import * as ROUTES from "../../constants/routes";
 import {useHistory} from "react-router-dom";
 import OwnerDisplay from "./OwnerDisplay";
+import {useDispatch, useSelector} from "react-redux";
+import * as clientActions from "../../store/actions/Clients";
 
-const SingleClientPage = ({clientID, firebase, resetPage, adminusers}) => {
+const SingleClientPage = ({clientID}) => {
     const [addingNewBucket, setAddingNewBucket] = useState(false);
     const [editingClient, setEditingClient] = useState(false);
     const [viewingArchive, setViewingArchive] = useState(false);
-    const [bucketsData, setBucketsData] = useState([]);
-    const [archivedBucketsData, setArchivedBucketsData] = useState([]);
     const _isMounted = useRef(true); // Initial value _isMounted = true
-    const [clientData, setClientData] = useState({});
-    const [owner, setOwner] = useState('');
+    const activeClient = useSelector(state => state.clients.activeClient);
+    const dispatch = useDispatch();
+
+    console.log(activeClient)
 
     useEffect(() => {
         // Got to reset some state when switching clients.
         setAddingNewBucket(false);
         setEditingClient(false);
         setViewingArchive(false);
-        setBucketsData([]);
-        setOwner('');
-        setClientData({});
-    }, [clientID, resetPage]);
+        dispatch(clientActions.fetchClient(clientID));
+    }, [clientID, dispatch]);
 
 
     // Need this to do a componentwillunmount and cleanup memory leaks.
@@ -38,80 +38,6 @@ const SingleClientPage = ({clientID, firebase, resetPage, adminusers}) => {
             _isMounted.current = false;
         }
     }, []);
-    useEffect(() => {
-        firebase.buckets(clientID).on('value', snapshot => {
-            if (_isMounted.current) { // Check always mounted component, don't change state if not mounted.
-                const bucketsDataObject = snapshot.val();
-                if (bucketsDataObject === null) {
-                    // No buckets in this client yet.
-                    setBucketsData([]);
-                    return;
-                }
-                const bucketsData = Object.keys(bucketsDataObject)
-                    .map(key => ({
-                        ...bucketsDataObject[key],
-                        bucketID: key,
-                    }));
-                const archivedBucketData = bucketsData.filter(bucket => {
-                    return bucket.archived === true;
-                });
-                const activeBucketData = bucketsData.filter(bucket => {
-                    return bucket.archived !== true;
-                });
-                // Make alphabetical order.
-                activeBucketData.sort((bucket1, bucket2) => bucket1['name'] - bucket2['name']);
-                archivedBucketData.sort((bucket1, bucket2) => bucket1['name'] - bucket2['name']);
-                // Check each bucket to see if we need to add the current month now.
-                activeBucketData.map(bucket => {
-                    const hoursDataFormatted = Object.keys(bucket.hoursData)
-                        .map(key => ({
-                            ...bucket.hoursData[key],
-                            monthID: key,
-                        }));
-                    // Go through the hoursData and find latest and compare that to current to see if we need to add a month now.
-                    const latestMonthinBucket = moment(Math.max(...hoursDataFormatted.map(e => moment(e.monthandyear, 'MMM YYYY')))).format('MMM YYYY');
-                    const currentMonth = moment().format('MMM YYYY');
-                    if (currentMonth !== latestMonthinBucket) {
-                        firebase.doAddMonth(clientID, bucket, currentMonth).then(r => console.log('added month ' + currentMonth));
-                    }
-                    return true;
-                });
-                setBucketsData(activeBucketData);
-                setArchivedBucketsData(archivedBucketData);
-            }
-        });
-        firebase.client(clientID).on('value', snapshot => {
-            if (_isMounted.current) { // Check always mounted component, don't change state if not mounted.
-                const clientDataObject = snapshot.val();
-                if (clientDataObject === null) {
-                    // No buckets in this client yet.
-                    return;
-                }
-                delete clientDataObject.buckets;
-                if (clientDataObject.owner !== undefined && clientDataObject.owner !== '') {
-                    firebase.user(clientDataObject.owner).once('value', snapshot => {
-                        const value = snapshot.val();
-                        let ownerName = '';
-                        if (value !== null) {
-                            ownerName = snapshot.val().username;
-                        }
-                        setOwner(ownerName);
-                    });
-                }
-                if (clientDataObject.noteData === undefined) {
-                    // No note data for this client yet. But set something so the value updates.
-                    clientDataObject.noteData = '';
-                }
-                const clientData = {
-                    'name': clientDataObject.name,
-                    'clientID': clientID,
-                    'noteData': clientDataObject.noteData,
-                    'monthlysupport': clientDataObject.monthlysupport,
-                };
-                setClientData(clientData);
-            }
-        });
-    }, [clientID, firebase, resetPage]);
 
     const onCreateBucket = () => {
         setAddingNewBucket(true);
@@ -124,10 +50,10 @@ const SingleClientPage = ({clientID, firebase, resetPage, adminusers}) => {
     }
     const onEditClientNote = e => {
         const noteData = e.target.value;
-        setClientData((prevState) => ({...prevState, noteData}));
+        //setClientData((prevState) => ({...prevState, noteData}));
     }
     const updateClientNote = e => {
-        firebase.doUpdateClientNote(clientID, clientData.noteData).then(r => console.log('updated client note'));
+        //firebase.doUpdateClientNote(clientID, clientData.noteData).then(r => console.log('updated client note'));
     }
 
     const onBackToClientPage = () => {
@@ -136,7 +62,7 @@ const SingleClientPage = ({clientID, firebase, resetPage, adminusers}) => {
         setViewingArchive(false);
     }
     const onDeleteClient = () => {
-        firebase.doDeleteClient(clientID).then(() => onBackToClientPage());
+        //firebase.doDeleteClient(clientID).then(() => onBackToClientPage());
     }
 
     const history = useHistory();
@@ -144,6 +70,14 @@ const SingleClientPage = ({clientID, firebase, resetPage, adminusers}) => {
         history.push(ROUTES.CLIENTS + '/' + clientID);
     }
 
+    // Do not start rendering if we can't find the activeClient yet. Still being fetched.
+    if (Object.keys(activeClient).length === 0 && activeClient.constructor === Object) {
+        return (
+            <div>
+                <h1>no active client found</h1>
+            </div>
+        );
+    }
     if (addingNewBucket) {
         return (
             <div>
@@ -155,13 +89,13 @@ const SingleClientPage = ({clientID, firebase, resetPage, adminusers}) => {
     if (editingClient) {
         return (
             <div>
-                <EditClientForm onDeleteClient={onDeleteClient} clientData={clientData} onFinishSubmission={onBackToClientPage} owner={owner} adminusers={adminusers}/>
+                <EditClientForm onDeleteClient={onDeleteClient} clientData={activeClient} onFinishSubmission={onBackToClientPage} owner={activeClient.owner} />
             </div>
         );
     }
     if (viewingArchive) {
         return (
-            <ArchivePage archivedBucketsData={archivedBucketsData} onBackToClientPage={onBackToClientPage} clientID={clientID} firebase={firebase} restorable={true} />
+            <ArchivePage BucketsData={activeClient.buckets} onBackToClientPage={onBackToClientPage} clientID={clientID} restorable={true} />
         )
     }
 
@@ -174,13 +108,13 @@ const SingleClientPage = ({clientID, firebase, resetPage, adminusers}) => {
             <div className="card mt-3 mb-3">
                 <div className="card-header">
                     <h1>
-                        {clientData.name}
-                        <OwnerDisplay owner={owner}/>
+                        {activeClient.name}
+                        <OwnerDisplay owner={activeClient.owner}/>
                     </h1>
                 </div>
                 <div className="card-body">
                     <h5 className="card-title">
-                        <MonthlySupportHours clientData={clientData} />
+                        <MonthlySupportHours activeClient={activeClient} />
                     </h5>
                 </div>
             </div>
@@ -189,7 +123,7 @@ const SingleClientPage = ({clientID, firebase, resetPage, adminusers}) => {
                     className="form-control"
                     onChange={onEditClientNote}
                     onBlur={updateClientNote}
-                    value={clientData.noteData}
+                    value={activeClient.noteData}
                     placeholder="Notes"
                     style={{height: '7rem', width: '50rem'}}
                     autoCorrect="off"
@@ -201,17 +135,17 @@ const SingleClientPage = ({clientID, firebase, resetPage, adminusers}) => {
             <div className="container-fluid">
                 <div className="row">
                     <div className="col-8">
-                        {bucketsData && bucketsData.map(bucket => {
+                        {activeClient.buckets.map(bucket => {
                             return (
-                                <div key={bucket.bucketID} className="singlebucket">
-                                    <Bucket clientID={clientID} bucket={bucket} firebase={firebase}/>
+                                <div key={bucket.id} className="singlebucket">
+                                    <Bucket clientID={clientID} bucket={bucket} />
                                     <hr/>
                                 </div>
                             );
                         })}
                     </div>
                     <div className="col-4">
-                        <Communications firebase={firebase} clientID={clientID} editable={true} />
+                        <Communications clientID={clientID} editable={true} />
                     </div>
                 </div>
             </div>

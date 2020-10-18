@@ -5,7 +5,7 @@ import * as ROUTES from "../../constants/routes";
 import {NOOWNER} from "../../constants/names";
 import {useSelector} from 'react-redux';
 
-const Sidebar = ({resetPage}) => {
+const Sidebar = () => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
     const [filterUserId, setFilterUser] = useState('');
     const clientList = useSelector(state => state.clients.clients);
@@ -68,7 +68,6 @@ const Sidebar = ({resetPage}) => {
             section = ROUTES.CLIENTADMIN;
         }
         history.push(section + "/" + client.id);
-        resetPage();
     }
 
     const onViewAllClientsAndOwners = (client) => {
