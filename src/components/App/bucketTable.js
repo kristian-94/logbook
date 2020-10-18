@@ -2,8 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {useTable} from 'react-table';
 
 const BucketTable = ({data, updateData, readOnly}) => {
-
-    console.log(data)
     // Create an editable cell renderer
     const EditableCell = ({
                               value: initialValue,

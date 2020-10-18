@@ -18,10 +18,8 @@ const SingleClientPage = ({clientID}) => {
     const [viewingArchive, setViewingArchive] = useState(false);
     const _isMounted = useRef(true); // Initial value _isMounted = true
     const activeClient = useSelector(state => state.clients.activeClient);
+    const [clientNote, setClientNote] = useState('');
     const dispatch = useDispatch();
-
-    console.log(activeClient)
-
     useEffect(() => {
         // Got to reset some state when switching clients.
         setAddingNewBucket(false);
@@ -30,7 +28,6 @@ const SingleClientPage = ({clientID}) => {
         dispatch(clientActions.fetchClient(clientID));
     }, [clientID, dispatch]);
 
-
     // Need this to do a componentwillunmount and cleanup memory leaks.
     useEffect(() => {
         // ComponentWillUnmount in Class Component
@@ -38,6 +35,10 @@ const SingleClientPage = ({clientID}) => {
             _isMounted.current = false;
         }
     }, []);
+
+    useEffect(() => {
+        setClientNote(activeClient.note);
+    }, [activeClient]);
 
     const onCreateBucket = () => {
         setAddingNewBucket(true);
@@ -49,11 +50,10 @@ const SingleClientPage = ({clientID}) => {
         setViewingArchive(true);
     }
     const onEditClientNote = e => {
-        const noteData = e.target.value;
-        //setClientData((prevState) => ({...prevState, noteData}));
+        setClientNote(e.target.value);
     }
     const updateClientNote = e => {
-        //firebase.doUpdateClientNote(clientID, clientData.noteData).then(r => console.log('updated client note'));
+        dispatch(clientActions.updateClientNote(clientID, clientNote));
     }
 
     const onBackToClientPage = () => {
@@ -123,7 +123,7 @@ const SingleClientPage = ({clientID}) => {
                     className="form-control"
                     onChange={onEditClientNote}
                     onBlur={updateClientNote}
-                    value={activeClient.noteData}
+                    value={clientNote}
                     placeholder="Notes"
                     style={{height: '7rem', width: '50rem'}}
                     autoCorrect="off"

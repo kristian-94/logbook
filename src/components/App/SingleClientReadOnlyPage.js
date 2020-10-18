@@ -71,7 +71,7 @@ const SingleClientReadOnlyPage = ({clientID}) => {
                         <MonthlySupportHours activeClient={activeClient} />
                     </h5>
                     <div>
-                        {activeClient.noteData}
+                        {activeClient.note}
                     </div>
                 </div>
             </div>
