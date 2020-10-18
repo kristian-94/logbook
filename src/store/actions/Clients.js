@@ -81,3 +81,47 @@ export const updateBucketName = (bucket, newbucketname) => {
         dispatch(fetchClient(bucket.clientid))
     };
 }
+
+export const addCommunication = (communications, newcommtext, date) => {
+    const clientid = communications[0].clientid;
+    return async (dispatch) => {
+        // Execute any async code before dispatching the action.
+        let config = {
+            headers: {
+                Accept: 'application/json',
+                'Content-type': 'application/json',
+            }
+        }
+        const data = {
+            note: newcommtext,
+            date: date,
+            clientid: clientid,
+        };
+        const responseClient = await axios.post(BACKEND_URL + 'communications', data, config);
+        if (responseClient.status !== 201) {
+            throw new Error('Didnt get 201 response when creating communication record');
+        }
+        // Updated in backend. Fetch all client data again.
+        dispatch(fetchClient(clientid))
+    };
+}
+
+export const deleteCommunication = (communications, commid) => {
+    const clientid = communications[0].clientid;
+    return async (dispatch) => {
+        // Execute any async code before dispatching the action.
+        let config = {
+            headers: {
+                Accept: 'application/json',
+                'Content-type': 'application/json',
+            }
+        }
+        const responseClient = await axios.delete(BACKEND_URL + 'communications/' + commid, config);
+        console.log(responseClient.status)
+        if (responseClient.status !== 204) {
+            throw new Error('Didnt get 204 response when deleting communication record');
+        }
+        // Updated in backend. Fetch all client data again.
+        dispatch(fetchClient(clientid))
+    };
+}

@@ -5,11 +5,14 @@ import {faPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
+import * as clientActions from "../../store/actions/Clients";
+import {useDispatch} from "react-redux";
 
 const Communications = ({clientComms, editable}) => {
     const [newCommText, SetNewCommText] = useState('');
     const [newCommDate, SetNewCommDate] = useState(new Date());
     const _isMounted = useRef(true); // Initial value _isMounted = true
+    const dispatch = useDispatch();
 
     // Need this to do a componentwillunmount and cleanup memory leaks.
     useEffect(() => {
@@ -25,12 +28,14 @@ const Communications = ({clientComms, editable}) => {
     const handleChangeDate = date => {
         SetNewCommDate(date);
     };
-    const onAddComm = () => {
-        const date = newCommDate.toString();
-        //firebase.doStoreComm(clientID, newCommText, date).then(r => console.log('stored a new communication with text ' + newCommText));
+    const onAddComm = async () => {
+        const date = Math.floor(newCommDate.getTime() / 1000); // Unix timestamp.
+        await dispatch(clientActions.addCommunication(clientComms, newCommText, date))
+        console.log('stored a new communication with text ' + newCommText + date);
     };
-    const onDeleteComm = (commID) => {
-        //firebase.doDeleteComm(clientID, commID).then(r => console.log('deleted comm'));
+    const onDeleteComm = async (commID) => {
+        await dispatch(clientActions.deleteCommunication(clientComms, commID))
+        console.log('removed a communication with id ' + commID);
     };
     return (
         <div className="container-fluid">

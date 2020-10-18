@@ -145,7 +145,7 @@ const SingleClientPage = ({clientID}) => {
                         })}
                     </div>
                     <div className="col-4">
-                        <Communications clientID={clientID} editable={true} />
+                        <Communications clientID={clientID} clientComms={activeClient.communication} editable={true} />
                     </div>
                 </div>
             </div>
