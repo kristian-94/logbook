@@ -53,10 +53,31 @@ export const updateClientNote = (clientid, clientNote) => {
         };
         const responseClient = await axios.put(BACKEND_URL + 'clients/' + clientid, notedata, config);
         if (responseClient.status !== 200) {
-            throw new Error('Didnt get 200 response when fetching clients');
+            throw new Error('Didnt get 200 response when updating client ');
         }
 
         // Updated in backend. Fetch all client data again.
         dispatch(fetchClient(clientid))
+    };
+}
+
+export const updateBucketName = (bucket, newbucketname) => {
+    return async (dispatch) => {
+        // Execute any async code before dispatching the action.
+        let config = {
+            headers: {
+                Accept: 'application/json',
+                'Content-type': 'application/json',
+            }
+        }
+        const data = {
+            name: newbucketname
+        };
+        const responseClient = await axios.put(BACKEND_URL + 'buckets/' + bucket.id, data, config);
+        if (responseClient.status !== 200) {
+            throw new Error('Didnt get 200 response when updating bucket name');
+        }
+        // Updated in backend. Fetch all client data again.
+        dispatch(fetchClient(bucket.clientid))
     };
 }

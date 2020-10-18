@@ -1,5 +1,4 @@
-import React, {useEffect, useMemo, useRef, useState} from 'react';
-import moment from "moment";
+import React, {useEffect, useRef, useState} from 'react';
 import BucketTable from "./bucketTable";
 import SweetAlert from 'react-bootstrap-sweetalert';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -8,10 +7,13 @@ import ContentEditable from "react-contenteditable";
 import stripHtml from "string-strip-html";
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
+import {useDispatch} from "react-redux";
+import * as clientActions from "../../store/actions/Clients";
 
 const Bucket = ({clientID, bucket}) => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
     const [confirmModal, setConfirmModal] = useState(null);
+    const dispatch = useDispatch();
 
     // Need this to do a componentwillunmount and cleanup memory leaks.
     useEffect(() => {
@@ -80,9 +82,9 @@ const Bucket = ({clientID, bucket}) => {
     const bucketNameUpdated = (e) => {
         text.current = stripHtml(e.target.value);
     }
-    const updateBucketName = () => {
-        // firebase.doUpdateBucket(clientID, bucket, text.current)
-        //     .then(r => console.log('bucket updated to have name ' + text.current));
+    const updateBucketName = async () => {
+        await dispatch(clientActions.updateBucketName(bucket, text.current))
+        console.log('bucket updated to have name ' + text.current);
     }
     return (
         <div>
