@@ -6,16 +6,10 @@ import moment from "moment";
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
 
-const Communications = ({firebase, clientID, editable}) => {
-    const [clientComms, SetClientComms] = useState([]);
+const Communications = ({clientComms, editable}) => {
     const [newCommText, SetNewCommText] = useState('');
     const [newCommDate, SetNewCommDate] = useState(new Date());
     const _isMounted = useRef(true); // Initial value _isMounted = true
-
-    useEffect(() => {
-        // Got to reset some state when switching clients.
-        SetClientComms([]);
-    }, [clientID]);
 
     // Need this to do a componentwillunmount and cleanup memory leaks.
     useEffect(() => {
@@ -24,22 +18,6 @@ const Communications = ({firebase, clientID, editable}) => {
             _isMounted.current = false;
         }
     }, []);
-    useEffect(() => {
-        firebase.comms(clientID).on('value', snapshot => {
-            if (_isMounted.current) { // Check always mounted component, don't change state if not mounted.
-                let commsObject = snapshot.val();
-                if (commsObject === null) {
-                    return;
-                }
-                const commsDataFormatted = Object.keys(commsObject)
-                    .map(key => ({
-                        ...commsObject[key],
-                        commsID: key,
-                    }));
-                SetClientComms(commsDataFormatted);
-            }
-        });
-    }, [firebase, clientID]);
 
     const onNewCommChangeText = (e) => {
         SetNewCommText(e.target.value);
@@ -49,10 +27,10 @@ const Communications = ({firebase, clientID, editable}) => {
     };
     const onAddComm = () => {
         const date = newCommDate.toString();
-        firebase.doStoreComm(clientID, newCommText, date).then(r => console.log('stored a new communication with text ' + newCommText));
+        //firebase.doStoreComm(clientID, newCommText, date).then(r => console.log('stored a new communication with text ' + newCommText));
     };
     const onDeleteComm = (commID) => {
-        firebase.doDeleteComm(clientID, commID).then(r => console.log('deleted comm'));
+        //firebase.doDeleteComm(clientID, commID).then(r => console.log('deleted comm'));
     };
     return (
         <div className="container-fluid">
@@ -97,14 +75,10 @@ const Communications = ({firebase, clientID, editable}) => {
                 </tr>
                 </thead>
                 <tbody>
-                {clientComms && clientComms.sort((a, b) => {
-                    const dateA = (new Date(a.date)).getTime();
-                    const dateB = new Date(b.date).getTime();
-                    return dateA < dateB ? 1 : -1;
-                }).map(commObject => {
-                    const time = moment(new Date(commObject.date)).format('MMM Do YYYY')
+                {clientComms && clientComms.map(commObject => {
+                    const time = moment(new Date(commObject.date * 1000)).format('MMM Do YYYY')
                     return (
-                        <tr key={commObject.commsID}>
+                        <tr key={commObject.id}>
                             <td>
                                 {time}
                             </td>
@@ -120,7 +94,7 @@ const Communications = ({firebase, clientID, editable}) => {
                                         trigger="hover"
                                         overlay={<div>Delete</div>}
                                     >
-                                        <button onClick={() => onDeleteComm(commObject.commsID)} className="btn btn-secondary m-1" type="submit">
+                                        <button onClick={() => onDeleteComm(commObject.id)} className="btn btn-secondary m-1" type="submit">
                                             <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faTrash} />
                                         </button>
                                     </Tooltip>

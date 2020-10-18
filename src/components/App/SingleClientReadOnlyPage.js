@@ -17,6 +17,7 @@ const SingleClientReadOnlyPage = ({clientID, resetPage}) => {
     const dispatch = useDispatch();
     const activeClient = useSelector(state => state.clients.activeClient);
 
+    console.log(activeClient)
     useEffect(() => {
         // Got to reset some state when switching clients.
         setViewingArchive(false);
@@ -89,7 +90,7 @@ const SingleClientReadOnlyPage = ({clientID, resetPage}) => {
                         })}
                     </div>
                     <div className="col-4">
-                        {/*<Communications clientID={clientID} editable={false} />*/}
+                        <Communications clientComms={activeClient.communication} editable={false} />
                     </div>
                 </div>
             </div>
