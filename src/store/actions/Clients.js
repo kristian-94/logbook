@@ -1,5 +1,6 @@
 import {BACKEND_URL} from '../../constants/AppConstants'
 import axios from 'axios';
+import {useDispatch, useSelector} from "react-redux";
 export const SET_CLIENTDATA = 'SET_CLIENTDATA';
 export const FETCH_CLIENT = 'FETCH_CLIENT';
 
@@ -83,8 +84,8 @@ export const updateBucketName = (bucket, newbucketname) => {
 }
 
 export const addCommunication = (communications, newcommtext, date) => {
-    const clientid = communications[0].clientid;
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
+        const clientid = getState().clients.activeClient.id;
         // Execute any async code before dispatching the action.
         let config = {
             headers: {
@@ -107,8 +108,8 @@ export const addCommunication = (communications, newcommtext, date) => {
 }
 
 export const deleteCommunication = (communications, commid) => {
-    const clientid = communications[0].clientid;
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
+        const clientid = getState().clients.activeClient.id;
         // Execute any async code before dispatching the action.
         let config = {
             headers: {
@@ -117,9 +118,29 @@ export const deleteCommunication = (communications, commid) => {
             }
         }
         const responseClient = await axios.delete(BACKEND_URL + 'communications/' + commid, config);
-        console.log(responseClient.status)
         if (responseClient.status !== 204) {
             throw new Error('Didnt get 204 response when deleting communication record');
+        }
+        // Updated in backend. Fetch all client data again.
+        dispatch(fetchClient(clientid))
+    };
+}
+
+export const updateHoursData = (hoursid, column, newvalue) => {
+    return async (dispatch, getState) => {
+        const clientid = getState().clients.activeClient.id;
+        // Execute any async code before dispatching the action.
+        let config = {
+            headers: {
+                Accept: 'application/json',
+                'Content-type': 'application/json',
+            }
+        }
+        let data = {};
+        data[column] = newvalue;
+        const responseClient = await axios.put(BACKEND_URL + 'hours/' + hoursid, data, config);
+        if (responseClient.status !== 200) {
+            throw new Error('Didnt get 204 response when updating an hours record');
         }
         // Updated in backend. Fetch all client data again.
         dispatch(fetchClient(clientid))

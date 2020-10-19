@@ -66,17 +66,8 @@ const Bucket = ({clientID, bucket}) => {
         setConfirmModal(modal);
     }
 
-    const handleOnUpdateData = (rowData, column, value) => {
-        // Find the monthID for this month.
-        // const monthID = Object.keys(hoursData)
-        //     .map(key => ({
-        //         ...hoursData[key],
-        //         monthID: key,
-        //     })).find(x => x.monthandyear === rowData.month).monthID;
-        // let values = {};
-        // values[column] = value;
-        // Send this data to firebase.
-        //firebase.doUpdateHoursData(clientID, bucketData, monthID, values);
+    const handleOnUpdateHoursData = (hoursid, column, value) => {
+        dispatch(clientActions.updateHoursData(hoursid, column, value))
     }
     const text = useRef(bucket.name);
     const bucketNameUpdated = (e) => {
@@ -154,7 +145,7 @@ const Bucket = ({clientID, bucket}) => {
                     </button>
                 </Tooltip>
             )}
-            <BucketTable data={bucket.hours} updateData={handleOnUpdateData} />
+            <BucketTable data={bucket.hours} updateData={handleOnUpdateHoursData} />
         </div>
     )
 }

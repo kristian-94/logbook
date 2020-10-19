@@ -82,8 +82,17 @@ const BucketTable = ({data, updateData, readOnly}) => {
     // When our cell renderer calls updateMyData, we'll use
     // the rowIndex, columnId and new value to update the
     // original data
-    const updateMyData = (values, id, value) => {
-        updateData(values, id, value);
+    const updateMyData = (values, column, value) => {
+        const currentmonth = data.filter(hour => (hour.month === values.month && hour.year === values.year))[0];
+        if (currentmonth === undefined || !currentmonth) {
+            console.log('trying to update a month that could not be found! - this should not be possible!');
+            return;
+        }
+        if (currentmonth[column] === value) {
+            console.log('no need to update, nothing changed');
+            return;
+        }
+        updateData(currentmonth.id, column, value);
     }
     const columns = React.useMemo(
         () => [
