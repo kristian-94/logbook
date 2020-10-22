@@ -1,6 +1,6 @@
 import {BACKEND_URL} from '../../constants/AppConstants'
 import axios from 'axios';
-import {useDispatch, useSelector} from "react-redux";
+import * as config from '../../constants/AppConstants'
 export const SET_CLIENTDATA = 'SET_CLIENTDATA';
 export const FETCH_CLIENT = 'FETCH_CLIENT';
 
@@ -8,12 +8,7 @@ export const FETCH_CLIENT = 'FETCH_CLIENT';
 export const fetchClients = () => {
     return async (dispatch) => {
         // Execute any async code before dispatching the action.
-        let config = {
-            headers: {
-                Accept: 'application/json',
-            }
-        }
-        const response = await axios.get(BACKEND_URL + 'clients', config);
+        const response = await axios.get(BACKEND_URL + 'clients', config.CONFIG_JSON);
         if (response.status !== 200) {
             throw new Error('Didnt get 200 response when fetching clients');
         }
@@ -26,14 +21,8 @@ export const fetchClients = () => {
 export const fetchClient = (clientid) => {
     console.log('fetching client data all again for client ' + clientid)
     return async (dispatch) => {
-        // Execute any async code before dispatching the action.
-        let config = {
-            headers: {
-                Accept: 'application/json',
-            }
-        }
-        // Collect all data to do with this client with the default API's.
-        const responseClient = await axios.get(BACKEND_URL + 'clients/' + clientid, config);
+        // Collect all data to do with this client.
+        const responseClient = await axios.get(BACKEND_URL + 'clients/' + clientid, config.CONFIG_JSON);
         if (responseClient.status !== 200) {
             throw new Error('Didnt get 200 response when fetching clients');
         }
@@ -43,21 +32,13 @@ export const fetchClient = (clientid) => {
 
 export const updateClientNote = (clientid, clientNote) => {
     return async (dispatch) => {
-        // Execute any async code before dispatching the action.
-        let config = {
-            headers: {
-                Accept: 'application/json',
-                'Content-type': 'application/json',
-            }
-        }
         const notedata = {
             note: clientNote
         };
-        const responseClient = await axios.put(BACKEND_URL + 'clients/' + clientid, notedata, config);
+        const responseClient = await axios.put(BACKEND_URL + 'clients/' + clientid, notedata, config.CONFIG_JSON_CONTENT);
         if (responseClient.status !== 200) {
             throw new Error('Didnt get 200 response when updating client ');
         }
-
         // Updated in backend. Fetch all client data again.
         dispatch(fetchClient(clientid))
     };
@@ -66,18 +47,11 @@ export const updateClientNote = (clientid, clientNote) => {
 // Bucket Actions.
 export const createBucket = (clientid, newbucketname) => {
     return async (dispatch) => {
-        // Execute any async code before dispatching the action.
-        let config = {
-            headers: {
-                Accept: 'application/json',
-                'Content-type': 'application/json',
-            }
-        }
         const data = {
             clientid: clientid,
             name: newbucketname,
         };
-        const responseClient = await axios.post(BACKEND_URL + 'buckets', data, config);
+        const responseClient = await axios.post(BACKEND_URL + 'buckets', data, config.CONFIG_JSON_CONTENT);
         if (responseClient.status !== 200) {
             throw new Error('Didnt get 200 response when creating bucket, got: ' + responseClient.status);
         }
@@ -86,19 +60,19 @@ export const createBucket = (clientid, newbucketname) => {
     };
 }
 
-export const updateBucketName = (bucket, newbucketname) => {
+export const deleteBucket = (bucket) => {
     return async (dispatch) => {
-        // Execute any async code before dispatching the action.
-        let config = {
-            headers: {
-                Accept: 'application/json',
-                'Content-type': 'application/json',
-            }
+        const responseClient = await axios.delete(BACKEND_URL + 'buckets/' + bucket.id, config.CONFIG_JSON_CONTENT);
+        if (responseClient.status !== 204) {
+            throw new Error('Didnt get 204 response when updating bucket name');
         }
-        const data = {
-            name: newbucketname
-        };
-        const responseClient = await axios.put(BACKEND_URL + 'buckets/' + bucket.id, data, config);
+        dispatch(fetchClient(bucket.clientid));
+    };
+}
+
+export const updateBucket = (bucket, data) => {
+    return async (dispatch) => {
+        const responseClient = await axios.put(BACKEND_URL + 'buckets/' + bucket.id, data, config.CONFIG_JSON_CONTENT);
         if (responseClient.status !== 200) {
             throw new Error('Didnt get 200 response when updating bucket name');
         }
@@ -110,19 +84,12 @@ export const updateBucketName = (bucket, newbucketname) => {
 export const addCommunication = (communications, newcommtext, date) => {
     return async (dispatch, getState) => {
         const clientid = getState().clients.activeClient.id;
-        // Execute any async code before dispatching the action.
-        let config = {
-            headers: {
-                Accept: 'application/json',
-                'Content-type': 'application/json',
-            }
-        }
         const data = {
             note: newcommtext,
             date: date,
             clientid: clientid,
         };
-        const responseClient = await axios.post(BACKEND_URL + 'communications', data, config);
+        const responseClient = await axios.post(BACKEND_URL + 'communications', data, config.CONFIG_JSON_CONTENT);
         if (responseClient.status !== 201) {
             throw new Error('Didnt get 201 response when creating communication record');
         }
@@ -134,14 +101,7 @@ export const addCommunication = (communications, newcommtext, date) => {
 export const deleteCommunication = (communications, commid) => {
     return async (dispatch, getState) => {
         const clientid = getState().clients.activeClient.id;
-        // Execute any async code before dispatching the action.
-        let config = {
-            headers: {
-                Accept: 'application/json',
-                'Content-type': 'application/json',
-            }
-        }
-        const responseClient = await axios.delete(BACKEND_URL + 'communications/' + commid, config);
+        const responseClient = await axios.delete(BACKEND_URL + 'communications/' + commid, config.CONFIG_JSON_CONTENT);
         if (responseClient.status !== 204) {
             throw new Error('Didnt get 204 response when deleting communication record');
         }
@@ -153,16 +113,9 @@ export const deleteCommunication = (communications, commid) => {
 export const updateHoursData = (hoursid, column, newvalue) => {
     return async (dispatch, getState) => {
         const clientid = getState().clients.activeClient.id;
-        // Execute any async code before dispatching the action.
-        let config = {
-            headers: {
-                Accept: 'application/json',
-                'Content-type': 'application/json',
-            }
-        }
         let data = {};
         data[column] = newvalue;
-        const responseClient = await axios.put(BACKEND_URL + 'hours/' + hoursid, data, config);
+        const responseClient = await axios.put(BACKEND_URL + 'hours/' + hoursid, data, config.CONFIG_JSON_CONTENT);
         if (responseClient.status !== 200) {
             throw new Error('Didnt get 200 response when updating an hours record');
         }

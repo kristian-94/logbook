@@ -4,7 +4,6 @@ import EditClientForm from "./EditClientForm";
 import Bucket from "./Bucket";
 import MonthlySupportHours from "./MonthlySupportHours";
 import Communications from "./Communications"
-import moment from "moment";
 import ArchivePage from "./ArchivePage";
 import * as ROUTES from "../../constants/routes";
 import {useHistory} from "react-router-dom";
@@ -95,7 +94,7 @@ const SingleClientPage = ({clientID}) => {
     }
     if (viewingArchive) {
         return (
-            <ArchivePage BucketsData={activeClient.buckets} onBackToClientPage={onBackToClientPage} clientID={clientID} restorable={true} />
+            <ArchivePage buckets={activeClient.buckets} onBackToClientPage={onBackToClientPage} clientID={clientID} restorable={true} />
         )
     }
 
@@ -136,12 +135,15 @@ const SingleClientPage = ({clientID}) => {
                 <div className="row">
                     <div className="col-8">
                         {activeClient.buckets.map(bucket => {
-                            return (
-                                <div key={bucket.id} className="singlebucket">
-                                    <Bucket clientID={clientID} bucket={bucket} />
-                                    <hr/>
-                                </div>
-                            );
+                            if (bucket.archived === 0) {
+                                return (
+                                    <div key={bucket.id} className="singlebucket">
+                                        <Bucket clientID={clientID} bucket={bucket} />
+                                        <hr/>
+                                    </div>
+                                );
+                            }
+                            return null;
                         })}
                     </div>
                     <div className="col-4">

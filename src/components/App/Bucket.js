@@ -34,10 +34,9 @@ const Bucket = ({clientID, bucket}) => {
         //firebase.doRemoveMonth(clientID, bucketData, earliestMonthData.monthID).then(r => console.log('deleted the month ' + earliestMonth.format('MMM YYYY')));
     }
 
-    const onArchiveBucket = (clientID, bucketData) => {
-        // firebase.doArchiveBucket(clientID, bucketData).then(r => {
-        //     console.log('archived bucket ' + bucketData.name);
-        // });
+    const onArchiveBucket = async (clientID, bucket) => {
+        await dispatch(clientActions.updateBucket(bucket, {archived: 1}));
+        console.log('archived bucket with name ' + bucket.name);
     }
 
     const onClickMarkPrepaid = (clientID, bucketData) => {
@@ -74,7 +73,7 @@ const Bucket = ({clientID, bucket}) => {
         text.current = stripHtml(e.target.value);
     }
     const updateBucketName = async () => {
-        await dispatch(clientActions.updateBucketName(bucket, text.current))
+        await dispatch(clientActions.updateBucket(bucket, {name: text.current}))
         console.log('bucket updated to have name ' + text.current);
     }
     return (

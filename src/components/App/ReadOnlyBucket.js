@@ -1,14 +1,16 @@
 import React, {useState, useMemo} from 'react';
-import moment from "moment";
 import BucketTable from "./bucketTable";
 import SweetAlert from 'react-bootstrap-sweetalert';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTrash, faTrashRestore} from "@fortawesome/free-solid-svg-icons";
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
+import {useDispatch} from "react-redux";
+import * as clientActions from "../../store/actions/Clients";
 
 const ReadOnlyBucket = ({clientID, bucket, buttons}) => {
     const [confirmModal, setConfirmModal] = useState(null);
+    const dispatch = useDispatch();
 
     const data = useMemo(() => {
         // Grab hoursData and format as array and output here.
@@ -30,13 +32,11 @@ const ReadOnlyBucket = ({clientID, bucket, buttons}) => {
         });
     }, [bucket.hours]);
 
-    const onDeleteBucket = (clientID, bucketData) => {
-        // Delete the bucket.
-        // firebase.doDeleteBucket(clientID, bucketData).then(r => {
-        //     console.log('deleted bucket ' + bucketData.bucketName);
-        // });
+    const onDeleteBucket = async (bucket) => {
+        await dispatch(clientActions.deleteBucket(bucket));
+        console.log('Deleted bucket with name ' + bucket.name);
     }
-    const onClickDelete = (clientID, bucketData) => {
+    const onClickDelete = (bucketData) => {
         const modal = (
             <SweetAlert
                 danger
@@ -44,7 +44,7 @@ const ReadOnlyBucket = ({clientID, bucket, buttons}) => {
                 confirmBtnText="Yes, delete it!"
                 confirmBtnBsStyle="danger"
                 title="Are you sure?"
-                onConfirm={() => onDeleteBucket(clientID, bucketData)}
+                onConfirm={() => onDeleteBucket(bucketData)}
                 onCancel={() => setConfirmModal(null)}
                 focusCancelBtn={false}
                 focusConfirmBtn={false}
@@ -55,12 +55,9 @@ const ReadOnlyBucket = ({clientID, bucket, buttons}) => {
         setConfirmModal(modal);
     }
 
-    const onUnArchiveBucket = (clientID, bucketData) => {
-        // Unarchive
-        // firebase.doUnArchiveBucket(clientID, bucketData).then(r => {
-        //     console.log('Unarchived bucket ' + bucketData.bucketName);
-        //     setConfirmModal(null);
-        // });
+    const onUnArchiveBucket = async (clientID, bucket) => {
+        await dispatch(clientActions.updateBucket(bucket, {archived: 0}));
+        console.log('Unarchived bucket with name ' + bucket.name);
     }
     const onClickUnarchive = (clientID, bucketData) => {
         const modal = (
@@ -83,7 +80,7 @@ const ReadOnlyBucket = ({clientID, bucket, buttons}) => {
 
     return (
         <div>
-            <h5 className='ml-3'>{bucket.bucketName}</h5>
+            <h5 className='ml-3'>{bucket.name}</h5>
             <BucketTable data={data} readOnly={true} />
             {buttons && confirmModal}
             {buttons && (
@@ -95,7 +92,7 @@ const ReadOnlyBucket = ({clientID, bucket, buttons}) => {
                         trigger="hover"
                         overlay={<div>Delete this bucket</div>}
                     >
-                        <button onClick={() => onClickDelete(clientID, bucket)} className="btn btn-danger m-1" type="submit">
+                        <button onClick={() => onClickDelete(bucket)} className="btn btn-danger m-1" type="submit">
                             <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faTrash} />
                         </button>
                     </Tooltip>

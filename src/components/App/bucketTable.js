@@ -9,6 +9,9 @@ const BucketTable = ({data, updateData, readOnly}) => {
                               column: { id },
                               updateMyData,
                           }) => {
+        if (initialValue === null) {
+            initialValue = '';
+        }
         // We need to keep and update the state of the cell normally
         const [value, setValue] = useState(initialValue)
         const onChange = e => {
@@ -51,6 +54,9 @@ const BucketTable = ({data, updateData, readOnly}) => {
                                updateMyData,
                            }) => {
         // We need to keep and update the state of the cell normally
+        if (initialValue === null) {
+            initialValue = '';
+        }
         const [value, setValue] = useState(initialValue)
         const onChange = e => {
             setValue(e.target.value)

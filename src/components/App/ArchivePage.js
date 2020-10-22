@@ -4,19 +4,22 @@ import {faArrowLeft} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Tooltip from "rc-tooltip/es";
 
-const ArchivePage = ({archivedBucketsData, onBackToClientPage, clientID, firebase, restorable}) => {
+const ArchivePage = ({buckets, onBackToClientPage, clientID, restorable}) => {
     // TODO filter out non archived buckets here.
     return (
         <div>
             <h2>This is the archive page</h2>
             <div className="col-8">
-                {archivedBucketsData && archivedBucketsData.map(bucket => {
-                    return (
-                        <div key={bucket.bucketID} className="singlebucket">
-                            <ReadOnlyBucket bucket={bucket} firebase={firebase} clientID={clientID} buttons={restorable}/>
-                            <hr/>
-                        </div>
-                    );
+                {buckets && buckets.map(bucket => {
+                    if (bucket.archived === 1) {
+                        return (
+                            <div key={bucket.bucketID} className="singlebucket">
+                                <ReadOnlyBucket bucket={bucket} clientID={clientID} buttons={restorable}/>
+                                <hr/>
+                            </div>
+                        );
+                    }
+                    return null;
                 })}
             </div>
             <Tooltip
