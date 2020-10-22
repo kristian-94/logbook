@@ -34,18 +34,22 @@ const Bucket = ({clientID, bucket}) => {
         //firebase.doRemoveMonth(clientID, bucketData, earliestMonthData.monthID).then(r => console.log('deleted the month ' + earliestMonth.format('MMM YYYY')));
     }
 
-    const onArchiveBucket = async (clientID, bucket) => {
+    const onArchiveBucket = async (bucket) => {
         await dispatch(clientActions.updateBucket(bucket, {archived: 1}));
         console.log('archived bucket with name ' + bucket.name);
     }
 
-    const onClickMarkPrepaid = (clientID, bucketData) => {
-        // firebase.doMarkBucketPrepaid(clientID, bucketData).then(r => {
-        //     console.log('Changed prepaid status of ' + bucketData.name);
-        // });
+    const onClickMarkPrepaid = async (bucket) => {
+        let prepaid = 0;
+        if (bucket.prepaid === 0) {
+            prepaid = 1;
+        }
+        console.log(prepaid)
+        await dispatch(clientActions.updateBucket(bucket, {prepaid: prepaid}));
+        console.log('Changed prepaid status of ' + bucket.name);
     }
 
-    const onClickArchive = (clientID, bucketData) => {
+    const onClickArchive = (bucketData) => {
         const modal = (
             <SweetAlert
                 warning
@@ -53,7 +57,7 @@ const Bucket = ({clientID, bucket}) => {
                 confirmBtnText="Yes, archive it!"
                 confirmBtnBsStyle="warning"
                 title="Are you sure?"
-                onConfirm={() => onArchiveBucket(clientID, bucketData)}
+                onConfirm={() => onArchiveBucket(bucketData)}
                 onCancel={() => setConfirmModal(null)}
                 focusCancelBtn={false}
                 focusConfirmBtn={false}
@@ -116,7 +120,7 @@ const Bucket = ({clientID, bucket}) => {
                 trigger="hover"
                 overlay={<div>Archive bucket</div>}
             >
-                <button onClick={() => onClickArchive(clientID, bucket)} className="btn btn-warning m-1" type="submit">
+                <button onClick={() => onClickArchive(bucket)} className="btn btn-warning m-1" type="submit">
                     <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faArchive} />
                 </button>
             </Tooltip>
@@ -127,11 +131,11 @@ const Bucket = ({clientID, bucket}) => {
                 trigger="hover"
                 overlay={<div>Mark bucket as prepaid</div>}
             >
-                <button onClick={() => onClickMarkPrepaid(clientID, bucket)} className="btn btn-info m-1 mr-3 float-right" type="submit">
+                <button onClick={() => onClickMarkPrepaid(bucket)} className="btn btn-info m-1 mr-3 float-right" type="submit">
                     <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faMoneyBill} />
                 </button>
             </Tooltip>
-            {bucket.prepaid === true && (
+            {bucket.prepaid === 1 && (
                 <Tooltip
                     placement="right"
                     mouseEnterDelay={0.5}
