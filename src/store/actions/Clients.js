@@ -21,6 +21,7 @@ export const fetchClients = () => {
     };
 }
 
+// Client Actions.
 // Here we fetch all individual client data from each table and put that into our redux state.
 export const fetchClient = (clientid) => {
     console.log('fetching client data all again for client ' + clientid)
@@ -59,6 +60,29 @@ export const updateClientNote = (clientid, clientNote) => {
 
         // Updated in backend. Fetch all client data again.
         dispatch(fetchClient(clientid))
+    };
+}
+
+// Bucket Actions.
+export const createBucket = (clientid, newbucketname) => {
+    return async (dispatch) => {
+        // Execute any async code before dispatching the action.
+        let config = {
+            headers: {
+                Accept: 'application/json',
+                'Content-type': 'application/json',
+            }
+        }
+        const data = {
+            clientid: clientid,
+            name: newbucketname,
+        };
+        const responseClient = await axios.post(BACKEND_URL + 'buckets', data, config);
+        if (responseClient.status !== 200) {
+            throw new Error('Didnt get 200 response when creating bucket, got: ' + responseClient.status);
+        }
+        // Updated in backend. Fetch all client data again.
+        dispatch(fetchClient(clientid));
     };
 }
 

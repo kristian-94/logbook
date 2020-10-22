@@ -1,10 +1,11 @@
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from "yup";
-import { withFirebase } from '../Firebase';
-import moment from "moment";
+import {useDispatch} from "react-redux";
+import * as clientActions from "../../store/actions/Clients";
 
-const AddBucketForm = ({firebase, clientID, onFinishSubmission, cancelForm}) => {
+const AddBucketForm = ({clientID, onFinishSubmission, cancelForm}) => {
+    const dispatch = useDispatch();
     return (
         <div className="col-10">
             <h1>New bucket</h1>
@@ -15,13 +16,7 @@ const AddBucketForm = ({firebase, clientID, onFinishSubmission, cancelForm}) => 
                 })}
                 onSubmit={(values, {setSubmitting}) => {
                     setSubmitting(true);
-                    const timeCreated = (new moment()).toJSON(); // Can't store the date as an object.
-                    // Store this bucket in firebase
-                    firebase.doStoreBucket(values.name, timeCreated, clientID)
-                        .then(() => {
-                            setSubmitting(false);
-                            onFinishSubmission('successfully created bucket ' + values.name);
-                        });
+                    dispatch(clientActions.createBucket(clientID, values.name))
                 }}
             >
                 {props => {
@@ -55,4 +50,4 @@ const AddBucketForm = ({firebase, clientID, onFinishSubmission, cancelForm}) => 
         </div>
     );
 }
-export default withFirebase(AddBucketForm);
+export default AddBucketForm;
