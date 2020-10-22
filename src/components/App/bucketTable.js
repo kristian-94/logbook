@@ -166,7 +166,7 @@ const BucketTable = ({data, updateData, readOnly}) => {
             {rows.map(row => {
                 prepareRow(row)
                 let rowColourTouchable = 'rowTouched';
-                if (row.original.touched !== true) {
+                if (row.original.touched !== 1) {
                     rowColourTouchable = 'rowNotTouched';
                 }
                 return (
