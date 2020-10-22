@@ -14,9 +14,11 @@ const AddBucketForm = ({clientID, onFinishSubmission, cancelForm}) => {
                 validationSchema={Yup.object({
                     name: Yup.string().required("Required to enter a name"),
                 })}
-                onSubmit={(values, {setSubmitting}) => {
+                onSubmit={async (values, {setSubmitting}) => {
                     setSubmitting(true);
-                    dispatch(clientActions.createBucket(clientID, values.name))
+                    await dispatch(clientActions.createBucket(clientID, values.name));
+                    setSubmitting(false);
+                    onFinishSubmission();
                 }}
             >
                 {props => {
