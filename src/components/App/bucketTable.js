@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useTable} from 'react-table';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faMinus} from "@fortawesome/free-solid-svg-icons";
+import {faTrash} from "@fortawesome/free-solid-svg-icons";
 
 const BucketTable = ({data, updateData, onRemoveMonth, readOnly}) => {
     // Create an editable cell renderer
@@ -211,7 +211,7 @@ const BucketTable = ({data, updateData, onRemoveMonth, readOnly}) => {
                         })}
                         {!readOnly && rows.length > 1 && <td>
                             <button onClick={() => onRemoveMonth(row.original)} className="btn btn-secondary m-1" type="submit">
-                            <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faMinus} />
+                            <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faTrash} />
                         </button>
                         </td>}
                     </tr>

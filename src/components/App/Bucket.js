@@ -89,21 +89,20 @@ const Bucket = ({bucket}) => {
                 />
             </h5>
             {confirmModal}
-            <Tooltip
+            <div className="float-left row">
+                <div className="col-7 mt-2">
+                    <MonthPicker handleChangeMonth={handleChangeMonth} displayDate={newMonth}/>
+                </div>
+                <Tooltip
                 placement="left"
                 mouseEnterDelay={0.5}
                 mouseLeaveDelay={0.1}
                 trigger="hover"
                 overlay={<div>Add month</div>}
             >
-                <div className="row">
-                    <div className="col-4">
-                        <MonthPicker handleChangeMonth={handleChangeMonth} displayDate={newMonth}/>
-                    </div>
-                    <button onClick={() => onAddMonth()} className="btn btn-success m-1" type="submit">
+                    <button onClick={() => onAddMonth()} className="btn btn-success m-1 ml-5 float-left" type="submit">
                         <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faPlus} />
                     </button>
-                </div>
             </Tooltip>
             <Tooltip
                 placement="right"
@@ -112,10 +111,11 @@ const Bucket = ({bucket}) => {
                 trigger="hover"
                 overlay={<div>Archive bucket</div>}
             >
-                <button onClick={() => onClickArchive(bucket)} className="btn btn-warning m-1" type="submit">
+                <button onClick={() => onClickArchive(bucket)} className="btn btn-warning m-1 float-left" type="submit">
                     <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faArchive} />
                 </button>
             </Tooltip>
+            </div>
             <Tooltip
                 placement="right"
                 mouseEnterDelay={0.5}
@@ -127,6 +127,7 @@ const Bucket = ({bucket}) => {
                     <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faMoneyBill} />
                 </button>
             </Tooltip>
+
             {bucket.prepaid === 1 && (
                 <Tooltip
                     placement="right"
