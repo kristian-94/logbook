@@ -140,7 +140,7 @@ export const updateHoursData = (hoursid, column, newvalue) => {
         data[column] = newvalue;
         const responseClient = await axios.put(BACKEND_URL + 'hours/' + hoursid, data, config);
         if (responseClient.status !== 200) {
-            throw new Error('Didnt get 204 response when updating an hours record');
+            throw new Error('Didnt get 200 response when updating an hours record');
         }
         // Updated in backend. Fetch all client data again.
         dispatch(fetchClient(clientid))
