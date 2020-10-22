@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {useTable} from 'react-table';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faMinus} from "@fortawesome/free-solid-svg-icons";
 
-const BucketTable = ({data, updateData, readOnly}) => {
+const BucketTable = ({data, updateData, onRemoveMonth, readOnly}) => {
     // Create an editable cell renderer
     const EditableCell = ({
                               value: initialValue,
@@ -146,6 +148,12 @@ const BucketTable = ({data, updateData, readOnly}) => {
         defaultColumn,
         updateMyData
     })
+    const styleTable = {
+        borderBottom: 'solid 3px red',
+        background: 'aliceblue',
+        color: 'black',
+        fontWeight: 'bold',
+    };
 
     return (
         <table {...getTableProps()} style={{ border: 'solid 1px black', width: '98%' }}>
@@ -155,16 +163,12 @@ const BucketTable = ({data, updateData, readOnly}) => {
                     {headerGroup.headers.map(column => (
                         <th
                             {...column.getHeaderProps()}
-                            style={{
-                                borderBottom: 'solid 3px red',
-                                background: 'aliceblue',
-                                color: 'black',
-                                fontWeight: 'bold',
-                            }}
+                            style={styleTable}
                         >
                             {column.render('Header')}
                         </th>
                     ))}
+                    {!readOnly && <th style={styleTable}>Action</th>}
                 </tr>
             ))}
             </thead>
@@ -205,6 +209,11 @@ const BucketTable = ({data, updateData, readOnly}) => {
                                 </td>
                             );
                         })}
+                        {!readOnly && rows.length > 1 && <td>
+                            <button onClick={() => onRemoveMonth(row.original)} className="btn btn-secondary m-1" type="submit">
+                            <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faMinus} />
+                        </button>
+                        </td>}
                     </tr>
                 )
             })}

@@ -138,7 +138,7 @@ const SingleClientPage = ({clientID}) => {
                             if (bucket.archived === 0) {
                                 return (
                                     <div key={bucket.id} className="singlebucket">
-                                        <Bucket clientID={clientID} bucket={bucket} />
+                                        <Bucket bucket={bucket} />
                                         <hr/>
                                     </div>
                                 );

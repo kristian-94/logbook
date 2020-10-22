@@ -110,6 +110,7 @@ export const deleteCommunication = (communications, commid) => {
     };
 }
 
+// Hours/Months Actions.
 export const updateHoursData = (hoursid, column, newvalue) => {
     return async (dispatch, getState) => {
         const clientid = getState().clients.activeClient.id;
@@ -121,5 +122,35 @@ export const updateHoursData = (hoursid, column, newvalue) => {
         }
         // Updated in backend. Fetch all client data again.
         dispatch(fetchClient(clientid))
+    };
+}
+
+export const deleteMonth = (hoursrecord) => {
+    return async (dispatch, getState) => {
+        const clientid = getState().clients.activeClient.id;
+        const responseClient = await axios.delete(BACKEND_URL + 'hours/' + hoursrecord.id, config.CONFIG_JSON_CONTENT);
+        if (responseClient.status !== 204) {
+            throw new Error('Didnt get 204 response when updating bucket name');
+        }
+        dispatch(fetchClient(clientid));
+    };
+}
+
+export const createMonth = (bucket, date) => {
+    return async (dispatch) => {
+        const data = {
+            month: date.getMonth() + 1,
+            year: date.getFullYear(),
+            bucketid: bucket.id,
+            in: 0,
+            out: 0,
+            touched: 0,
+        };
+        const responseClient = await axios.post(BACKEND_URL + 'hours', data, config.CONFIG_JSON_CONTENT);
+        if (responseClient.status !== 201) {
+            throw new Error('Didnt get 201 response when creating an hours record');
+        }
+        // Updated in backend. Fetch all client data again.
+        dispatch(fetchClient(bucket.clientid));
     };
 }
