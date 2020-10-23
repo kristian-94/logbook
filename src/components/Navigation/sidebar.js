@@ -70,10 +70,21 @@ const Sidebar = () => {
         history.push(section + "/" + client.id);
     }
 
-    const onViewAllClientsAndOwners = (client) => {
+    const onViewAllClientsAndOwners = () => {
         history.push(ROUTES.OWNERS);
     }
-
+    const onAddNewClientClicked = () => {
+        history.push(ROUTES.CLIENTADMIN+ "/new");
+    }
+    const AddNewClientLink = () => {
+        return (
+            <Nav.Item>
+                <Nav.Link onClick={() => onAddNewClientClicked()}>
+                    Add new client
+                </Nav.Link>
+            </Nav.Item>
+        );
+    }
     return (
         <>
             <Nav className="col-md-12 d-none d-md-block bg-light sidebar"
@@ -103,6 +114,7 @@ const Sidebar = () => {
                 <Nav.Item>
                     <Nav.Link onClick={() => onViewAllClientsAndOwners()}>All clients and owners</Nav.Link>
                 </Nav.Item>
+                <AddNewClientLink />
             </Nav>
         </>
     );

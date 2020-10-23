@@ -36,7 +36,9 @@ const SingleClientPage = ({clientID}) => {
     }, []);
 
     useEffect(() => {
-        setClientNote(activeClient.note);
+        if (activeClient.note !== null) {
+            setClientNote(activeClient.note);
+        }
     }, [activeClient]);
 
     const onCreateBucket = () => {
@@ -61,7 +63,7 @@ const SingleClientPage = ({clientID}) => {
         setViewingArchive(false);
     }
     const onDeleteClient = () => {
-        //firebase.doDeleteClient(clientID).then(() => onBackToClientPage());
+        dispatch(clientActions.deleteClient(clientID));
     }
 
     const history = useHistory();

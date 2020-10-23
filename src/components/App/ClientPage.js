@@ -7,7 +7,7 @@ import SingleClientPage from "./SingleClientPage";
 import ClientBlankPage from "./ClientBlankPage";
 import * as clientActions from "../../store/actions/Clients";
 import * as authActions from "../../store/actions/Auth";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 
 const ClientPage = () => {
     const dispatch = useDispatch();
@@ -20,6 +20,7 @@ const ClientPage = () => {
     if (window.location.pathname === ROUTES.CLIENTADMIN) {
         noClient = true;
     }
+    console.log('rendering client page')
 
     useEffect(() => {
         dispatch(clientActions.fetchClients());

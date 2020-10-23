@@ -15,10 +15,11 @@ import PageNotFound from "../Error";
 import ReportPage from "./ReportPage";
 import SummaryPage from "./SummaryPage";
 import OwnerPage from "./OwnerPage";
+import history from "../Navigation/History";
 
 
 const App = () => (
-    <Router>
+    <Router history={history}>
         <div>
             <Navigation />
             <Switch>

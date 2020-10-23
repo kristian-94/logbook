@@ -1,6 +1,8 @@
 import {BACKEND_URL} from '../../constants/AppConstants'
 import axios from 'axios';
 import * as config from '../../constants/AppConstants'
+import * as ROUTES from "../../constants/routes";
+import history from "../../components/Navigation/History";
 export const SET_CLIENTDATA = 'SET_CLIENTDATA';
 export const FETCH_CLIENT = 'FETCH_CLIENT';
 
@@ -38,6 +40,32 @@ export const updateClient = (clientid, clientData) => {
         }
         // Updated in backend. Fetch all client data again.
         dispatch(fetchClient(clientid))
+    };
+}
+
+export const deleteClient = (clientid) => {
+    return async (dispatch) => {
+        const responseClient = await axios.delete(BACKEND_URL + 'clients/' + clientid, config.CONFIG_JSON_CONTENT);
+        if (responseClient.status !== 204) {
+            throw new Error('Didnt get 204 response when deleting client ');
+        }
+        // Updated in backend. Fetch all client data again.
+        history.push(ROUTES.CLIENTADMIN);
+        window.location.reload(); // That's nasty.. proabaly not using history properly here.
+    };
+}
+
+export const createClient = (name) => {
+    return async (dispatch) => {
+        const clientdata = {
+            name: name,
+        }
+        const responseClient = await axios.post(BACKEND_URL + 'clients', clientdata, config.CONFIG_JSON_CONTENT);
+        if (responseClient.status !== 201) {
+            throw new Error('Didnt get 201 response when creating client ');
+        }
+        history.push(ROUTES.CLIENTADMIN + '/' + responseClient.data.id);
+        window.location.reload(); // That's nasty.. proabaly not using history properly here.
     };
 }
 
