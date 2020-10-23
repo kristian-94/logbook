@@ -34,7 +34,7 @@ const BucketTable = ({data, updateData, onRemoveMonth, readOnly}) => {
 
     // Create a non editable cell renderer
     const NonEditableCell = ({cell}) => {
-        if (!cell.value) {
+        if (cell.value !== 0 && !cell.value) {
             return null;
         }
         return cell.value;
