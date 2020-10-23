@@ -52,7 +52,7 @@ const SingleClientPage = ({clientID}) => {
         setClientNote(e.target.value);
     }
     const updateClientNote = e => {
-        dispatch(clientActions.updateClientNote(clientID, clientNote));
+        dispatch(clientActions.updateClient(clientID, {note: clientNote}));
     }
 
     const onBackToClientPage = () => {

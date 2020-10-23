@@ -30,12 +30,9 @@ export const fetchClient = (clientid) => {
     };
 }
 
-export const updateClientNote = (clientid, clientNote) => {
+export const updateClient = (clientid, clientData) => {
     return async (dispatch) => {
-        const notedata = {
-            note: clientNote
-        };
-        const responseClient = await axios.put(BACKEND_URL + 'clients/' + clientid, notedata, config.CONFIG_JSON_CONTENT);
+        const responseClient = await axios.put(BACKEND_URL + 'clients/' + clientid, clientData, config.CONFIG_JSON_CONTENT);
         if (responseClient.status !== 200) {
             throw new Error('Didnt get 200 response when updating client ');
         }

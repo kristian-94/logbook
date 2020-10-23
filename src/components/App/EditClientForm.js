@@ -1,11 +1,14 @@
 import React, {useState} from 'react';
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
-import { withFirebase } from '../Firebase';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import {useDispatch, useSelector} from "react-redux";
+import * as clientActions from "../../store/actions/Clients";
 
-const EditClientForm = ({firebase, clientData, onFinishSubmission, onDeleteClient, owner, adminusers}) => {
+const EditClientForm = ({clientData, onFinishSubmission, onDeleteClient, owner}) => {
     const [confirmModal, setConfirmModal] = useState(null);
+    const adminusers = useSelector(state => state.auth.adminUsers);
+    const dispatch = useDispatch();
 
     const onClickDeleteClient = () => {
         const modal = (
@@ -30,18 +33,26 @@ const EditClientForm = ({firebase, clientData, onFinishSubmission, onDeleteClien
             <h1>Edit Client {clientData.name}</h1>
             {confirmModal}
             <Formik
-                initialValues={{name: clientData.name, monthlysupport: clientData.monthlysupport, owner: owner}}
+                initialValues={{name: clientData.name, support: clientData.support, owner: owner}}
                 validationSchema={Yup.object({
                     name: Yup.string().required("Required to enter a name"),
                 })}
                 onSubmit={(values, {setSubmitting}) => {
                     setSubmitting(true);
-                    // Store this updated client in firebase
-                    firebase.doUpdateClient(clientData.clientID, values.name, values.monthlysupport, values.owner)
-                        .then(() => {
-                            setSubmitting(false);
-                            onFinishSubmission('successfully updated client ' + values.name);
-                        });
+                    const updatedata = {
+                        name: values.name,
+                        support: values.support,
+                    };
+                    if (typeof values.owner === 'string' && values.owner !== "") {
+                        if (values.owner !== "0") {
+                            updatedata['ownerid'] = Number(values.owner);
+                        } else {
+                            updatedata['ownerid'] = null;
+                        }
+                    }
+                    dispatch(clientActions.updateClient(clientData.id, updatedata))
+                    setSubmitting(false);
+                    onFinishSubmission();
                 }}
             >
                 {props => {
@@ -62,12 +73,12 @@ const EditClientForm = ({firebase, clientData, onFinishSubmission, onDeleteClien
                                 <ErrorMessage name="name"/>
                             </div>
                             <div className="form-group row">
-                                <label htmlFor="monthlysupport" className="m-1 mt-2">Support hours per month</label>
+                                <label htmlFor="support" className="m-1 mt-2">Support hours per month</label>
                                 <Field
                                     className="form-control col-8 m-1"
                                     type="text"
-                                    name="monthlysupport"
-                                    placeholder={clientData.monthlysupport}
+                                    name="support"
+                                    placeholder={clientData.support}
                                 />
                             </div>
                             <div className="form-group row">
@@ -77,7 +88,8 @@ const EditClientForm = ({firebase, clientData, onFinishSubmission, onDeleteClien
                                     style={{ display: 'block' }}
                                 >
                                     <option value="" label="Select an owner" />
-                                    {adminusers && adminusers.map(user => <option key={user.uid} value={user.uid} label={user.username} />)}
+                                    {adminusers && adminusers.map(user => <option key={user.id} value={user.id} label={user.username} />)}
+                                    <option value={0} label="No owner"/>
                                 </Field>
                             </div>
                             <button
@@ -96,4 +108,4 @@ const EditClientForm = ({firebase, clientData, onFinishSubmission, onDeleteClien
         </div>
     );
 };
-export default withFirebase(EditClientForm);
+export default EditClientForm;
