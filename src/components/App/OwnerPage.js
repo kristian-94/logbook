@@ -1,13 +1,14 @@
-import React, {useEffect, useRef, useState} from 'react';
-import { withAuthorization } from '../Session';
+import React, {useEffect, useRef} from 'react';
 import {Container} from "react-bootstrap";
-import * as ROLES from '../../constants/roles'
-import {SortClientList, GetAdminUsersFromObject} from "./LibFunctions";
+import {useSelector, useDispatch} from 'react-redux';
+import * as clientActions from "../../store/actions/Clients";
+import * as authActions from "../../store/actions/Auth";
 
-const OwnerPage = ({firebase}) => {
+const OwnerPage = () => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
-    const [clientData, setClientData] = useState([]);
-    const [adminUsers, setAdminUsers] = useState([]);
+    const clients = useSelector(state => state.clients.clients);
+    const adminUsers = useSelector(state => state.auth.adminUsers);
+    const dispatch = useDispatch();
 
     // Need this to do a componentwillunmount and cleanup memory leaks.
     useEffect(() => {
@@ -18,25 +19,11 @@ const OwnerPage = ({firebase}) => {
     }, []);
 
     useEffect(() => {
-        firebase.clients().on('value', snapshot => {
-            if (_isMounted.current) { // Check always mounted component, don't change state if not mounted.
-                const clientsObject = snapshot.val();
-                //let allBuckets = [];
-                const clientsList = Object.keys(clientsObject)
-                    .map(key => ({
-                        ...clientsObject[key],
-                        clientID: key,
-                    }));
-                setClientData(SortClientList(clientsList));
-            }
-        });
-        firebase.users().on('value', snapshot => {
-            const usersObject = snapshot.val();
-            setAdminUsers(GetAdminUsersFromObject(usersObject));
-        });
-    }, [firebase]);
+        dispatch(clientActions.fetchClients());
+        dispatch(authActions.fetchUsers());
+    }, [dispatch]);
 
-    if (clientData.length === 0 || adminUsers.length === 0) {
+    if (clients.length === 0 || adminUsers.length === 0) {
         return (
             <div>
                 Loading client owners page
@@ -54,9 +41,9 @@ const OwnerPage = ({firebase}) => {
                         </tr>
                     </thead>
                     <tbody>
-                    {clientData.map(client => {
+                    {clients.map(client => {
                         let user = 'No owner';
-                        const founduser = adminUsers.find(user => user.uid === client.owner);
+                        const founduser = adminUsers.find(user => user.id === client.ownerid);
                         if (founduser !== undefined) {user = founduser.username}
                         return (
                             <tr key={client.id}>
@@ -71,11 +58,4 @@ const OwnerPage = ({firebase}) => {
         </div>
     );
 };
-// role-based authorization
-const condition = authUser => {
-    if (authUser.roles === undefined) {
-        return false;
-    }
-    return authUser.roles[ROLES.BASIC] === ROLES.BASIC || authUser.roles[ROLES.ADMIN] === ROLES.ADMIN;
-};
-export default withAuthorization(condition)(OwnerPage);
+export default OwnerPage;
