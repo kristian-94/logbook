@@ -6,11 +6,14 @@ export const SIGNED_OUT = 'SIGNED_OUT';
 
 // Here we fetch all user data and put that into our redux state.
 export const fetchUsers = () => {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
+        const unencoded_token = getState().auth.currentUser.access_token;
+        const access_token = Buffer.from(`${unencoded_token}:''`, 'utf8').toString('base64');
         // Execute any async code before dispatching the action.
         let config = {
             headers: {
                 Accept: 'application/json',
+                Authorization: "Basic " + access_token,
             }
         }
         const response = await axios.get(BACKEND_URL + 'users', config);

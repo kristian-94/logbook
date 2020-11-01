@@ -3,7 +3,7 @@ import {useSelector} from "react-redux";
 
 const Landing = () => {
     const authUser = useSelector(state => state.auth.currentUser);
-    if (authUser === null) {
+    if (authUser === null || !authUser) {
         return <NonAuth />
     }
     if (authUser.role  === 3 || authUser.role  === 1) {

@@ -17,6 +17,7 @@ export default (state = initialState, action) => {
             // Add the adminUsers also to a second object for easy querying.
             const admins = action.users.filter((user) => user.role === 3);
             return {
+                ...state,
                 users: action.users,
                 adminUsers: admins,
             };
@@ -25,12 +26,14 @@ export default (state = initialState, action) => {
             const currentuser = action.data.authUser;
             localStorage.setItem('authUser', JSON.stringify(currentuser));
             return {
+                ...state,
                 currentUser: currentuser,
             };
         case SIGNED_OUT:
             // We just signed out so delete our token in local storage and in redux state.
             localStorage.removeItem('authUser');
             return {
+                ...state,
                 currentUser: [],
             };
         default:

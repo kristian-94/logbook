@@ -9,8 +9,7 @@ import {useSelector} from "react-redux";
 
 const Navigation = () => {
     const authUser = useSelector(state => state.auth.currentUser);
-    console.log(authUser)
-    if (authUser === null || authUser === []) {
+    if (authUser === null || authUser === [] || authUser === undefined) {
         return <NavigationNonAuth />
     }
     if (authUser.role === 3) {
