@@ -17,6 +17,7 @@ export default (state = initialState, action) => {
                 ...state,
                 activeClient: action.activeClient,
             };
+        default:
+            return state;
     }
-    return state;
 }

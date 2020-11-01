@@ -1,5 +1,4 @@
 import React from 'react';
-import { withAuthorization } from '../Session';
 import {useSelector} from "react-redux";
 
 const AccountPage = () => {
@@ -16,5 +15,4 @@ const AccountPage = () => {
         </div>
     );
 }
-const condition = authUser => !!authUser;
-export default withAuthorization(condition)(AccountPage);
+export default (AccountPage);

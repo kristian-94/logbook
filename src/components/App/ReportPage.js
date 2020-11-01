@@ -5,7 +5,6 @@ import {Container, Row, Col } from "react-bootstrap";
 import * as ROUTES from "../../constants/routes";
 import ReportBlankPage from "./ReportBlankPage"
 import SingleReportPage from "./SingleReportPage";
-import * as ROLES from "../../constants/roles";
 
 const ReportPage = () => {
     const [reset, setReset] = useState(false);

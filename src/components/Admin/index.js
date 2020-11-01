@@ -4,7 +4,6 @@ import Tooltip from "rc-tooltip/es";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faLevelDownAlt, faLevelUpAlt} from "@fortawesome/free-solid-svg-icons";
 import SweetAlert from "react-bootstrap-sweetalert";
-import {withAuthorization} from "../Session";
 class AdminPage extends Component {
 
     constructor(props) {
@@ -222,14 +221,4 @@ const UserList = ({ users, promote, demote}) => {
         </div>
     );
 }
-// role-based authorization
-const condition = authUser => {
-    if (authUser.roles === undefined) {
-        return false;
-    }
-    if (authUser.roles[ROLES.ADMIN] === undefined) {
-        return false;
-    }
-    return authUser.roles[ROLES.ADMIN] === 'ADMIN';
-};
-export default withAuthorization(condition)(AdminPage);
+export default (AdminPage);

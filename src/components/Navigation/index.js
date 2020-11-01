@@ -9,7 +9,8 @@ import {useSelector} from "react-redux";
 
 const Navigation = () => {
     const authUser = useSelector(state => state.auth.currentUser);
-    if (authUser === null) {
+    console.log(authUser)
+    if (authUser === null || authUser === []) {
         return <NavigationNonAuth />
     }
     if (authUser.role === 3) {
@@ -21,7 +22,7 @@ const Navigation = () => {
     return <NavigationNonAuth />
 }
 
-const NavigationAdminAuth = () => {
+const NavigationAdminAuth = ({authUser}) => {
     return (
         <Navbar bg="primary" variant="dark">
             <Navbar.Brand to="/">{NAMES.SITENAME}</Navbar.Brand>
@@ -39,6 +40,7 @@ const NavigationAdminAuth = () => {
                     Client Summary
                 </Link>
             </Nav>
+            <Navbar.Brand to="/">You are <strong>{authUser.username}</strong></Navbar.Brand>
             <Link className="btn btn-primary" to={ROUTES.ADMIN}>
                 Admin
             </Link>

@@ -28,7 +28,7 @@ class SignUpFormBase extends Component {
         this.state = { ...INITIAL_STATE };
     };
     onSubmit = event => {
-        const { username, email, passwordOne } = this.state;
+        //const { username, email, passwordOne } = this.state;
         const roles = {};
         // All new accounts get the new role.
         roles[ROLES.NEW] = ROLES.NEW;

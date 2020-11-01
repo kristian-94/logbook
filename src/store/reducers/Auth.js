@@ -1,8 +1,14 @@
 import {SET_USERDATA, SIGNED_IN, SIGNED_OUT} from '../actions/Auth';
+
+const localdata = JSON.parse(localStorage.getItem('authUser'));
+let user = [];
+if (localdata) {
+    user = localdata;
+}
 const initialState = {
     users: [],
     adminUsers: [],
-    currentUser: JSON.parse(localStorage.getItem('authUser')),
+    currentUser: user,
 }
 
 export default (state = initialState, action) => {
@@ -27,6 +33,7 @@ export default (state = initialState, action) => {
             return {
                 currentUser: [],
             };
+        default:
+            return state;
     }
-    return state;
 }

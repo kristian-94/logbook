@@ -14,11 +14,11 @@ import PageNotFound from "../Error";
 import ReportPage from "./ReportPage";
 import SummaryPage from "./SummaryPage";
 import OwnerPage from "./OwnerPage";
-import history from "../Navigation/History";
+//TODO do we need this? import history from "../Navigation/History";
 
 
 const App = () => (
-    <Router history={history}>
+    <Router >
         <div>
             <Navigation />
             <Switch>
