@@ -10,7 +10,6 @@ const SignOutButton = () => {
     const signOut = async () => {
         await dispatch(authActions.signOut());
         history.push(ROUTES.SIGN_IN);
-        window.location.reload();
     }
 
     return (

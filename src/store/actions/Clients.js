@@ -9,7 +9,7 @@ export const FETCH_CLIENT = 'FETCH_CLIENT';
 // Here we fetch all high level client data and put that into our redux state.
 export const fetchClients = () => {
     return async (dispatch, getState) => {
-        const clientid = getState().clients.activeClient.id;
+        //const token = getState().currentUser.access_token;
         const access_token = 'NVBFY2ljaGp5WFo5ZmtVVFZvOXE1amlyYm8tRW5zZG06';
         let authconfig = config.CONFIG_JSON_CONTENT;
         authconfig.headers.Authorization = 'Basic ' + access_token;

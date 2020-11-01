@@ -6,7 +6,6 @@ import AuthUserContext from './context';
 const withAuthorization = condition => Component => {
     class WithAuthorization extends React.Component {
         componentDidMount() {
-            console.log('mounting authorization')
             const authUser = JSON.parse(localStorage.getItem('authUser'));
             if (authUser === null) {
                 return;

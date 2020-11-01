@@ -3,28 +3,23 @@ import { Link } from 'react-router-dom';
 import SignOutButton from '../SignOut';
 import * as ROUTES from '../../constants/routes';
 import * as NAMES from '../../constants/names';
-import { AuthUserContext } from '../Session';
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
+import {useSelector} from "react-redux";
 
-// Here can probably make different auth navigations for different roles.
-// Eg. NavigationAuthAdmin, NavigationAuthHailey etc.
-const Navigation = () => (
-    <AuthUserContext.Consumer>
-        {authUser => {
-            if (authUser === null) {
-                return <NavigationNonAuth />
-            }
-            if (authUser.role === 3) {
-                return <NavigationAdminAuth authUser={authUser} />
-            }
-            if (authUser.role === 1) {
-                return <NavigationBasicAuth authUser={authUser} />
-            }
-            return <NavigationNonAuth />
-        }}
-    </AuthUserContext.Consumer>
-);
+const Navigation = () => {
+    const authUser = useSelector(state => state.auth.currentUser);
+    if (authUser === null) {
+        return <NavigationNonAuth />
+    }
+    if (authUser.role === 3) {
+        return <NavigationAdminAuth authUser={authUser} />
+    }
+    if (authUser.role === 1) {
+        return <NavigationBasicAuth authUser={authUser} />
+    }
+    return <NavigationNonAuth />
+}
 
 const NavigationAdminAuth = () => {
     return (

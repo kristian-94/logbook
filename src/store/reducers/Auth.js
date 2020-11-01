@@ -2,7 +2,7 @@ import {SET_USERDATA, SIGNED_IN, SIGNED_OUT} from '../actions/Auth';
 const initialState = {
     users: [],
     adminUsers: [],
-    currentUser: [],
+    currentUser: JSON.parse(localStorage.getItem('authUser')),
 }
 
 export default (state = initialState, action) => {

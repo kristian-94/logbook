@@ -8,7 +8,6 @@ import SignInPage from '../SignIn';
 import AccountPage from '../Account';
 import AdminPage from '../Admin';
 import * as ROUTES from '../../constants/routes';
-import { withAuthentication } from '../Session';
 import ClientPage from "./ClientPage";
 import ClientReadOnlyPage from "./ClientReadOnlyPage";
 import PageNotFound from "../Error";
@@ -39,4 +38,4 @@ const App = () => (
         </div>
     </Router>
 );
-export default withAuthentication(App);
+export default (App);

@@ -7,10 +7,11 @@ import SingleClientPage from "./SingleClientPage";
 import ClientBlankPage from "./ClientBlankPage";
 import * as clientActions from "../../store/actions/Clients";
 import * as authActions from "../../store/actions/Auth";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 
 const ClientPage = () => {
     const dispatch = useDispatch();
+    const currentUser = useSelector(state => state.auth.currentUser);
     const clientIDinurl = window.location.pathname.split(ROUTES.CLIENTADMIN + '/').pop();
     let newClient = false;
     let noClient = false;
@@ -20,12 +21,14 @@ const ClientPage = () => {
     if (window.location.pathname === ROUTES.CLIENTADMIN) {
         noClient = true;
     }
-    console.log('rendering client page')
 
     useEffect(() => {
-        dispatch(clientActions.fetchClients());
-        dispatch(authActions.fetchUsers());
-    }, [dispatch]);
+        // Should only be fetching if we are signed in properly.
+        if (currentUser) {
+            dispatch(clientActions.fetchClients());
+            dispatch(authActions.fetchUsers());
+        }
+    }, [dispatch, currentUser]);
 
     return (
         <div>

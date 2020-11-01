@@ -1,19 +1,15 @@
 import React from 'react';
-import {AuthUserContext} from "../Session";
+import {useSelector} from "react-redux";
+
 const Landing = () => {
-    return (
-        <AuthUserContext.Consumer>
-            {authUser => {
-                if (authUser === null) {
-                    return <NonAuth />
-                }
-                if (authUser.role  === 3 || authUser.role  === 1) {
-                    return <Auth authUser={authUser} />
-                }
-                return <NonAuth />
-            }}
-        </AuthUserContext.Consumer>
-    )
+    const authUser = useSelector(state => state.auth.currentUser);
+    if (authUser === null) {
+        return <NonAuth />
+    }
+    if (authUser.role  === 3 || authUser.role  === 1) {
+        return <Auth authUser={authUser} />
+    }
+    return <NonAuth />
 };
 export default Landing;
 
