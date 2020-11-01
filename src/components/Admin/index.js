@@ -1,69 +1,51 @@
-import React, {Component, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import * as ROLES from "../../constants/roles";
 import Tooltip from "rc-tooltip/es";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faLevelDownAlt, faLevelUpAlt} from "@fortawesome/free-solid-svg-icons";
 import SweetAlert from "react-bootstrap-sweetalert";
-class AdminPage extends Component {
+import {useDispatch, useSelector} from "react-redux";
+import * as authActions from "../../store/actions/Auth";
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            loading: false,
-            adminUsers: [],
-            basicUsers: [],
-        };
-    }
-    componentDidMount() {
-        this.setState({ loading: true });
-        // TODO will pull in the users into the global redux state already.
-        // this.props.firebase.users().on('value', snapshot => {
-        //     const usersObject = snapshot.val();
-        //     const usersList = Object.keys(usersObject).map(key => ({
-        //         ...usersObject[key],
-        //         uid: key,
-        //     }));
-        //     const adminUsers = usersList.filter(user => {
-        //         return user.roles[ROLES.ADMIN] === ROLES.ADMIN;
-        //     });
-        //     const basicUsers = usersList.filter(user => {
-        //         return user.roles[ROLES.BASIC] === ROLES.BASIC;
-        //     });
-        //
-        //     this.setState({
-        //         adminUsers: adminUsers,
-        //         basicUsers: basicUsers,
-        //         newUsers: newUsers,
-        //         loading: false,
-        //     });
-        // });
-    }
+const AdminPage = () => {
+    const dispatch = useDispatch();
+    const authUser = useSelector(state => state.auth.currentUser);
+    const adminUsers = useSelector(state => state.auth.adminUsers);
+    const allUsers = useSelector(state => state.auth.users);
+    const [loading, setLoading] = useState(false);
+    const [basicUsers, setBasicUsers] = useState(false);
 
-    render() {
-        const { adminUsers, basicUsers, loading } = this.state;
-        return (
-            <div className="col-md-10 text-center">
-                <h1>Admin Users (Read and write access)</h1>
-                {loading && <div>Loading ...</div>}
-                <UserList users={adminUsers} promote={false} demote={false} />
-                <h1>Basic Users (Read only access)</h1>
-                <UserList users={basicUsers} promote={true} demote={true} />
-            </div>
-        );
-    }
+    useEffect(() => {
+        setLoading(true);
+        if (allUsers.length === 0) {
+            dispatch(authActions.fetchUsers());
+        }
+        setBasicUsers(allUsers.filter((user) => user.role !== 3));
+        setLoading(false);
+    }, [dispatch, allUsers]);
+
+    return (
+        <div className="col-md-10 text-center">
+            <h1>Admin Users (Read and write access)</h1>
+            {loading && <div>Loading ...</div>}
+            <UserList users={adminUsers} promote={false} demote={false} />
+            <h1>Basic Users (Read only access)</h1>
+            <UserList users={basicUsers} promote={true} demote={true} />
+        </div>
+    );
 }
 
 const UserList = ({ users, promote, demote}) => {
     const [confirmModal, setConfirmModal] = useState(null);
 
-    const giveNewRole = (uid, newRole) => {
+    const giveNewRole = (id, newRole) => {
         const roles = {};
         roles[newRole] = newRole;
-        //firebase.user(uid).update({roles}).then(r => console.log('Changed role of user: ' + uid + newRole));
+        //firebase.user(id).update({roles}).then(r => console.log('Changed role of user: ' + id + newRole));
         setConfirmModal(null);
     }
 
-    const onClickAction = (uid, newRole, alertType) => {
+    const onClickAction = (id, newRole, alertType) => {
         if (alertType === 'giveAdmin') {
             const modal = (
                 <SweetAlert
@@ -72,7 +54,7 @@ const UserList = ({ users, promote, demote}) => {
                     confirmBtnText="Yes"
                     confirmBtnBsStyle="success"
                     title="Are you sure?"
-                    onConfirm={() => giveNewRole(uid, newRole)}
+                    onConfirm={() => giveNewRole(id, newRole)}
                     onCancel={() => setConfirmModal(null)}
                     focusCancelBtn={false}
                     focusConfirmBtn={false}
@@ -89,7 +71,7 @@ const UserList = ({ users, promote, demote}) => {
                     confirmBtnText="Yes"
                     confirmBtnBsStyle="success"
                     title="Are you sure?"
-                    onConfirm={() => giveNewRole(uid, newRole)}
+                    onConfirm={() => giveNewRole(id, newRole)}
                     onCancel={() => setConfirmModal(null)}
                     focusCancelBtn={false}
                     focusConfirmBtn={false}
@@ -107,7 +89,7 @@ const UserList = ({ users, promote, demote}) => {
                     confirmBtnText="Yes"
                     confirmBtnBsStyle="warning"
                     title="Are you sure?"
-                    onConfirm={() => giveNewRole(uid, newRole)}
+                    onConfirm={() => giveNewRole(id, newRole)}
                     onCancel={() => setConfirmModal(null)}
                     focusCancelBtn={false}
                     focusConfirmBtn={false}
@@ -124,7 +106,7 @@ const UserList = ({ users, promote, demote}) => {
                     confirmBtnText="Yes"
                     confirmBtnBsStyle="warning"
                     title="Are you sure?"
-                    onConfirm={() => giveNewRole(uid, newRole)}
+                    onConfirm={() => giveNewRole(id, newRole)}
                     onCancel={() => setConfirmModal(null)}
                     focusCancelBtn={false}
                     focusConfirmBtn={false}
@@ -156,8 +138,8 @@ const UserList = ({ users, promote, demote}) => {
                 </thead>
                 <tbody>
                 {users.map(user => (
-                    <tr key={user.uid}>
-                        <td>{user.uid}</td>
+                    <tr key={user.id}>
+                        <td>{user.id}</td>
                         <td>{user.email}</td>
                         <td>{user.username}</td>
                         {!promote && (
@@ -169,7 +151,7 @@ const UserList = ({ users, promote, demote}) => {
                                     trigger="hover"
                                     overlay={<div>Demote</div>}
                                 >
-                                    <button onClick={() => onClickAction(user.uid, ROLES.BASIC, 'removeAdmin')} className="btn btn-secondary m-1" type="submit">
+                                    <button onClick={() => onClickAction(user.id, ROLES.BASIC, 'removeAdmin')} className="btn btn-secondary m-1" type="submit">
                                         <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faLevelDownAlt} />
                                     </button>
                                 </Tooltip>
@@ -183,34 +165,34 @@ const UserList = ({ users, promote, demote}) => {
                                 trigger="hover"
                                 overlay={<div>Promote</div>}
                             >
-                                <button onClick={() => onClickAction(user.uid, ROLES.BASIC, 'giveBasic')} className="btn btn-secondary m-1" type="submit">
+                                <button onClick={() => onClickAction(user.id, ROLES.BASIC, 'giveBasic')} className="btn btn-secondary m-1" type="submit">
                                     <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faLevelUpAlt} />
                                 </button>
                             </Tooltip>
                             }
                             {demote &&  <>
-                            <Tooltip
-                                placement="right"
-                                mouseEnterDelay={0.5}
-                                mouseLeaveDelay={0.1}
-                                trigger="hover"
-                                overlay={<div>Promote</div>}
-                            >
-                                <button onClick={() => onClickAction(user.uid, ROLES.ADMIN, 'giveAdmin')} className="btn btn-secondary m-1" type="submit">
-                                    <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faLevelUpAlt} />
-                                </button>
-                            </Tooltip>
-                            <Tooltip
-                                placement="right"
-                                mouseEnterDelay={0.5}
-                                mouseLeaveDelay={0.1}
-                                trigger="hover"
-                                overlay={<div>Make new user</div>}
-                            >
-                                <button onClick={() => onClickAction(user.uid, ROLES.NEW, 'makeNew')} className="btn btn-secondary m-1" type="submit">
-                                    <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faLevelDownAlt} />
-                                </button>
-                            </Tooltip>
+                                <Tooltip
+                                    placement="right"
+                                    mouseEnterDelay={0.5}
+                                    mouseLeaveDelay={0.1}
+                                    trigger="hover"
+                                    overlay={<div>Promote</div>}
+                                >
+                                    <button onClick={() => onClickAction(user.id, ROLES.ADMIN, 'giveAdmin')} className="btn btn-secondary m-1" type="submit">
+                                        <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faLevelUpAlt} />
+                                    </button>
+                                </Tooltip>
+                                <Tooltip
+                                    placement="right"
+                                    mouseEnterDelay={0.5}
+                                    mouseLeaveDelay={0.1}
+                                    trigger="hover"
+                                    overlay={<div>Make new user</div>}
+                                >
+                                    <button onClick={() => onClickAction(user.id, ROLES.NEW, 'makeNew')} className="btn btn-secondary m-1" type="submit">
+                                        <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faLevelDownAlt} />
+                                    </button>
+                                </Tooltip>
                             </>
                             }
                         </td>}
