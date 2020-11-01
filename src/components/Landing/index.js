@@ -8,7 +8,7 @@ const Landing = () => {
                 if (authUser === null) {
                     return <NonAuth />
                 }
-                if (authUser.roles[ROLES.ADMIN] || authUser.roles[ROLES.BASIC]) {
+                if (authUser.role  === 3 || authUser.role  === 1) {
                     return <Auth authUser={authUser} />
                 }
                 return <NonAuth />
@@ -26,10 +26,10 @@ const NonAuth = () => {
     );
 }
 
-const Auth = () => {
+const Auth = ({authUser}) => {
     return (
         <div className="text-center mt-5">
-            <h1>Hello <strong>user</strong></h1>
+            <h1>Hello <strong>{authUser.username}</strong></h1>
             <h5>Use the links at the top to view client hours information.</h5>
         </div>
     );

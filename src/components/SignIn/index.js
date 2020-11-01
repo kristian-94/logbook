@@ -4,8 +4,15 @@ import { compose } from 'recompose';
 import { SignUpLink } from '../SignUp';
 import * as ROUTES from '../../constants/routes';
 import Landing from '../Landing'
+import { connect } from 'react-redux';
+import * as authActions from "../../store/actions/Auth";
 
-const SignInPage = () => (
+const mapDispatchToProps = (dispatch) => {
+    return {
+        signIn: (email, password) => dispatch(authActions.signIn(email, password))
+    }
+};
+const SignInPage = props => (
     <div className="text-center">
         <Landing/>
         <SignInForm />
@@ -24,9 +31,7 @@ class SignInFormBase extends Component {
     }
     onSubmit = event => {
         const { email, password } = this.state;
-        this.props.firebase
-            .doSignInWithEmailAndPassword(email, password)
-            .then(() => {
+        this.props.signIn(email, password).then(() => {
                 this.setState({ ...INITIAL_STATE });
                 this.props.history.push(ROUTES.LANDING);
             })
@@ -73,6 +78,6 @@ class SignInFormBase extends Component {
 }
 const SignInForm = compose(
     withRouter,
-)(SignInFormBase);
+)(connect(null, mapDispatchToProps)(SignInFormBase));
 export default SignInPage;
 export { SignInForm };

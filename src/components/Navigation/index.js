@@ -16,10 +16,10 @@ const Navigation = () => (
             if (authUser === null) {
                 return <NavigationNonAuth />
             }
-            if (authUser.roles[ROLES.ADMIN]) {
+            if (authUser.role === 3) {
                 return <NavigationAdminAuth authUser={authUser} />
             }
-            if (authUser.roles[ROLES.BASIC]) {
+            if (authUser.role === 1) {
                 return <NavigationBasicAuth authUser={authUser} />
             }
             return <NavigationNonAuth />

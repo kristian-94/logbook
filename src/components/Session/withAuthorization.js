@@ -6,20 +6,14 @@ import AuthUserContext from './context';
 const withAuthorization = condition => Component => {
     class WithAuthorization extends React.Component {
         componentDidMount() {
-            // this.listener = this.props.firebase.auth.onAuthStateChanged(
-            //     authUser => {
-            //         if (authUser === null) {
-            //             return;
-            //         }
-            //         // Firebase returns some dumb authUser object that we need to ignore.
-            //         if (Object.keys(authUser).length > 5) {
-            //             return;
-            //         }
-            //         if (!condition(authUser)) {
-            //             this.props.history.push(ROUTES.SIGN_IN);
-            //         }
-            //     },
-            // );
+            console.log('mounting authorization')
+            const authUser = JSON.parse(localStorage.getItem('authUser'));
+            if (authUser === null) {
+                return;
+            }
+            if (!condition(authUser)) {
+                this.props.history.push(ROUTES.SIGN_IN);
+            }
         }
         render() {
             return (

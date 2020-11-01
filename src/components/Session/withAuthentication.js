@@ -8,22 +8,10 @@ const withAuthentication = Component => {
                 authUser: JSON.parse(localStorage.getItem('authUser')),
             };
         }
-        // TODO will store the user details in local storage somewhere, and check here.
-        // componentDidMount() {
-        //     this.listener = this.props.firebase.onAuthUserListener(
-        //         authUser => {
-        //             localStorage.setItem('authUser', JSON.stringify(authUser));
-        //             this.setState({ authUser });
-        //         },
-        //         () => {
-        //             localStorage.removeItem('authUser');
-        //             this.setState({ authUser: null });
-        //         },
-        //     );
-        // }
-        componentWillUnmount() {
-            this.listener();
-        }
+        setAuthUserInLocalStorage = (authUser) => {
+            localStorage.setItem('authUser', JSON.stringify(authUser));
+            this.setState({ authUser });
+        };
         render() {
             return (
                 <AuthUserContext.Provider value={this.state.authUser}>
@@ -32,6 +20,6 @@ const withAuthentication = Component => {
             );
         }
     }
-    return (WithAuthentication);
+    return WithAuthentication;
 };
 export default withAuthentication;
