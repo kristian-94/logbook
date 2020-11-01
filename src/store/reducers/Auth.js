@@ -1,4 +1,4 @@
-import {SET_USERDATA, SIGNED_IN} from '../actions/Auth';
+import {SET_USERDATA, SIGNED_IN, SIGNED_OUT} from '../actions/Auth';
 const initialState = {
     users: [],
     adminUsers: [],
@@ -20,6 +20,12 @@ export default (state = initialState, action) => {
             localStorage.setItem('authUser', JSON.stringify(currentuser));
             return {
                 currentUser: currentuser,
+            };
+        case SIGNED_OUT:
+            // We just signed out so delete our token in local storage and in redux state.
+            localStorage.removeItem('authUser');
+            return {
+                currentUser: [],
             };
     }
     return state;

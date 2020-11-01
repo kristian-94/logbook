@@ -1,17 +1,16 @@
 import React from 'react';
 import {useHistory} from "react-router-dom";
 import * as ROUTES from "../../constants/routes";
+import * as authActions from "../../store/actions/Auth";
+import {useDispatch} from "react-redux";
 
 const SignOutButton = () => {
+    const dispatch = useDispatch();
     const history = useHistory();
-
-    const backToSignIn = () => {
+    const signOut = async () => {
+        await dispatch(authActions.signOut());
         history.push(ROUTES.SIGN_IN);
-    }
-    const signOut = () => {
-        // firebase.doSignOut().then(() => {
-        //     backToSignIn();
-        // });
+        window.location.reload();
     }
 
     return (

@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import SignOutButton from '../SignOut';
 import * as ROUTES from '../../constants/routes';
 import * as NAMES from '../../constants/names';
-import * as ROLES from '../../constants/roles';
 import { AuthUserContext } from '../Session';
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";

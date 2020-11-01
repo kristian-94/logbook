@@ -2,6 +2,7 @@ import {BACKEND_URL} from '../../constants/AppConstants'
 import axios from 'axios';
 export const SET_USERDATA = 'SET_USERDATA';
 export const SIGNED_IN = 'SIGNED_IN';
+export const SIGNED_OUT = 'SIGNED_OUT';
 
 // Here we fetch all user data and put that into our redux state.
 export const fetchUsers = () => {
@@ -52,5 +53,10 @@ export const signIn = (email, password) => {
             // Send to analytics server or handle.
             throw err;
         }
+    };
+}
+export const signOut = () => {
+    return async (dispatch) => {
+        dispatch({type: SIGNED_OUT});
     };
 }

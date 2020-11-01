@@ -8,10 +8,6 @@ const withAuthentication = Component => {
                 authUser: JSON.parse(localStorage.getItem('authUser')),
             };
         }
-        setAuthUserInLocalStorage = (authUser) => {
-            localStorage.setItem('authUser', JSON.stringify(authUser));
-            this.setState({ authUser });
-        };
         render() {
             return (
                 <AuthUserContext.Provider value={this.state.authUser}>
