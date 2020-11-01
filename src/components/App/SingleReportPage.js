@@ -6,7 +6,7 @@ import MonthlySupportHours from "./MonthlySupportHours";
 import {useHistory} from "react-router-dom";
 import * as ROUTES from "../../constants/routes";
 
-const SingleReportPage = ({clientID, firebase, resetPage}) => {
+const SingleReportPage = ({clientID, resetPage}) => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
     const [bucketsData, setBucketsData] = useState([]);
     const [clientData, setClientData] = useState({});
@@ -26,44 +26,44 @@ const SingleReportPage = ({clientID, firebase, resetPage}) => {
     }, []);
 
     useEffect(() => {
-        firebase.buckets(clientID).on('value', snapshot => {
-            if (_isMounted.current) { // Check always mounted component, don't change state if not mounted.
-                const bucketsDataObject = snapshot.val();
-                if (bucketsDataObject === null) {
-                    // No buckets in this client yet.
-                    setBucketsData([]);
-                    return;
-                }
-                const bucketsData = Object.keys(bucketsDataObject)
-                    .map(key => ({
-                        ...bucketsDataObject[key],
-                        bucketID: key,
-                    })).filter(bucket => {
-                        return bucket.archived !== true;
-                    });
-                // Make alphabetical order.
-                bucketsData.sort((bucket1, bucket2) => bucket1['name'] - bucket2['name']);
-                setBucketsData(bucketsData);
-            }
-        });
-        firebase.client(clientID).on('value', snapshot => {
-            if (_isMounted.current) { // Check always mounted component, don't change state if not mounted.
-                const clientDataObject = snapshot.val();
-                if (clientDataObject === null) {
-                    // No buckets in this client yet.
-                    return;
-                }
-                delete clientDataObject.buckets;
-                const clientData = {
-                    'name': clientDataObject.name,
-                    'clientID': clientID,
-                    'noteData': clientDataObject.noteData,
-                    'monthlysupport': clientDataObject.monthlysupport,
-                };
-                setClientData(clientData);
-            }
-        });
-    }, [clientID, firebase]);
+        // firebase.buckets(clientID).on('value', snapshot => {
+        //     if (_isMounted.current) { // Check always mounted component, don't change state if not mounted.
+        //         const bucketsDataObject = snapshot.val();
+        //         if (bucketsDataObject === null) {
+        //             // No buckets in this client yet.
+        //             setBucketsData([]);
+        //             return;
+        //         }
+        //         const bucketsData = Object.keys(bucketsDataObject)
+        //             .map(key => ({
+        //                 ...bucketsDataObject[key],
+        //                 bucketID: key,
+        //             })).filter(bucket => {
+        //                 return bucket.archived !== true;
+        //             });
+        //         // Make alphabetical order.
+        //         bucketsData.sort((bucket1, bucket2) => bucket1['name'] - bucket2['name']);
+        //         setBucketsData(bucketsData);
+        //     }
+        // });
+        // firebase.client(clientID).on('value', snapshot => {
+        //     if (_isMounted.current) { // Check always mounted component, don't change state if not mounted.
+        //         const clientDataObject = snapshot.val();
+        //         if (clientDataObject === null) {
+        //             // No buckets in this client yet.
+        //             return;
+        //         }
+        //         delete clientDataObject.buckets;
+        //         const clientData = {
+        //             'name': clientDataObject.name,
+        //             'clientID': clientID,
+        //             'noteData': clientDataObject.noteData,
+        //             'monthlysupport': clientDataObject.monthlysupport,
+        //         };
+        //         setClientData(clientData);
+        //     }
+        // });
+    }, [clientID]);
 
     let total = 0;
     let chartData = {};

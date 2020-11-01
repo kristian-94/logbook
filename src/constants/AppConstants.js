@@ -1,4 +1,4 @@
-export const BACKEND_URL = 'http://localhost:5000/';
+export const BACKEND_URL = 'http://logbook.local/';
 export const CONFIG_JSON = {
     headers: {
         Accept: 'application/json',

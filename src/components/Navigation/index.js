@@ -13,7 +13,6 @@ import Nav from "react-bootstrap/Nav";
 const Navigation = () => (
     <AuthUserContext.Consumer>
         {authUser => {
-            return <NavigationAdminAuth authUser={authUser} />
             if (authUser === null) {
                 return <NavigationNonAuth />
             }
@@ -22,9 +21,6 @@ const Navigation = () => (
             }
             if (authUser.roles[ROLES.BASIC]) {
                 return <NavigationBasicAuth authUser={authUser} />
-            }
-            if (authUser.roles[ROLES.NEW]) {
-                return <NavigationNewAuth authUser={authUser} />
             }
             return <NavigationNonAuth />
         }}
@@ -76,17 +72,6 @@ const NavigationBasicAuth = ({ authUser }) => (
             Account
         </Link>
         <SignOutButton />
-    </Navbar>
-);
-
-const NavigationNewAuth = () => (
-    <Navbar bg="primary" variant="dark">
-        <Navbar.Brand to="/">{NAMES.SITENAME}</Navbar.Brand>
-        <Nav className="mr-auto">
-            <Link className="btn btn-primary" to={ROUTES.LANDING}>
-                Landing
-            </Link>
-        </Nav>
     </Navbar>
 );
 

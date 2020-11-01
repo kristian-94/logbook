@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import * as ROUTES from '../../constants/routes';
-import { withFirebase } from '../Firebase';
 import { compose } from 'recompose';
 import * as ROLES from '../../constants/roles';
 
@@ -33,26 +32,26 @@ class SignUpFormBase extends Component {
         const roles = {};
         // All new accounts get the new role.
         roles[ROLES.NEW] = ROLES.NEW;
-        this.props.firebase
-            .doCreateUserWithEmailAndPassword(email, passwordOne)
-            .then(authUser => {
-                // Create a user in your Firebase realtime database
-                return this.props.firebase
-                    .user(authUser.user.uid)
-                    .set({
-                        username,
-                        email,
-                        roles,
-                    });
-            })
-            .then(authUser => {
-                this.setState({ ...INITIAL_STATE });
-                this.props.history.push(ROUTES.CLIENTS);
-            })
-            .catch(error => {
-                this.setState({ error });
-            });
-        event.preventDefault();
+        // this.props.firebase
+        //     .doCreateUserWithEmailAndPassword(email, passwordOne)
+        //     .then(authUser => {
+        //         // Create a user in your Firebase realtime database
+        //         return this.props.firebase
+        //             .user(authUser.user.uid)
+        //             .set({
+        //                 username,
+        //                 email,
+        //                 roles,
+        //             });
+        //     })
+        //     .then(authUser => {
+        //         this.setState({ ...INITIAL_STATE });
+        //         this.props.history.push(ROUTES.CLIENTS);
+        //     })
+        //     .catch(error => {
+        //         this.setState({ error });
+        //     });
+        // event.preventDefault();
     };
     onChange = event => {
         this.setState({ [event.target.name]: event.target.value });
@@ -125,7 +124,6 @@ const SignUpLink = () => (
 
 const SignUpForm = compose(
     withRouter,
-    withFirebase,
 )(SignUpFormBase);
 
 export default SignUpPage;

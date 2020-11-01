@@ -1,6 +1,5 @@
 import React from 'react';
 import AuthUserContext from './context';
-import { withFirebase } from '../Firebase';
 const withAuthentication = Component => {
     class WithAuthentication extends React.Component {
         constructor(props) {
@@ -9,18 +8,19 @@ const withAuthentication = Component => {
                 authUser: JSON.parse(localStorage.getItem('authUser')),
             };
         }
-        componentDidMount() {
-            this.listener = this.props.firebase.onAuthUserListener(
-                authUser => {
-                    localStorage.setItem('authUser', JSON.stringify(authUser));
-                    this.setState({ authUser });
-                },
-                () => {
-                    localStorage.removeItem('authUser');
-                    this.setState({ authUser: null });
-                },
-            );
-        }
+        // TODO will store the user details in local storage somewhere, and check here.
+        // componentDidMount() {
+        //     this.listener = this.props.firebase.onAuthUserListener(
+        //         authUser => {
+        //             localStorage.setItem('authUser', JSON.stringify(authUser));
+        //             this.setState({ authUser });
+        //         },
+        //         () => {
+        //             localStorage.removeItem('authUser');
+        //             this.setState({ authUser: null });
+        //         },
+        //     );
+        // }
         componentWillUnmount() {
             this.listener();
         }
@@ -32,6 +32,6 @@ const withAuthentication = Component => {
             );
         }
     }
-    return withFirebase(WithAuthentication);
+    return (WithAuthentication);
 };
 export default withAuthentication;

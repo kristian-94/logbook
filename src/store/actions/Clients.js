@@ -8,13 +8,16 @@ export const FETCH_CLIENT = 'FETCH_CLIENT';
 
 // Here we fetch all high level client data and put that into our redux state.
 export const fetchClients = () => {
-    return async (dispatch) => {
-        // Execute any async code before dispatching the action.
-        const response = await axios.get(BACKEND_URL + 'clients', config.CONFIG_JSON);
+    return async (dispatch, getState) => {
+        const clientid = getState().clients.activeClient.id;
+        const access_token = 'NVBFY2ljaGp5WFo5ZmtVVFZvOXE1amlyYm8tRW5zZG06';
+        let authconfig = config.CONFIG_JSON_CONTENT;
+        authconfig.headers.Authorization = 'Basic ' + access_token;
+        const response = await axios.get(BACKEND_URL + 'clients', authconfig);
         if (response.status !== 200) {
             throw new Error('Didnt get 200 response when fetching clients');
         }
-        dispatch({type: SET_CLIENTDATA, clients: response.data})
+        dispatch({type: SET_CLIENTDATA, clients: response.data});
     };
 }
 

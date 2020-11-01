@@ -4,7 +4,7 @@ import {Container} from "react-bootstrap";
 import * as ROLES from '../../constants/roles'
 import moment from "moment";
 
-const SummaryPage = ({firebase}) => {
+const SummaryPage = () => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
     const [clientData, setBucketData] = useState([]);
     const [lastthreemonths, setLastthreemonths] = useState([]);
@@ -29,70 +29,70 @@ const SummaryPage = ({firebase}) => {
     }, []);
 
     useEffect(() => {
-        firebase.clients().on('value', snapshot => {
-            if (_isMounted.current) { // Check always mounted component, don't change state if not mounted.
-
-                const clientsObject = snapshot.val();
-                //let allBuckets = [];
-                const clientsList = Object.keys(clientsObject)
-                    .map(key => ({
-                        ...clientsObject[key],
-                        clientID: key,
-                    }));
-                const clientBuckets = clientsList.reduce((filtered, client) => {
-                    const bucketArray = Object.keys(client.buckets)
-                        .map(key => ({
-                            ...client.buckets[key],
-                            bucketID: key,
-                        }));
-                    const bucketArrayFiltered = bucketArray.filter(bucket => {
-                        // Check if we should add this bucket to our array.
-
-                        if (bucket.prepaid !== true) {
-                            // We only include buckets that are marked as prepaid.
-                            return false;
-                        }
-                        const hoursDataObject = bucket.hoursData;
-                        const hoursDataArray = Object.keys(hoursDataObject)
-                            .map(key => ({
-                                ...bucket.hoursData[key],
-                                hoursID: key,
-                            }));
-                        const results = hoursDataArray.filter(monthofhoursdata => {
-                            const month = monthofhoursdata.monthandyear;
-                            if (lastthreemonths.includes(month)) {
-                                if (parseFloat(monthofhoursdata.out) > 0) {
-                                    return true;
-                                }
-                            }
-                            return false;
-                        });
-                        // If results has some months in it, we need to include this bucket.
-                        return results.length > 0;
-                    });
-                    if (bucketArrayFiltered.length > 0) {
-                        filtered.push({
-                            client: client,
-                            bucketArrayFiltered: bucketArrayFiltered
-                        });
-                    }
-                    return filtered;
-                }, []);
-                setBucketData(clientBuckets)
-            }
-        });
-        firebase.users().on('value', snapshot => {
-            const usersObject = snapshot.val();
-            const usersList = Object.keys(usersObject).map(key => ({
-                ...usersObject[key],
-                uid: key,
-            }));
-            const adminUsers = usersList.filter(user => {
-                return user.roles[ROLES.ADMIN] === ROLES.ADMIN;
-            });
-            setAdminUsers(adminUsers);
-        });
-    }, [firebase, lastthreemonths]);
+        // firebase.clients().on('value', snapshot => {
+        //     if (_isMounted.current) { // Check always mounted component, don't change state if not mounted.
+        //
+        //         const clientsObject = snapshot.val();
+        //         //let allBuckets = [];
+        //         const clientsList = Object.keys(clientsObject)
+        //             .map(key => ({
+        //                 ...clientsObject[key],
+        //                 clientID: key,
+        //             }));
+        //         const clientBuckets = clientsList.reduce((filtered, client) => {
+        //             const bucketArray = Object.keys(client.buckets)
+        //                 .map(key => ({
+        //                     ...client.buckets[key],
+        //                     bucketID: key,
+        //                 }));
+        //             const bucketArrayFiltered = bucketArray.filter(bucket => {
+        //                 // Check if we should add this bucket to our array.
+        //
+        //                 if (bucket.prepaid !== true) {
+        //                     // We only include buckets that are marked as prepaid.
+        //                     return false;
+        //                 }
+        //                 const hoursDataObject = bucket.hoursData;
+        //                 const hoursDataArray = Object.keys(hoursDataObject)
+        //                     .map(key => ({
+        //                         ...bucket.hoursData[key],
+        //                         hoursID: key,
+        //                     }));
+        //                 const results = hoursDataArray.filter(monthofhoursdata => {
+        //                     const month = monthofhoursdata.monthandyear;
+        //                     if (lastthreemonths.includes(month)) {
+        //                         if (parseFloat(monthofhoursdata.out) > 0) {
+        //                             return true;
+        //                         }
+        //                     }
+        //                     return false;
+        //                 });
+        //                 // If results has some months in it, we need to include this bucket.
+        //                 return results.length > 0;
+        //             });
+        //             if (bucketArrayFiltered.length > 0) {
+        //                 filtered.push({
+        //                     client: client,
+        //                     bucketArrayFiltered: bucketArrayFiltered
+        //                 });
+        //             }
+        //             return filtered;
+        //         }, []);
+        //         setBucketData(clientBuckets)
+        //     }
+        // });
+        // firebase.users().on('value', snapshot => {
+        //     const usersObject = snapshot.val();
+        //     const usersList = Object.keys(usersObject).map(key => ({
+        //         ...usersObject[key],
+        //         uid: key,
+        //     }));
+        //     const adminUsers = usersList.filter(user => {
+        //         return user.roles[ROLES.ADMIN] === ROLES.ADMIN;
+        //     });
+        //     setAdminUsers(adminUsers);
+        // });
+    }, [lastthreemonths]);
 
     if (clientData.length === 0) {
         return (

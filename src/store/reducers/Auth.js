@@ -2,6 +2,7 @@ import {SET_USERDATA} from '../actions/Auth';
 const initialState = {
     users: [],
     adminUsers: [],
+    currentUser: [],
 }
 
 export default (state = initialState, action) => {

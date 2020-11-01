@@ -17,56 +17,50 @@ class AdminPage extends Component {
     }
     componentDidMount() {
         this.setState({ loading: true });
-        this.props.firebase.users().on('value', snapshot => {
-            const usersObject = snapshot.val();
-            const usersList = Object.keys(usersObject).map(key => ({
-                ...usersObject[key],
-                uid: key,
-            }));
-            const adminUsers = usersList.filter(user => {
-                return user.roles[ROLES.ADMIN] === ROLES.ADMIN;
-            });
-            const basicUsers = usersList.filter(user => {
-                return user.roles[ROLES.BASIC] === ROLES.BASIC;
-            });
-            const newUsers = usersList.filter(user => {
-                return user.roles[ROLES.NEW] === ROLES.NEW;
-            });
+        // TODO will pull in the users into the global redux state already.
+        // this.props.firebase.users().on('value', snapshot => {
+        //     const usersObject = snapshot.val();
+        //     const usersList = Object.keys(usersObject).map(key => ({
+        //         ...usersObject[key],
+        //         uid: key,
+        //     }));
+        //     const adminUsers = usersList.filter(user => {
+        //         return user.roles[ROLES.ADMIN] === ROLES.ADMIN;
+        //     });
+        //     const basicUsers = usersList.filter(user => {
+        //         return user.roles[ROLES.BASIC] === ROLES.BASIC;
+        //     });
+        //
+        //     this.setState({
+        //         adminUsers: adminUsers,
+        //         basicUsers: basicUsers,
+        //         newUsers: newUsers,
+        //         loading: false,
+        //     });
+        // });
+    }
 
-            this.setState({
-                adminUsers: adminUsers,
-                basicUsers: basicUsers,
-                newUsers: newUsers,
-                loading: false,
-            });
-        });
-    }
-    componentWillUnmount() {
-        this.props.firebase.users().off();
-    }
     render() {
-        const { adminUsers, basicUsers, newUsers, loading } = this.state;
+        const { adminUsers, basicUsers, loading } = this.state;
         return (
             <div className="col-md-10 text-center">
                 <h1>Admin Users (Read and write access)</h1>
                 {loading && <div>Loading ...</div>}
-                <UserList users={adminUsers} promote={false} demote={false} firebase={this.props.firebase}/>
+                <UserList users={adminUsers} promote={false} demote={false} />
                 <h1>Basic Users (Read only access)</h1>
-                <UserList users={basicUsers} promote={true} demote={true} firebase={this.props.firebase} />
-                <h1>New Users (No access)</h1>
-                <UserList users={newUsers} promote={true} demote={false} firebase={this.props.firebase} />
+                <UserList users={basicUsers} promote={true} demote={true} />
             </div>
         );
     }
 }
 
-const UserList = ({ users, promote, demote, firebase }) => {
+const UserList = ({ users, promote, demote}) => {
     const [confirmModal, setConfirmModal] = useState(null);
 
     const giveNewRole = (uid, newRole) => {
         const roles = {};
         roles[newRole] = newRole;
-        firebase.user(uid).update({roles}).then(r => console.log('Changed role of user: ' + uid + newRole));
+        //firebase.user(uid).update({roles}).then(r => console.log('Changed role of user: ' + uid + newRole));
         setConfirmModal(null);
     }
 

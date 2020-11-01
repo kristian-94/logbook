@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ReportBlankPage = ({firebase}) => {
+const ReportBlankPage = () => {
     return (
         <div>
             <h1>No client selected</h1>

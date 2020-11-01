@@ -7,7 +7,7 @@ import ReportBlankPage from "./ReportBlankPage"
 import SingleReportPage from "./SingleReportPage";
 import * as ROLES from "../../constants/roles";
 
-const ReportPage = ({firebase}) => {
+const ReportPage = () => {
     const [reset, setReset] = useState(false);
     const [adminUsers, setAdminUsers] = useState([]);
 
@@ -22,18 +22,18 @@ const ReportPage = ({firebase}) => {
     }
 
     useEffect(() => {
-        firebase.users().on('value', snapshot => {
-            const usersObject = snapshot.val();
-            const usersList = Object.keys(usersObject).map(key => ({
-                ...usersObject[key],
-                uid: key,
-            }));
-            const adminUsers = usersList.filter(user => {
-                return user.roles[ROLES.ADMIN] === ROLES.ADMIN;
-            });
-            setAdminUsers(adminUsers);
-        });
-    }, [firebase]);
+        // firebase.users().on('value', snapshot => {
+        //     const usersObject = snapshot.val();
+        //     const usersList = Object.keys(usersObject).map(key => ({
+        //         ...usersObject[key],
+        //         uid: key,
+        //     }));
+        //     const adminUsers = usersList.filter(user => {
+        //         return user.roles[ROLES.ADMIN] === ROLES.ADMIN;
+        //     });
+        //     setAdminUsers(adminUsers);
+        // });
+    }, []);
 
     return (
         <div>
@@ -44,7 +44,7 @@ const ReportPage = ({firebase}) => {
                     </Col>
                     <Col xs={10}>
                         {noClientSelected && <ReportBlankPage/>}
-                        {!noClientSelected && <SingleReportPage clientID={clientIDinurl} firebase={firebase} resetPage={reset} />}
+                        {!noClientSelected && <SingleReportPage clientID={clientIDinurl} resetPage={reset} />}
                     </Col>
                 </Row>
             </Container>
