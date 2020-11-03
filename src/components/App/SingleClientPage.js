@@ -38,6 +38,8 @@ const SingleClientPage = ({clientID}) => {
     useEffect(() => {
         if (activeClient.note !== null) {
             setClientNote(activeClient.note);
+        } else {
+            setClientNote('');
         }
     }, [activeClient]);
 
