@@ -4,6 +4,7 @@ import * as config from '../../constants/AppConstants'
 import * as ROUTES from "../../constants/routes";
 import history from "../../components/Navigation/History";
 export const SET_CLIENTDATA = 'SET_CLIENTDATA';
+export const SET_CLIENT_SUMMARY_DATA = 'SET_CLIENT_SUMMARY_DATA';
 export const FETCH_CLIENT = 'FETCH_CLIENT';
 
 export const getAuthConfig = (unencoded_token, content = true) => {
@@ -39,6 +40,17 @@ export const fetchClient = (clientid) => {
             throw new Error('Didnt get 200 response when fetching clients');
         }
         dispatch({type: FETCH_CLIENT, activeClient: responseClient.data.client})
+    };
+}
+// Here we fetch all clients, buckets, months data that have activity in the last numberOfMonths.
+export const fetchClientSummary = (numberOfMonths) => {
+    return async (dispatch, getState) => {
+        const authconfig = getAuthConfig(getState().auth.currentUser.access_token);
+        const response = await axios.get(BACKEND_URL + 'client/summary', authconfig);
+        if (response.status !== 200) {
+            throw new Error('Didnt get 200 response when fetching client summary data');
+        }
+        dispatch({type: SET_CLIENT_SUMMARY_DATA, clients: response.data});
     };
 }
 

@@ -1,16 +1,21 @@
 import React, {useEffect, useRef, useState} from 'react';
-import { withAuthorization } from '../Session';
 import {Container} from "react-bootstrap";
-import * as ROLES from '../../constants/roles'
 import moment from "moment";
+import {useDispatch, useSelector} from "react-redux";
+import * as clientActions from "../../store/actions/Clients";
+import * as authActions from "../../store/actions/Auth";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCheck} from "@fortawesome/free-solid-svg-icons";
 
+// This page should show the buckets that have had hours go out in the last 3 months.
 const SummaryPage = () => {
+    const dispatch = useDispatch();
     const _isMounted = useRef(true); // Initial value _isMounted = true
-    const [clientData, setBucketData] = useState([]);
     const [lastthreemonths, setLastthreemonths] = useState([]);
-    const [adminUsers, setAdminUsers] = useState([]);
+    const clientData = useSelector(state => state.clients.clientSummaryData);
+    const adminUsers = useSelector(state => state.auth.adminUsers);
+    const currentUser = useSelector(state => state.auth.currentUser);
 
-    // Need this to do a componentwillunmount and cleanup memory leaks.
     useEffect(() => {
         const currentMonth = moment(new Date()).endOf('month');
         const thisMonth = currentMonth.format('MMM YYYY');
@@ -29,70 +34,12 @@ const SummaryPage = () => {
     }, []);
 
     useEffect(() => {
-        // firebase.clients().on('value', snapshot => {
-        //     if (_isMounted.current) { // Check always mounted component, don't change state if not mounted.
-        //
-        //         const clientsObject = snapshot.val();
-        //         //let allBuckets = [];
-        //         const clientsList = Object.keys(clientsObject)
-        //             .map(key => ({
-        //                 ...clientsObject[key],
-        //                 clientID: key,
-        //             }));
-        //         const clientBuckets = clientsList.reduce((filtered, client) => {
-        //             const bucketArray = Object.keys(client.buckets)
-        //                 .map(key => ({
-        //                     ...client.buckets[key],
-        //                     bucketID: key,
-        //                 }));
-        //             const bucketArrayFiltered = bucketArray.filter(bucket => {
-        //                 // Check if we should add this bucket to our array.
-        //
-        //                 if (bucket.prepaid !== true) {
-        //                     // We only include buckets that are marked as prepaid.
-        //                     return false;
-        //                 }
-        //                 const hoursDataObject = bucket.hoursData;
-        //                 const hoursDataArray = Object.keys(hoursDataObject)
-        //                     .map(key => ({
-        //                         ...bucket.hoursData[key],
-        //                         hoursID: key,
-        //                     }));
-        //                 const results = hoursDataArray.filter(monthofhoursdata => {
-        //                     const month = monthofhoursdata.monthandyear;
-        //                     if (lastthreemonths.includes(month)) {
-        //                         if (parseFloat(monthofhoursdata.out) > 0) {
-        //                             return true;
-        //                         }
-        //                     }
-        //                     return false;
-        //                 });
-        //                 // If results has some months in it, we need to include this bucket.
-        //                 return results.length > 0;
-        //             });
-        //             if (bucketArrayFiltered.length > 0) {
-        //                 filtered.push({
-        //                     client: client,
-        //                     bucketArrayFiltered: bucketArrayFiltered
-        //                 });
-        //             }
-        //             return filtered;
-        //         }, []);
-        //         setBucketData(clientBuckets)
-        //     }
-        // });
-        // firebase.users().on('value', snapshot => {
-        //     const usersObject = snapshot.val();
-        //     const usersList = Object.keys(usersObject).map(key => ({
-        //         ...usersObject[key],
-        //         uid: key,
-        //     }));
-        //     const adminUsers = usersList.filter(user => {
-        //         return user.roles[ROLES.ADMIN] === ROLES.ADMIN;
-        //     });
-        //     setAdminUsers(adminUsers);
-        // });
-    }, [lastthreemonths]);
+        // Should only be fetching if we are signed in properly.
+        if (currentUser) {
+            dispatch(clientActions.fetchClientSummary());
+            dispatch(authActions.fetchUsers());
+        }
+    }, [dispatch, currentUser]);
 
     if (clientData.length === 0) {
         return (
@@ -103,6 +50,16 @@ const SummaryPage = () => {
     }
     return (
         <div>
+            <div className="m-4">
+                <h3>What is this?</h3>
+                <p>This summary page shows buckets that fit the following criteria:</p>
+                <ul>
+                    <li>The bucket is marked as prepaid: <button className="btn btn-success m-1" type="submit">
+                        <FontAwesomeIcon icon={faCheck} />
+                    </button></li>
+                    <li>The bucket has hours <u>out</u> in the last 3 months</li>
+                </ul>
+            </div>
             <Container fluid>
                 <table className="table">
                     <thead className="theat-dark">
@@ -115,59 +72,36 @@ const SummaryPage = () => {
                         })}
                     </tr>
                     </thead>
+                    {clientData.map(client => {
+                        const bucketRender = client.buckets.map(bucket => {
+                            return (
+                                <tr key={bucket.id}>
+                                    <td>{bucket.name}</td>
+                                    {bucket.hours.map(hours => {
+                                        return (
+                                            <td key={hours.id}>{hours.out}</td>
+                                        )
+                                    })}
+                                </tr>
+                            );
+                        });
 
-                {clientData.map(bucketandclient => {
-                    const bucketRender = bucketandclient.bucketArrayFiltered.map(bucket => {
-                        const hoursDataArray = Object.keys(bucket.hoursData)
-                            .map(key => ({
-                                ...bucket.hoursData[key],
-                                hoursID: key,
-                            }));
-
-                        const hoursToRender = hoursDataArray.sort((month1, month2) => {
-                            const date1 = moment(month1.monthandyear, "MMM YYYY");
-                            const date2 = moment(month2.monthandyear, "MMM YYYY");
-                            return date1 - date2;
-                        }).reduce((filtered, month) => {
-                            if (lastthreemonths.includes(month.monthandyear)) {
-                                filtered.push(month);
-                            }
-                            return filtered;
-                        }, []);
-                        return (<tr key={bucket.bucketID}>
-                                        <td>{bucket.bucketName}</td>
-                                                    {hoursToRender.map(hours => {
-                                                        return (
-                                                            <td key={hours.hoursID}>{hours.out}</td>
-                                                        )
-                                                    })}
-                                    </tr>
-                        );
-                    });
-
-                    let user = 'No owner';
-                    const founduser = adminUsers.find(user => user.uid === bucketandclient.client.owner);
-                    if (founduser !== undefined) {user = founduser.username}
-                    return (
-                        <tbody key={bucketandclient.client.id}>
-                            <tr key={bucketandclient.client.id}>
-                                <th rowSpan="5">{bucketandclient.client.name}</th>
+                        let user = 'No owner';
+                        const founduser = adminUsers.find(user => user.id === client.ownerid);
+                        if (founduser !== undefined) {user = founduser.username}
+                        return (
+                            <tbody key={client.id}>
+                            <tr key={client.id}>
+                                <th rowSpan="5">{client.name}</th>
                                 <th rowSpan="5">{user}</th>
                             </tr>
                             {bucketRender}
-                        </tbody>
-                    );
-                })}
+                            </tbody>
+                        );
+                    })}
                 </table>
             </Container>
         </div>
     );
 };
-// role-based authorization
-const condition = authUser => {
-    if (authUser.roles === undefined) {
-        return false;
-    }
-    return authUser.roles[ROLES.BASIC] === ROLES.BASIC || authUser.roles[ROLES.ADMIN] === ROLES.ADMIN;
-};
-export default withAuthorization(condition)(SummaryPage);
+export default (SummaryPage);

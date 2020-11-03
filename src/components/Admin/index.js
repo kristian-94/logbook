@@ -9,7 +9,6 @@ import * as authActions from "../../store/actions/Auth";
 
 const AdminPage = () => {
     const dispatch = useDispatch();
-    const authUser = useSelector(state => state.auth.currentUser);
     const adminUsers = useSelector(state => state.auth.adminUsers);
     const allUsers = useSelector(state => state.auth.users);
     const [loading, setLoading] = useState(false);
