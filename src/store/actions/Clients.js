@@ -6,7 +6,7 @@ import history from "../../components/Navigation/History";
 export const SET_CLIENTDATA = 'SET_CLIENTDATA';
 export const FETCH_CLIENT = 'FETCH_CLIENT';
 
-const getAuthConfig = (unencoded_token, content = true) => {
+export const getAuthConfig = (unencoded_token, content = true) => {
     const access_token = Buffer.from(`${unencoded_token}:''`, 'utf8').toString('base64');
     let authconfig = config.CONFIG_JSON_CONTENT;
     if (config === false) {

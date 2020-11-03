@@ -28,20 +28,20 @@ const AdminPage = () => {
         <div className="col-md-10 text-center">
             <h1>Admin Users (Read and write access)</h1>
             {loading && <div>Loading ...</div>}
-            <UserList users={adminUsers} promote={false} demote={false} />
+            <UserList users={adminUsers} promote={false}/>
             <h1>Basic Users (Read only access)</h1>
-            <UserList users={basicUsers} promote={true} demote={true} />
+            <UserList users={basicUsers} promote={true} />
         </div>
     );
 }
 
-const UserList = ({ users, promote, demote}) => {
+const UserList = ({ users, promote}) => {
+    const dispatch = useDispatch();
     const [confirmModal, setConfirmModal] = useState(null);
 
-    const giveNewRole = (id, newRole) => {
-        const roles = {};
-        roles[newRole] = newRole;
-        //firebase.user(id).update({roles}).then(r => console.log('Changed role of user: ' + id + newRole));
+    const giveNewRole = async (id, newRole) => {
+        await dispatch(authActions.updateRole(id, newRole));
+        console.log('Changed role of user with id: ' + id + " to have role " + newRole);
         setConfirmModal(null);
     }
 
@@ -60,41 +60,6 @@ const UserList = ({ users, promote, demote}) => {
                     focusConfirmBtn={false}
                 >
                     This will make this user an admin.
-                </SweetAlert>
-            );
-            setConfirmModal(modal);
-        } else if (alertType === 'giveBasic') {
-            const modal = (
-                <SweetAlert
-                    success
-                    showCancel
-                    confirmBtnText="Yes"
-                    confirmBtnBsStyle="success"
-                    title="Are you sure?"
-                    onConfirm={() => giveNewRole(id, newRole)}
-                    onCancel={() => setConfirmModal(null)}
-                    focusCancelBtn={false}
-                    focusConfirmBtn={false}
-                >
-                    This will give the user basic access.
-                </SweetAlert>
-            );
-            setConfirmModal(modal);
-        } else if (alertType === 'makeNew') {
-            // Basic users can be demoted back to new users again.
-            const modal = (
-                <SweetAlert
-                    warning
-                    showCancel
-                    confirmBtnText="Yes"
-                    confirmBtnBsStyle="warning"
-                    title="Are you sure?"
-                    onConfirm={() => giveNewRole(id, newRole)}
-                    onCancel={() => setConfirmModal(null)}
-                    focusCancelBtn={false}
-                    focusConfirmBtn={false}
-                >
-                    This will remove basic access from this user.
                 </SweetAlert>
             );
             setConfirmModal(modal);
@@ -157,45 +122,21 @@ const UserList = ({ users, promote, demote}) => {
                                 </Tooltip>
                             </td>
                         )}
-                        {promote && <td>
-                            {!demote && <Tooltip
+                        {promote &&
+                        <td>
+                            <Tooltip
                                 placement="right"
                                 mouseEnterDelay={0.5}
                                 mouseLeaveDelay={0.1}
                                 trigger="hover"
                                 overlay={<div>Promote</div>}
                             >
-                                <button onClick={() => onClickAction(user.id, ROLES.BASIC, 'giveBasic')} className="btn btn-secondary m-1" type="submit">
+                                <button onClick={() => onClickAction(user.id, ROLES.ADMIN, 'giveAdmin')} className="btn btn-secondary m-1" type="submit">
                                     <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faLevelUpAlt} />
                                 </button>
                             </Tooltip>
-                            }
-                            {demote &&  <>
-                                <Tooltip
-                                    placement="right"
-                                    mouseEnterDelay={0.5}
-                                    mouseLeaveDelay={0.1}
-                                    trigger="hover"
-                                    overlay={<div>Promote</div>}
-                                >
-                                    <button onClick={() => onClickAction(user.id, ROLES.ADMIN, 'giveAdmin')} className="btn btn-secondary m-1" type="submit">
-                                        <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faLevelUpAlt} />
-                                    </button>
-                                </Tooltip>
-                                <Tooltip
-                                    placement="right"
-                                    mouseEnterDelay={0.5}
-                                    mouseLeaveDelay={0.1}
-                                    trigger="hover"
-                                    overlay={<div>Make new user</div>}
-                                >
-                                    <button onClick={() => onClickAction(user.id, ROLES.NEW, 'makeNew')} className="btn btn-secondary m-1" type="submit">
-                                        <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faLevelDownAlt} />
-                                    </button>
-                                </Tooltip>
-                            </>
-                            }
-                        </td>}
+                        </td>
+                        }
                     </tr>
                 ))}
                 </tbody>

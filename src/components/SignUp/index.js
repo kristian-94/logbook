@@ -30,8 +30,8 @@ class SignUpFormBase extends Component {
     onSubmit = event => {
         //const { username, email, passwordOne } = this.state;
         const roles = {};
-        // All new accounts get the new role.
-        roles[ROLES.NEW] = ROLES.NEW;
+        // All new accounts get the basic role.
+        //roles[ROLES.BASIC] = ROLES.BASIC;
         // this.props.firebase
         //     .doCreateUserWithEmailAndPassword(email, passwordOne)
         //     .then(authUser => {
