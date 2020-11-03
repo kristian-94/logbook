@@ -1,54 +1,51 @@
-import React, {useEffect, useState} from 'react';
-import { withAuthorization } from '../Session';
+import React, {useEffect, useRef} from 'react';
 import Sidebar from "../Navigation/sidebar";
 import {Container, Row, Col } from "react-bootstrap";
 import * as ROUTES from "../../constants/routes";
 import ReportBlankPage from "./ReportBlankPage"
 import SingleReportPage from "./SingleReportPage";
+import * as clientActions from "../../store/actions/Clients";
+import * as authActions from "../../store/actions/Auth";
+import {useDispatch, useSelector} from "react-redux";
 
 const ReportPage = () => {
-    const [reset, setReset] = useState(false);
-    const [adminUsers, setAdminUsers] = useState([]);
-
-    const clientIDinurl = window.location.pathname.split('report/').pop();
-
+    const dispatch = useDispatch();
+    const currentUser = useSelector(state => state.auth.currentUser);
+    const clientIDinurl = window.location.pathname.split(ROUTES.REPORT + '/').pop();
+    const _isMounted = useRef(true); // Initial value _isMounted = true
     let noClientSelected = false;
     if (window.location.pathname === ROUTES.REPORT) {
         noClientSelected = true;
     }
-    const resetPage = () => {
-        setReset(!reset);
-    }
-
     useEffect(() => {
-        // firebase.users().on('value', snapshot => {
-        //     const usersObject = snapshot.val();
-        //     const usersList = Object.keys(usersObject).map(key => ({
-        //         ...usersObject[key],
-        //         uid: key,
-        //     }));
-        //     const adminUsers = usersList.filter(user => {
-        //         return user.roles[ROLES.ADMIN] === ROLES.ADMIN;
-        //     });
-        //     setAdminUsers(adminUsers);
-        // });
-    }, []);
+        // Should only be fetching if we are signed in properly.
+        if (currentUser) {
+            dispatch(clientActions.fetchClients());
+            dispatch(authActions.fetchUsers());
+        }
+    }, [dispatch, currentUser]);
 
+    // Need this to do a componentwillunmount and cleanup memory leaks.
+    useEffect(() => {
+        // ComponentWillUnmount in Class Component
+        return () => {
+            _isMounted.current = false;
+        }
+    }, []);
     return (
         <div>
             <Container fluid>
                 <Row>
                     <Col xs={2} id="sidebar-wrapper">
-                        <Sidebar resetPage={resetPage} adminusers={adminUsers}  />
+                        <Sidebar />
                     </Col>
                     <Col xs={10}>
                         {noClientSelected && <ReportBlankPage/>}
-                        {!noClientSelected && <SingleReportPage clientID={clientIDinurl} resetPage={reset} />}
+                        {!noClientSelected && <SingleReportPage clientID={clientIDinurl} />}
                     </Col>
                 </Row>
             </Container>
         </div>
     );
 };
-const condition = authUser => !!authUser;
-export default withAuthorization(condition)(ReportPage);
+export default (ReportPage);
