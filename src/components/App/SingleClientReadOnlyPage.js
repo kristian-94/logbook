@@ -16,6 +16,7 @@ const SingleClientReadOnlyPage = ({clientID}) => {
     const history = useHistory();
     const dispatch = useDispatch();
     const activeClient = useSelector(state => state.clients.activeClient);
+    const currentUser = useSelector(state => state.auth.currentUser);
 
     useEffect(() => {
         // Got to reset some state when switching clients.
@@ -58,7 +59,7 @@ const SingleClientReadOnlyPage = ({clientID}) => {
         <div>
             <button onClick={onViewArchive} className="btn btn-warning m-1 float-right" type="submit">View Bucket Archive</button>
             <button onClick={onViewClientReport} className="btn btn-warning m-1 float-right" type="submit">To Report</button>
-            <ToAdminPage />
+            {currentUser.role === 3 && <ToAdminPage />}
             <div className="card mt-3">
                 <div className="card-header">
                     <h1>
