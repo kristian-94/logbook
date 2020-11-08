@@ -200,13 +200,10 @@ export const createMonth = (bucket, date) => {
             month: date.getMonth() + 1,
             year: date.getFullYear(),
             bucketid: bucket.id,
-            in: 0,
-            out: 0,
-            touched: 0,
         };
         const responseClient = await axios.post(BACKEND_URL + 'hours', data, authConfig);
-        if (responseClient.status !== 201) {
-            throw new Error('Didnt get 201 response when creating an hours record');
+        if (responseClient.status !== 200) {
+            throw new Error('Didnt get 200 response when creating an hours record');
         }
         // Updated in backend. Fetch all client data again.
         dispatch(fetchClient(bucket.clientid));

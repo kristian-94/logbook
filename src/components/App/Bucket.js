@@ -26,6 +26,7 @@ const Bucket = ({bucket}) => {
     }, []);
 
     const onAddMonth = async () => {
+        // If the month already exists, it will add the previous month instead.
         await dispatch(clientActions.createMonth(bucket, newMonth));
     }
     const onRemoveMonth = async (hours) => {
