@@ -73,6 +73,11 @@ const Bucket = ({bucket}) => {
         text.current = stripHtml(e.target.value);
     }
     const updateBucketName = async () => {
+        // Only update if the name was actually changed.
+        if (text.current === bucket.name) {
+            console.log('bucket name unchanged, not updating');
+            return;
+        }
         await dispatch(clientActions.updateBucket(bucket, {name: text.current}))
         console.log('bucket updated to have name ' + text.current);
     }

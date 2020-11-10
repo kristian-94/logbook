@@ -56,6 +56,11 @@ const SingleClientPage = ({clientID}) => {
         setClientNote(e.target.value);
     }
     const updateClientNote = e => {
+        // Only update with a request if the note actually changed.
+        if (activeClient.note === clientNote) {
+            console.log('no change to client note, not updating');
+            return;
+        }
         dispatch(clientActions.updateClient(clientID, {note: clientNote}));
     }
 
