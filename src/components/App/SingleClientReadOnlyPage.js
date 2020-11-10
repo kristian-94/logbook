@@ -66,6 +66,7 @@ const SingleClientReadOnlyPage = ({clientID}) => {
                         {activeClient.name}
                         <OwnerDisplay owner={activeClient.owner}/>
                     </h1>
+                    {Object.keys(activeClient).length !== 0 && <div className="float-left"><i>Last updated by {activeClient.lastupdated.username} - {activeClient.lastupdated.date}</i></div>}
                 </div>
                 <div className="card-body">
                     <h5 className="card-title">
