@@ -78,6 +78,30 @@ const SingleClientPage = ({clientID}) => {
         history.push(ROUTES.CLIENTS + '/' + clientID);
     }
 
+    const onArchiveBucket = async (bucket) => {
+        await dispatch(clientActions.updateBucket(bucket, {archived: 1}));
+    }
+    const onRemoveMonth = async (hours) => {
+        await dispatch(clientActions.deleteMonth(hours));
+    }
+    const onAddMonth = async (bucket, newMonth) => {
+        // If the month already exists, it will add the previous month instead.
+        await dispatch(clientActions.createMonth(bucket, newMonth));
+    }
+    const handleOnUpdateHoursData = (hoursid, column, value) => {
+        dispatch(clientActions.updateHoursData(hoursid, column, value))
+    }
+    const onClickMarkPrepaid = async (bucket) => {
+        let prepaid = 0;
+        if (bucket.prepaid === 0) {
+            prepaid = 1;
+        }
+        await dispatch(clientActions.updateBucket(bucket, {prepaid: prepaid}));
+    }
+    const handleUpdateBucketName = async (bucket, data) => {
+        await dispatch(clientActions.updateBucket(bucket, data))
+        console.log('bucket updated to have name ' + data.name);
+    }
     // Do not start rendering if we can't find the activeClient yet. Still being fetched.
     if (Object.keys(activeClient).length === 0 && activeClient.constructor === Object) {
         return (
@@ -147,7 +171,15 @@ const SingleClientPage = ({clientID}) => {
                             if (bucket.archived === 0) {
                                 return (
                                     <div key={bucket.id} className="singlebucket">
-                                        <Bucket bucket={bucket} />
+                                        <Bucket
+                                            bucket={bucket}
+                                            onArchiveBucket={onArchiveBucket}
+                                            onRemoveMonth={onRemoveMonth}
+                                            onAddMonth={onAddMonth}
+                                            handleOnUpdateHoursData={handleOnUpdateHoursData}
+                                            onClickMarkPrepaid={onClickMarkPrepaid}
+                                            handleUpdateBucketName={handleUpdateBucketName}
+                                        />
                                         <hr/>
                                     </div>
                                 );

@@ -7,15 +7,12 @@ import ContentEditable from "react-contenteditable";
 import stripHtml from "string-strip-html";
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
-import {useDispatch} from "react-redux";
-import * as clientActions from "../../store/actions/Clients";
 import MonthPicker from "./MonthPicker";
 
-const Bucket = ({bucket}) => {
+const Bucket = ({bucket, onArchiveBucket, onRemoveMonth, onAddMonth, handleOnUpdateHoursData, onClickMarkPrepaid, handleUpdateBucketName}) => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
     const [confirmModal, setConfirmModal] = useState(null);
     const [newMonth, SetNewMonth] = useState(new Date());
-    const dispatch = useDispatch();
 
     // Need this to do a componentwillunmount and cleanup memory leaks.
     useEffect(() => {
@@ -24,26 +21,6 @@ const Bucket = ({bucket}) => {
             _isMounted.current = false;
         }
     }, []);
-
-    const onAddMonth = async () => {
-        // If the month already exists, it will add the previous month instead.
-        await dispatch(clientActions.createMonth(bucket, newMonth));
-    }
-    const onRemoveMonth = async (hours) => {
-        await dispatch(clientActions.deleteMonth(hours));
-    }
-
-    const onArchiveBucket = async (bucket) => {
-        await dispatch(clientActions.updateBucket(bucket, {archived: 1}));
-    }
-
-    const onClickMarkPrepaid = async (bucket) => {
-        let prepaid = 0;
-        if (bucket.prepaid === 0) {
-            prepaid = 1;
-        }
-        await dispatch(clientActions.updateBucket(bucket, {prepaid: prepaid}));
-    }
 
     const onClickArchive = (bucketData) => {
         const modal = (
@@ -64,10 +41,6 @@ const Bucket = ({bucket}) => {
         );
         setConfirmModal(modal);
     }
-
-    const handleOnUpdateHoursData = (hoursid, column, value) => {
-        dispatch(clientActions.updateHoursData(hoursid, column, value))
-    }
     const text = useRef(bucket.name);
     const bucketNameUpdated = (e) => {
         text.current = stripHtml(e.target.value);
@@ -78,8 +51,7 @@ const Bucket = ({bucket}) => {
             console.log('bucket name unchanged, not updating');
             return;
         }
-        await dispatch(clientActions.updateBucket(bucket, {name: text.current}))
-        console.log('bucket updated to have name ' + text.current);
+        await handleUpdateBucketName(bucket, {name: text.current});
     }
     const handleChangeMonth = date => {
         SetNewMonth(date);
@@ -106,7 +78,7 @@ const Bucket = ({bucket}) => {
                 trigger="hover"
                 overlay={<div>Add month</div>}
             >
-                    <button onClick={() => onAddMonth()} className="btn btn-success m-1 ml-5 float-left" type="submit">
+                    <button onClick={() => onAddMonth(bucket, newMonth)} className="btn btn-success m-1 ml-5 float-left" type="submit">
                         <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faPlus} />
                     </button>
             </Tooltip>
