@@ -96,7 +96,7 @@ const BucketTable = ({data, updateData, onRemoveMonth, readOnly}) => {
             console.log('trying to update a month that could not be found! - this should not be possible!');
             return;
         }
-        if (currentmonth[column] === value) {
+        if (currentmonth[column] === value || (value === '' && currentmonth[column] === null)) {
             console.log('no need to update, nothing changed');
             return;
         }
