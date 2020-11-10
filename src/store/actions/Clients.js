@@ -10,7 +10,7 @@ export const FETCH_CLIENT = 'FETCH_CLIENT';
 export const getAuthConfig = (unencoded_token, content = true) => {
     const access_token = Buffer.from(`${unencoded_token}:''`, 'utf8').toString('base64');
     let authconfig = config.CONFIG_JSON_CONTENT;
-    if (config === false) {
+    if (content === false) {
         authconfig = config.CONFIG_JSON;
     }
     authconfig.headers.Authorization = 'Basic ' + access_token;

@@ -6,6 +6,7 @@ import SignUpPage from '../SignUp';
 import SignInPage from '../SignIn';
 import AccountPage from '../Account';
 import AdminPage from '../Admin';
+import LogsPage from '../Admin/LogsPage';
 import * as ROUTES from '../../constants/routes';
 import ClientPage from "./ClientPage";
 import ClientReadOnlyPage from "./ClientReadOnlyPage";
@@ -13,8 +14,6 @@ import PageNotFound from "../Error";
 import ReportPage from "./ReportPage";
 import SummaryPage from "./SummaryPage";
 import OwnerPage from "./OwnerPage";
-//TODO do we need this? import history from "../Navigation/History";
-
 
 const App = () => (
     <Router >
@@ -32,6 +31,7 @@ const App = () => (
                 <Route path={ROUTES.OWNERS} component={OwnerPage} />
                 <Route path={ROUTES.ACCOUNT} component={AccountPage} />
                 <Route path={ROUTES.ADMIN} component={AdminPage} />
+                <Route path={ROUTES.LOGS} component={LogsPage} />
                 <Route component={PageNotFound} />
             </Switch>
         </div>

@@ -29,6 +29,9 @@ const NavigationAdminAuth = ({authUser}) => {
                 <Link className="btn btn-danger ml-1 mr-1" to={ROUTES.CLIENTADMIN}>
                     Client Admin
                 </Link>
+                <Link className="btn btn-danger ml-1 mr-1" to={ROUTES.LOGS}>
+                    Logs
+                </Link>
                 <Link className="btn btn-success ml-1 mr-1" to={ROUTES.CLIENTS}>
                     View Clients
                 </Link>

@@ -9,4 +9,5 @@ export const OWNERS = '/owners';
 export const NEW = '/new';
 export const ACCOUNT = '/account';
 export const ADMIN = '/admin';
+export const LOGS = '/logs';
 export const PASSWORD_FORGET = '/pw-forget';
