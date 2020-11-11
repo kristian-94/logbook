@@ -1,8 +1,9 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useMemo, useRef} from 'react';
 import {Container} from "react-bootstrap";
 import {useSelector, useDispatch} from 'react-redux';
 import * as clientActions from "../../store/actions/Clients";
 import * as authActions from "../../store/actions/Auth";
+import {useTable, useSortBy} from 'react-table';
 
 const OwnerPage = () => {
     const _isMounted = useRef(true); // Initial value _isMounted = true
@@ -23,32 +24,104 @@ const OwnerPage = () => {
         dispatch(authActions.fetchUsers());
     }, [dispatch]);
 
+    const columns = useMemo(
+        () => [
+            {
+                Header: 'Client',
+                accessor: 'client',
+            },
+            {
+                Header: 'Owner',
+                accessor: 'owner',
+            },
+        ],
+        []
+    );
+    // Makes the sorting consistent.
+    const capitalizeFirstLetter = (uncapitalString) => uncapitalString.charAt(0).toUpperCase() + uncapitalString.slice(1);
+    const data = useMemo(() => {
+        // Grab data and format as array and output here.
+        return clients.map((client) => {
+            const owner = adminUsers.filter(user => user.id === client.ownerid);
+            let ownername = 'No owner';
+            if (Object.keys(owner).length > 0) {
+                ownername = owner[0].username;
+            }
+            return (
+                {
+                    client: capitalizeFirstLetter(client.name),
+                    owner: capitalizeFirstLetter(ownername),
+                }
+            );
+        });
+    }, [clients, adminUsers]);
+
+    // Create a non editable cell renderer
+    const NonEditableCell = ({cell}) => {
+        if (!cell.value) {
+            return null;
+        }
+        return cell.value;
+    }
+    // Set our editable cell renderer as the default Cell renderer
+    const defaultColumn = {
+        Cell: NonEditableCell,
+    }
+    const {
+        getTableProps,
+        getTableBodyProps,
+        headerGroups,
+        rows,
+        prepareRow,
+    } = useTable(
+        {
+            columns,
+            data,
+            defaultColumn,
+        },
+        useSortBy
+    );
+
     if (clients.length === 0 || adminUsers.length === 0) {
         return (
             <div>
                 Loading client owners page
             </div>
-        )
+        );
     }
     return (
         <div>
             <Container fluid>
-                <table className="table w-50">
-                    <thead className="theat-dark">
-                        <tr>
-                            <th scope="col">Client</th>
-                            <th scope="col">Owner</th>
+                <table {...getTableProps()} className="table w-50">
+                    <thead>
+                    {headerGroups.map(headerGroup => (
+                        <tr {...headerGroup.getHeaderGroupProps()}>
+                            {headerGroup.headers.map(column => (
+                                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                                    {column.render('Header')}
+                                    <span>
+                                        {column.isSorted
+                                          ? column.isSortedDesc
+                                          ? ' ⬇️'
+                                          : ' ⬆️'
+                                          : ''}
+                                      </span>
+                                </th>
+
+                            ))}
                         </tr>
+                    ))}
                     </thead>
-                    <tbody>
-                    {clients.map(client => {
-                        let user = 'No owner';
-                        const founduser = adminUsers.find(user => user.id === client.ownerid);
-                        if (founduser !== undefined) {user = founduser.username}
+                    <tbody {...getTableBodyProps()}>
+                    {rows.map(row => {
+                        prepareRow(row);
                         return (
-                            <tr key={client.id}>
-                                <td>{client.name}</td>
-                                <td>{user}</td>
+                            <tr {...row.getRowProps()}>
+                                {row.cells.map(cell => {
+                                    return (
+                                        <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                                    );
+                                })}
                             </tr>
                         );
                     })}
