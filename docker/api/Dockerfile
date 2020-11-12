@@ -19,7 +19,17 @@ RUN apt-get update -y \
     nginx \
     php-fpm \
     php-pgsql \
-    graphviz
+    graphviz \
+    php-soap \
+    php-zip \
+    php-curl \
+    php-bcmath \
+    php-exif \
+    php-gd \
+    php-iconv \
+    php-intl \
+    php-mbstring \
+    php-opcache
 
 RUN cd /usr/local/lib/ && curl -sS https://getcomposer.org/installer | php -- --version=1.10.17 && mv composer.phar /usr/local/bin/composer
 
