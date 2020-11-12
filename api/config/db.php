@@ -2,7 +2,7 @@
 
 return [
     'class' => 'yii\db\Connection',
-    'dsn' => 'pgsql:host=localhost;dbname=logbook',
+    'dsn' => 'pgsql:host=api-db;dbname=logbook',
     'username' => 'logbook',
     'password' => 'password',
     'charset' => 'utf8',
