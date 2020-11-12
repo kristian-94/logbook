@@ -24,3 +24,12 @@ services:
     volumes:
       - ./client:/siteroot
     restart: always
+  build-test:
+    build: ./docker/build
+    ports:
+      - "8090:80"
+    volumes:
+      - ./:/var/www/site
+    restart: always
+volumes:
+  apidbdata:
