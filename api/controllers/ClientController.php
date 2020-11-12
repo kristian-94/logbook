@@ -34,6 +34,9 @@ class ClientController extends ApiController {
             throw new Exception('need a client id in the request.');
         }
         $client = Client::findOne($clientid);
+        if (!$client) {
+            throw new Exception('No client with id ' . $clientid . ' found.');
+        }
         $data['client'] = $client->getAttributes();
         $data['client']['owner'] = $client->getOwner()->all()[0] ?? null; // There is only one owner, or no owner.
         $data['client']['communication'] = $client->getCommunications()->orderBy('date DESC, id DESC')->all();
