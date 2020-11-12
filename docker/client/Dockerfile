@@ -13,3 +13,6 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && apt-get install -
 WORKDIR /siteroot
 
 CMD npm install && npm start
+
+# For hacking to keep container alive...
+# CMD npm install && npm start && tail -f /dev/null
