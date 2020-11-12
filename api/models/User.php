@@ -61,7 +61,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     {
         $fields = parent::fields();
         // remove fields that contain sensitive information
-        unset($fields['access_token'], $fields['password_hash'], $fields['token_expiry']);
+        unset($fields['password_hash'], $fields['token_expiry']);
         return $fields;
     }
 
