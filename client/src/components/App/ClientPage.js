@@ -66,7 +66,7 @@ const ClientPage = () => {
 
     // First check that we have a currentUser set and an activeclient.
     if (noClient === false && confirmed === false && confirmModal === null && currentUser && Object.keys(activeClient).length !== 0) {
-        if (activeClient.ownerid !== currentUser.id) {
+        if (activeClient.ownerid !== currentUser.id && activeClient.ownerid !== null) {
             setConfirmModal(modal);
         }
     }
