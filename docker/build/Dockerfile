@@ -41,6 +41,6 @@ COPY nginx-site.conf /etc/nginx/sites-available/default
 EXPOSE 80
 EXPOSE 443
 
-WORKDIR /siteroot
+WORKDIR /var/www/site/api
 
 CMD service php7.2-fpm start && nginx
