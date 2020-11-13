@@ -27,7 +27,7 @@ class LogController extends ActiveController
         foreach ($logs as $log) {
             // Fix the log_time
             $log_time = $log['log_time'];
-            $epoch = (int)substr($log_time, 0, -5);
+            $epoch = (int)strtok($log_time, '.');
             $time = new DateTime("@$epoch");
             $timezone = new DateTimeZone('Australia/Sydney');
             $date = $time->setTimezone($timezone)->format('D d M Y g:ia');
