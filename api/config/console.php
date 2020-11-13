@@ -18,10 +18,23 @@ $config = [
             'class' => 'yii\caching\FileCache',
         ],
         'log' => [
+            'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
                 [
                     'class' => 'yii\log\FileTarget',
                     'levels' => ['error', 'warning'],
+                ],
+                [
+                    'class' => 'yii\log\DbTarget',
+                    'levels' => ['info'],
+                    'logVars' => [], // totally disable the inclusion of context information.
+                    'categories' => [
+                        'client',
+                        'bucket',
+                        'hours',
+                        'user',
+                        'communication',
+                    ],
                 ],
             ],
         ],
