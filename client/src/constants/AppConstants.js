@@ -1,4 +1,4 @@
-export const BACKEND_URL = process.env.REACT_APP_API_URL || "/api/";
+export const BACKEND_URL = process.env.REACT_APP_API_URL || "/api/index.php/";
 export const CONFIG_JSON = {
     headers: {
         Accept: 'application/json',
