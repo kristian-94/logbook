@@ -26,24 +26,40 @@ Tracks hours billed to clients - different to total hours actually spent on a pr
     cd logbook
     docker-compose up
     ```
-5. May have to uncomment hacks in `docker/client/Dockerfile` and run `npm start` 
-manually inside client container to keep it from shutting down and restarting.
 
-6. Run database migrations from yii api container.  
+5. Run database migrations from yii api container.
     
    ```
+   ./control api
    php /siteroot/api/vendor/bin/yii migrate --appconfig=/siteroot/api/config/console.php
    ```
    
-7. Initialize auth roles inside yii auth database tables and create an initial admin user.
+6. Initialize auth roles inside yii auth database tables and create an initial admin user.
 
    ```
    php /siteroot/api/vendor/bin/yii rbac/init --appconfig=/siteroot/api/config/console.php
    
    ```
 
-8. Now you should be able to visit the site in your browser at `localhost`
+7. Now you should be able to visit the site in your browser at `localhost`
 and log in with username = 'admin' and password = 'admin'
+
+## Utility Commands
+
+Use the following command to enter the bash shell of each container.
+Replaces using the docker exec function.
+Enter web container (react, frontend app):
+```
+./control web
+```
+Enter postgres database shell:
+```
+./control db
+```
+Enter yii PHP backend container (eg. to run yii commands from command line):
+```
+./control api
+```
 
 ## Development vs production build
 

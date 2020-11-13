@@ -14,7 +14,7 @@ use yii\console\Controller;
 class RbacController extends Controller {
     public function actionInit() {
         $auth = Yii::$app->authManager;
-        echo "running auth console thing\n";
+        echo "Creating admin and basic roles and creating initial admin user.\n";
 
         $auth->removeAll();
 
@@ -51,5 +51,6 @@ class RbacController extends Controller {
 
         // Assign admin role to this new admin user.
         $auth->assign($admin, $adminUser->getAttribute('id'));
+        echo "Finished creating roles and admin user with username = admin and password = admin\n";
     }
 }
