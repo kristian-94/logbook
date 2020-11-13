@@ -15,6 +15,7 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: logbook
       POSTGRES_USER: logbook
+    container_name: logbook_api_db
     volumes:
       - "apidbdata:/var/lib/postgresql"
   client:
