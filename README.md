@@ -32,13 +32,13 @@ manually inside client container to keep it from shutting down and restarting.
 6. Run database migrations from yii api container.  
     
    ```
-   php /siteroot/api/vendor/bin/yii migrate
+   php /siteroot/api/vendor/bin/yii migrate --appconfig=/siteroot/api/config/console.php
    ```
    
 7. Initialize auth roles inside yii auth database tables and create an initial admin user.
 
    ```
-   php /siteroot/api/vendor/bin/yii rbac/init
+   php /siteroot/api/vendor/bin/yii rbac/init --appconfig=/siteroot/api/config/console.php
    
    ```
 
