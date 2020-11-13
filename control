@@ -1,0 +1,26 @@
+#! /bin/bash
+
+## Change to directory of where this script is located
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+cd "$DIR" || exit;
+
+case "$1" in
+    web)
+        webcont="$(docker-compose ps -q client)"
+        docker exec -ti $webcont bash
+        ;;
+
+    db)
+        dbcont="$(docker-compose ps -q api-db)"
+        docker exec -ti $dbcont psql -U logbook logbook
+        ;;
+
+    api)
+        dbtestcont="$(docker-compose ps -q api)"
+        docker exec -ti $dbtestcont bash
+        ;;
+
+    *)
+        echo Invalid command "$1"
+        exit 1
+esac
