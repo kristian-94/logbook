@@ -45,6 +45,7 @@ class RbacController extends Controller {
             'email' => 'admin@test.com',
             'username' => 'admin',
             'role' => 3,
+            'password_hash' => Yii::$app->security->generatePasswordHash('admin'),
                                   ]);
         $adminUser->save();
 
