@@ -42,6 +42,9 @@ manually inside client container to keep it from shutting down and restarting.
    
    ```
 
+8. Now you should be able to visit the site in your browser at `localhost`
+and log in with username = 'admin' and password = 'admin'
+
 ## Development vs production build
 
 Prod & dev share the same `db` container service as the database.
