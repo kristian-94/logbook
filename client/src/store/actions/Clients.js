@@ -3,9 +3,11 @@ import axios from 'axios';
 import * as config from '../../constants/AppConstants'
 import * as ROUTES from "../../constants/routes";
 import history from "../../components/Navigation/History";
+import {SIGNED_OUT} from "./Auth";
 export const SET_CLIENTDATA = 'SET_CLIENTDATA';
 export const SET_CLIENT_SUMMARY_DATA = 'SET_CLIENT_SUMMARY_DATA';
 export const FETCH_CLIENT = 'FETCH_CLIENT';
+export const RESET_CLIENTDATA = 'RESET_CLIENTDATA';
 
 export const getAuthConfig = (unencoded_token, content = true) => {
     const access_token = Buffer.from(`${unencoded_token}:''`, 'utf8').toString('base64');
@@ -20,11 +22,22 @@ export const getAuthConfig = (unencoded_token, content = true) => {
 export const fetchClients = () => {
     return async (dispatch, getState) => {
         const authconfig = getAuthConfig(getState().auth.currentUser.access_token);
-        const response = await axios.get(BACKEND_URL + 'clients', authconfig);
-        if (response.status !== 200) {
-            throw new Error('Didnt get 200 response when fetching clients');
+        // Client fetching is one of the first things we do, so we can check here if we're signed in.
+        try {
+            const response = await axios.get(BACKEND_URL + 'clients', authconfig);
+            if (response.status !== 200) {
+                throw new Error('Didnt get 200 response when fetching clients');
+            }
+            dispatch({type: SET_CLIENTDATA, clients: response.data});
+        } catch (error) {
+            if (error.response.status === 401) {
+                // We aren't authorized, and should be signed out and reset client data.
+                dispatch({type: RESET_CLIENTDATA});
+                dispatch({type: SIGNED_OUT});
+                history.push(ROUTES.SIGN_IN);
+                window.location.reload();
+            }
         }
-        dispatch({type: SET_CLIENTDATA, clients: response.data});
     };
 }
 

@@ -1,4 +1,4 @@
-import {FETCH_CLIENT, SET_CLIENT_SUMMARY_DATA, SET_CLIENTDATA} from '../actions/Clients';
+import {FETCH_CLIENT, SET_CLIENT_SUMMARY_DATA, SET_CLIENTDATA, RESET_CLIENTDATA} from '../actions/Clients';
 
 const initialState = {
     clients: [],
@@ -23,6 +23,8 @@ export default (state = initialState, action) => {
                 ...state,
                 activeClient: action.activeClient,
             };
+        case RESET_CLIENTDATA:
+            return initialState;
         default:
             return state;
     }
