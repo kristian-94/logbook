@@ -1,0 +1,4 @@
+DB_HOST=api-db
+DB_DATABASE=logbook
+DB_USERNAME=logbook
+DB_PASSWORD=password
