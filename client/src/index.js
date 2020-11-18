@@ -5,22 +5,22 @@ import * as serviceWorker from './serviceWorker';
 import './index.scss';
 import './bootstrap-overrides.scss';
 import { Provider } from 'react-redux';
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { applyMiddleware, combineReducers, createStore } from 'redux';
 import ReduxThunk from 'redux-thunk';
-import authReducer from './store/reducers/Auth'
-import clientsReducer from './store/reducers/Clients'
+import authReducer from './store/reducers/Auth';
+import clientsReducer from './store/reducers/Clients';
 
 const rootReducer = combineReducers({
-    auth: authReducer,
-    clients: clientsReducer,
+  auth: authReducer,
+  clients: clientsReducer,
 });
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
 ReactDOM.render(
   <React.StrictMode>
-      <Provider store={store}>
-          <App />
-      </Provider>
+    <Provider store={store}>
+      <App/>
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
