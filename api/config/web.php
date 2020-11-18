@@ -30,9 +30,6 @@ $config = [
             'enableSession' => false,
             'loginUrl' => null,
         ],
-        'errorHandler' => [
-            'errorAction' => 'site/error',
-        ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
             // send all mails to a file by default. You have to set
@@ -44,8 +41,8 @@ $config = [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
                 [
-                    'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning'],
+                    'class' => 'yii\log\PhpTarget',
+                    'levels' => ['error'],
                 ],
                 [
                     'class' => 'yii\log\DbTarget',
