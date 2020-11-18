@@ -23,7 +23,7 @@ Tracks hours billed to clients - different to total hours actually spent on a pr
 4.  Copy .env into siteroot
 
     ```
-    cp logbook/docker/env logbook/.env
+    cp logbook/docker/api/env logbook/.env
     ```
 
 5.  Spin up environment
