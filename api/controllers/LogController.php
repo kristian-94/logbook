@@ -10,37 +10,6 @@ use yii\rest\ActiveController;
 class LogController extends ActiveController
 {
     public $modelClass = 'app\models\Log';
-    public function actions()
-    {
-        $actions = parent::actions();
-        unset($actions['index']);
-        return $actions;
-    }
-    /** This function fetches logs.
-     *
-     * @return array
-     */
-    public function actionIndex() {
-        // TODO could be able to filter to just certain types here.
-        $logs = Log::find()->select('id, category, log_time, message')->orderBy('log_time DESC')->all();
-        $fixedlogs = [];
-        foreach ($logs as $log) {
-            // Fix the log_time
-            $log_time = $log['log_time'];
-            $epoch = (int)strtok($log_time, '.');
-            $time = new DateTime("@$epoch");
-            $timezone = new DateTimeZone('Australia/Sydney');
-            $date = $time->setTimezone($timezone)->format('D d M Y g:ia');
-            $fixedlogs[] = [
-                'id' => $log['id'],
-                'date' => $date,
-                'epoch' => $epoch,
-                'category' => $log['category'],
-                'message' => $log['message'],
-            ];
-        }
-        return $fixedlogs;
-    }
     public function behaviors()
     {
         $behaviors = parent::behaviors();

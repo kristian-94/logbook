@@ -2,6 +2,8 @@
 
 namespace app\models;
 
+use DateTime;
+use DateTimeZone;
 use Yii;
 
 /**
@@ -48,6 +50,23 @@ class Log extends \yii\db\ActiveRecord
             'log_time' => 'log_time',
             'prefix' => 'prefix',
             'message' => 'message',
+        ];
+    }
+    public function fields()
+    {
+        return [
+            'id',
+            'category',
+            'message',
+            'epoch' => function ($model) {
+                return (int)strtok($model->log_time, '.');
+            },
+            'date' => function ($model) {
+                $epoch = (int)strtok($model->log_time, '.');
+                $time = new DateTime("@$epoch");
+                $timezone = new DateTimeZone('Australia/Sydney');
+                return $time->setTimezone($timezone)->format('D d M Y g:ia');
+            },
         ];
     }
 }

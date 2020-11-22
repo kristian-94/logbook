@@ -13,7 +13,7 @@ const LogsPage = () => {
     // Going to fetch the logs on each render of this page. No dispatch or redux state updated.
     const fetchLogs = async () => {
       const authconfig = getAuthConfig(access_token);
-      const response = await axios.get(BACKEND_URL + 'logs', authconfig);
+      const response = await axios.get(BACKEND_URL + 'logs?sort=-log_time', authconfig);
       console.log(response);
       if (response.status !== 200) {
         throw new Error('Didnt get 200 response when fetching users');
