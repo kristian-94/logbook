@@ -2,6 +2,7 @@
 
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
+require __DIR__ . '/../targets/PhpTarget.php';
 
 $config = [
     'id' => 'basic-console',
