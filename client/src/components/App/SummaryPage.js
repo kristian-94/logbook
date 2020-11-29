@@ -41,16 +41,8 @@ const SummaryPage = () => {
     }
   }, [dispatch, currentUser]);
 
-  if (clientData.length === 0) {
+  const SummaryPageInfo = () => {
     return (
-      <div>
-        Loading client summary page
-      </div>
-    );
-  }
-
-  return (
-    <div>
       <div className="m-4">
         <h3>What is this?</h3>
         <p>This summary page shows buckets that fit the following criteria:</p>
@@ -61,6 +53,24 @@ const SummaryPage = () => {
           <li>The bucket has hours <u>out</u> in the last 3 months</li>
         </ul>
       </div>
+    );
+  }
+
+  if (clientData.length === 0) {
+    return (
+      <div>
+        <SummaryPageInfo/>
+        <hr/>
+        <div className="m-4">
+          No buckets found matching the summary criteria.
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <SummaryPageInfo/>
       <Container fluid>
         <table className="table">
           <thead className="theat-dark">
