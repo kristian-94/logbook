@@ -1,11 +1,9 @@
 <?php
 namespace app\controllers;
 use app\models\Log;
-use DateTime;
-use DateTimeZone;
+use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\filters\auth\HttpBasicAuth;
-use yii\helpers\ArrayHelper;
 use yii\rest\ActiveController;
 
 class LogController extends ActiveController
@@ -53,5 +51,22 @@ class LogController extends ActiveController
             ],
         ];
         return $behaviors;
+    }
+    public function actions()
+    {
+        $actions = parent::actions();
+        unset ($actions['index']);
+        return $actions;
+    }
+    public function actionIndex()
+    {
+        $query = Log::find();
+        // Increase the max page limit to 1000.
+        return new ActiveDataProvider([
+            'query'      => $query,
+            'pagination' => [
+                'pageSizeLimit' => [1, 1000],
+            ],
+        ]);
     }
 }
