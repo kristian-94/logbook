@@ -11,6 +11,7 @@ npm install
 pushd /var/www/site
 
 pushd client
+npm install react-scripts
 npm run build
 popd
 
