@@ -1,6 +1,6 @@
 #/bin/bash
 
-function build {
+function build() {
 	composer install -vvv --no-dev
 	composer dump-autoload --optimize
 
