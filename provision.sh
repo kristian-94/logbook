@@ -5,14 +5,13 @@ curl -sS https://getcomposer.org/installer | php
 mv composer.phar /usr/local/bin/composer
 composer self-update --1
 
-npm install
-
+npm install -g npm@latest
 
 pushd /var/www/site
 
 pushd client
-npm install react-scripts
-npm run build
+/usr/local/bin/npm install react-scripts
+/usr/local/bin/npm run build
 popd
 
 pushd api
