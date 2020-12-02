@@ -130,7 +130,11 @@ class ApiController extends ActiveController
                     $message .= " in client $clientname";
                 }
             }
-            Yii::info("$username created a $modeltype:$message", $modeltype);
+            $thingcreated = $modeltype;
+            if ($modeltype === 'hours') {
+                $thingcreated = 'month of hours';
+            }
+            Yii::info("$username created a $thingcreated:$message", $modeltype);
         } else if ($actionid === 'delete') {
             $modelid = $queryparams['id'];
             $message .= " '$modelid'";
