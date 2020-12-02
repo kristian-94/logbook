@@ -60,7 +60,8 @@ const Sidebar = () => {
 
   const history = useHistory();
 
-  const onClientChanged = (client) => {
+  // This function tells us which 'section' we're in, admin, viewing, or reports.
+  const getSection = () => {
     let section = ROUTES.CLIENTS;
     if (window.location.pathname.substr(0, ROUTES.REPORT.length) === ROUTES.REPORT) {
       section = ROUTES.REPORT;
@@ -68,7 +69,11 @@ const Sidebar = () => {
     if (window.location.pathname.substr(0, ROUTES.CLIENTADMIN.length) === ROUTES.CLIENTADMIN) {
       section = ROUTES.CLIENTADMIN;
     }
-    history.push(section + "/" + client.id);
+    return section;
+  }
+
+  const onClientChanged = (client) => {
+    history.push(getSection() + "/" + client.id);
   }
 
   const onViewAllClientsAndOwners = () => {
@@ -115,7 +120,7 @@ const Sidebar = () => {
         <Nav.Item>
           <Nav.Link onClick={() => onViewAllClientsAndOwners()}>All clients and owners</Nav.Link>
         </Nav.Item>
-        <AddNewClientLink/>
+        {getSection() === ROUTES.CLIENTADMIN && <AddNewClientLink/>}
       </Nav>
     </>
   );
