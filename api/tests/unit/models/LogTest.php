@@ -4,6 +4,7 @@ namespace tests\unit\models;
 
 use app\models\Log;
 use app\models\User;
+use app\tests\fixtures\BucketFixture;
 use app\tests\fixtures\ClientFixture;
 use app\tests\fixtures\UserFixture;
 use UnitTester;
@@ -27,8 +28,13 @@ class LogTest extends \Codeception\Test\Unit
             ],
             'client' => [
                 'class' => ClientFixture::className(),
-                // fixture data located in tests/_data/user.php
+                // fixture data located in tests/_data/client.php
                 'dataFile' => codecept_data_dir() . 'client.php'
+            ],
+            'bucket' => [
+                'class' => BucketFixture::className(),
+                // fixture data located in tests/_data/bucket.php
+                'dataFile' => codecept_data_dir() . 'bucket.php'
             ],
         ];
     }
@@ -54,10 +60,8 @@ class LogTest extends \Codeception\Test\Unit
         // TODO call logger->flush() here and read from database log table. But not working.
         $log = end($messages);
         $messagestring = $log[0];
-        $expectedstring = 'user1 created communication: note \'example note\', date ';
-        expect_that(substr($messagestring, 0, strlen($expectedstring)) === $expectedstring);
-        expect_that(strpos($messagestring, 'Sep 13th 2020') !== false);
-        expect_that(strpos($messagestring, 'in client client1') !== false);
+        $expectedstring = 'user1 created communication: note \'example note\', date \'Sep 13th 2020\' in client client1';
+        expect($messagestring)->equals($expectedstring);
     }
     public function testLogDeleteCommunication()
     {
@@ -77,10 +81,8 @@ class LogTest extends \Codeception\Test\Unit
         // TODO call logger->flush() here and read from database log table. But not working.
         $log = end($messages);
         $messagestring = $log[0];
-        $expectedstring = 'user1 deleted communication: note \'example note\', date ';
-        expect_that(substr($messagestring, 0, strlen($expectedstring)) === $expectedstring);
-        expect_that(strpos($messagestring, 'Sep 13th 2020') !== false);
-        expect_that(strpos($messagestring, 'in client client1') !== false);
+        $expectedstring = 'user1 deleted communication: note \'example note\', date Sep 13th 2020 in client client1';
+        expect($messagestring)->equals($expectedstring);
     }
     public function testLogCreateClient()
     {
@@ -102,7 +104,7 @@ class LogTest extends \Codeception\Test\Unit
         $log = end($messages);
         $messagestring = $log[0];
         $expectedstring = 'user1 created client: name \'test client\'';
-        expect_that(substr($messagestring, 0, strlen($expectedstring)) === $expectedstring);
+        expect($messagestring)->equals($expectedstring);
     }
     public function testLogUpdateClientName()
     {
@@ -130,7 +132,7 @@ class LogTest extends \Codeception\Test\Unit
         $log = end($messages);
         $messagestring = $log[0];
         $expectedstring = 'user1 updated client: name from \'oldclientname\' to \'Updated name\'';
-        expect_that(substr($messagestring, 0, strlen($expectedstring)) === $expectedstring);
+        expect($messagestring)->equals($expectedstring);
     }
     public function testLogUpdateClientOwner()
     {
@@ -173,7 +175,7 @@ class LogTest extends \Codeception\Test\Unit
         $log = end(Yii::getLogger()->messages);
         $messagestring = $log[0];
         $expectedstring = 'user1 updated client: changed owner from \'user1\' to \'No owner\' in client client1';
-        expect_that(substr($messagestring, 0, strlen($expectedstring)) === $expectedstring);
+        expect($messagestring)->equals($expectedstring);
     }
     public function testLogUpdateClientSupportHours()
     {
@@ -199,7 +201,7 @@ class LogTest extends \Codeception\Test\Unit
         $log = end(Yii::getLogger()->messages);
         $messagestring = $log[0];
         $expectedstring = 'user1 updated client: support from \'\' to \'4 support hours\' in client client1';
-        expect_that(substr($messagestring, 0, strlen($expectedstring)) === $expectedstring);
+        expect($messagestring)->equals($expectedstring);
     }
     public function testLogDeleteClient()
     {
@@ -258,7 +260,7 @@ class LogTest extends \Codeception\Test\Unit
         $messagestring = $log[0];
         $jsondata = json_encode($olddata);
         $expectedstring = 'user1 deleted client: with data ' . $jsondata;
-        expect_that(substr($messagestring, 0, strlen($expectedstring)) === $expectedstring);
+        expect($messagestring)->equals($expectedstring);
     }
     public function testLogCreateBucket()
     {
@@ -297,7 +299,7 @@ class LogTest extends \Codeception\Test\Unit
         $log = end(Yii::getLogger()->messages);
         $messagestring = $log[0];
         $expectedstring = 'user1 created bucket: name \'test1\' in client client1';
-        expect_that(substr($messagestring, 0, strlen($expectedstring)) === $expectedstring);
+        expect($messagestring)->equals($expectedstring);
     }
     public function testLogUpdateBucketName()
     {
@@ -322,7 +324,7 @@ class LogTest extends \Codeception\Test\Unit
         $log = end(Yii::getLogger()->messages);
         $messagestring = $log[0];
         $expectedstring = 'user1 updated bucket: name from \'test1\' to \'test2\' in client client1';
-        expect_that(substr($messagestring, 0, strlen($expectedstring)) === $expectedstring);
+        expect($messagestring)->equals($expectedstring);
     }
     public function testLogUpdateBucketPrepaid()
     {
@@ -347,7 +349,7 @@ class LogTest extends \Codeception\Test\Unit
         $log = end(Yii::getLogger()->messages);
         $messagestring = $log[0];
         $expectedstring = 'user1 updated bucket: prepaid from \'0\' to \'1\' in client client1';
-        expect_that(substr($messagestring, 0, strlen($expectedstring)) === $expectedstring);
+        expect($messagestring)->equals($expectedstring);
     }
     public function testLogUpdateBucketArchive()
     {
@@ -372,7 +374,7 @@ class LogTest extends \Codeception\Test\Unit
         $log = end(Yii::getLogger()->messages);
         $messagestring = $log[0];
         $expectedstring = 'user1 updated bucket: archived from \'0\' to \'1\' in client client1';
-        expect_that(substr($messagestring, 0, strlen($expectedstring)) === $expectedstring);
+        expect($messagestring)->equals($expectedstring);
     }
     public function testLogDeleteBucket()
     {
@@ -423,6 +425,34 @@ class LogTest extends \Codeception\Test\Unit
         var_dump($messagestring);
         //die;
         $expectedstring = 'user1 deleted bucket: with data ' . $jsondata . ' from client client1';
-        expect_that(substr($messagestring, 0, strlen($expectedstring)) === $expectedstring);
+        expect($messagestring)->equals($expectedstring);
+    }
+    public function testLogCreateHours()
+    {
+        // Mock a result that the BucketController would return when we create a bucket.
+        $result = array (
+            'id' => 2,
+            'month' => 6,
+            'year' => 2020,
+            'invoice' => NULL,
+            'description' => NULL,
+            'in' => 0,
+            'out' => 0,
+            'touched' => 0,
+            'bucketid' => 1,
+        );
+        $user = new User();
+        $user->setAttribute('username', 'user1');
+        $bodyparams = array (
+            'month' => 6,
+            'year' => 2020,
+            'bucketid' => 1,
+        );
+        Yii::setLogger(new Logger());
+        Log::log($user, 'create', $result, 'hours', $bodyparams);
+        $log = end(Yii::getLogger()->messages);
+        $messagestring = $log[0];
+        $expectedstring = 'user1 created month of hours: June 2020 in bucket bucket1, in client client1';
+        expect($messagestring)->equals($expectedstring);
     }
 }

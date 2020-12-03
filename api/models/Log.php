@@ -130,6 +130,7 @@ class Log extends \yii\db\ActiveRecord
             }
         }
         if ($actiontype === 'update') {
+            $changedname = false;
             // Log who, when, what.
             foreach ($bodyparams as $attribute => $value) {
                 if ($olddata[$attribute] !== $value) {
@@ -153,6 +154,9 @@ class Log extends \yii\db\ActiveRecord
                             $valuechanged = 'No owner';
                         }
                     }
+                    if ($attribute === 'name' && $modeltype === 'client') {
+                        $changedname = true;
+                    }
                     // We did actually update.
                     $message .= "$attributechanged from '$olddataattribute' to '$valuechanged'";
                 }
@@ -164,7 +168,8 @@ class Log extends \yii\db\ActiveRecord
             if ($bucketid) {
                 $message .= ' in bucket ' . $bucket->getAttribute('name') . ',';
             }
-            if ($clientid) {
+            // Don't want to log the client if we changed the client name.
+            if ($clientid && !$changedname) {
                 $clientname = Client::findOne(['id' => $clientid])->getAttribute('name');
                 $message .= " in client $clientname";
             }
@@ -192,7 +197,7 @@ class Log extends \yii\db\ActiveRecord
                 $bucket = Bucket::findOne(['id' => $bucketid]);
                 $message .= ' in bucket ' . $bucket->getAttribute('name') . ',';
             }
-            if ($clientid) {
+            if ($clientid && $modeltype !== 'client') {
                 $clientname = Client::findOne(['id' => $clientid])->getAttribute('name');
                 $message .= " in client $clientname";
             }
