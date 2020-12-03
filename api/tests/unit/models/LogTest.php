@@ -65,7 +65,6 @@ class LogTest extends \Codeception\Test\Unit
         $result = null;
         $user = new User();
         $user->setAttribute('username', 'user1');
-        $queryparams = ['id' => '1'];
         $olddata = [
             'id' => 1,
             'date' => 1600000000,
@@ -73,7 +72,7 @@ class LogTest extends \Codeception\Test\Unit
             'clientid' => 1,
         ];
         Yii::setLogger(new Logger());
-        Log::log($user, 'delete', $result, 'communication', [], $queryparams, $olddata);
+        Log::log($user, 'delete', $result, 'communication', [], $olddata);
         $messages = Yii::getLogger()->messages;
         // TODO call logger->flush() here and read from database log table. But not working.
         $log = end($messages);
@@ -121,15 +120,12 @@ class LogTest extends \Codeception\Test\Unit
             'name' => 'Updated name',
             'support' => NULL,
         );
-        $queryparams = array (
-            'id' => '1',
-        );
         $olddata = array (
             'name' => 'oldclientname',
             'support' => NULL,
         );
         Yii::setLogger(new Logger());
-        Log::log($user, 'update', $result, 'client', $bodyparams, $queryparams, $olddata);
+        Log::log($user, 'update', $result, 'client', $bodyparams, $olddata);
         $messages = Yii::getLogger()->messages;
         $log = end($messages);
         $messagestring = $log[0];
@@ -162,7 +158,7 @@ class LogTest extends \Codeception\Test\Unit
             'ownerid' => NULL,
         );
         Yii::setLogger(new Logger());
-        Log::log($user, 'update', $result, 'client', $bodyparams, $queryparams, $olddata);
+        Log::log($user, 'update', $result, 'client', $bodyparams, $olddata);
         $messages = Yii::getLogger()->messages;
         $log = end($messages);
         $messagestring = $log[0];
@@ -173,7 +169,7 @@ class LogTest extends \Codeception\Test\Unit
         $olddata['ownerid'] = 1;
         $result['ownerid'] = null;
         $bodyparams['ownerid'] = null;
-        Log::log($user, 'update', $result, 'client', $bodyparams, $queryparams, $olddata);
+        Log::log($user, 'update', $result, 'client', $bodyparams, $olddata);
         $log = end(Yii::getLogger()->messages);
         $messagestring = $log[0];
         $expectedstring = 'user1 updated client: changed owner from \'user1\' to \'No owner\' in client client1';
@@ -194,15 +190,12 @@ class LogTest extends \Codeception\Test\Unit
             'name' => 'client1',
             'support' => '4 support hours',
         );
-        $queryparams = array (
-            'id' => '1',
-        );
         $olddata = array (
             'name' => 'client1',
             'support' => NULL,
         );
         Yii::setLogger(new Logger());
-        Log::log($user, 'update', $result, 'client', $bodyparams, $queryparams, $olddata);
+        Log::log($user, 'update', $result, 'client', $bodyparams, $olddata);
         $log = end(Yii::getLogger()->messages);
         $messagestring = $log[0];
         $expectedstring = 'user1 updated client: support from \'\' to \'4 support hours\' in client client1';
@@ -212,9 +205,6 @@ class LogTest extends \Codeception\Test\Unit
     {
         $user = new User();
         $user->setAttribute('username', 'user1');
-        $queryparams = array (
-            'id' => '1',
-        );
         $olddata = array (
             'client' =>
                 array (
@@ -263,7 +253,7 @@ class LogTest extends \Codeception\Test\Unit
                 ),
         );
         Yii::setLogger(new Logger());
-        Log::log($user, 'delete', null, 'client', [], $queryparams, $olddata);
+        Log::log($user, 'delete', null, 'client', [], $olddata);
         $log = end(Yii::getLogger()->messages);
         $messagestring = $log[0];
         $jsondata = json_encode($olddata);
@@ -306,7 +296,133 @@ class LogTest extends \Codeception\Test\Unit
         Log::log($user, 'create', $result, 'bucket', $bodyparams);
         $log = end(Yii::getLogger()->messages);
         $messagestring = $log[0];
-        $expectedstring = 'user1 created bucket: name \'test1\'';
+        $expectedstring = 'user1 created bucket: name \'test1\' in client client1';
+        expect_that(substr($messagestring, 0, strlen($expectedstring)) === $expectedstring);
+    }
+    public function testLogUpdateBucketName()
+    {
+        $result = array (
+            'id' => 1,
+            'name' => 'test2',
+            'timecreated' => 1600000000,
+            'clientid' => 1,
+            'archived' => 0,
+            'prepaid' => 0,
+        );
+        $bodyparams = array (
+            'name' => 'test2',
+        );
+        $olddata = array (
+            'name' => 'test1',
+        );
+        $user = new User();
+        $user->setAttribute('username', 'user1');
+        Yii::setLogger(new Logger());
+        Log::log($user, 'update', $result, 'bucket', $bodyparams, $olddata);
+        $log = end(Yii::getLogger()->messages);
+        $messagestring = $log[0];
+        $expectedstring = 'user1 updated bucket: name from \'test1\' to \'test2\' in client client1';
+        expect_that(substr($messagestring, 0, strlen($expectedstring)) === $expectedstring);
+    }
+    public function testLogUpdateBucketPrepaid()
+    {
+        $result = array (
+            'id' => 1,
+            'name' => 'test1',
+            'timecreated' => 1600000000,
+            'clientid' => 1,
+            'archived' => 0,
+            'prepaid' => 1,
+        );
+        $bodyparams = array (
+            'prepaid' => 1,
+        );
+        $olddata = array (
+            'prepaid' => 0,
+        );
+        $user = new User();
+        $user->setAttribute('username', 'user1');
+        Yii::setLogger(new Logger());
+        Log::log($user, 'update', $result, 'bucket', $bodyparams, $olddata);
+        $log = end(Yii::getLogger()->messages);
+        $messagestring = $log[0];
+        $expectedstring = 'user1 updated bucket: prepaid from \'0\' to \'1\' in client client1';
+        expect_that(substr($messagestring, 0, strlen($expectedstring)) === $expectedstring);
+    }
+    public function testLogUpdateBucketArchive()
+    {
+        $result = array (
+            'id' => 1,
+            'name' => 'test1',
+            'timecreated' => 1600000000,
+            'clientid' => 1,
+            'archived' => 1,
+            'prepaid' => 0,
+        );
+        $bodyparams = array (
+            'archived' => 1,
+        );
+        $olddata = array (
+            'archived' => 0,
+        );
+        $user = new User();
+        $user->setAttribute('username', 'user1');
+        Yii::setLogger(new Logger());
+        Log::log($user, 'update', $result, 'bucket', $bodyparams, $olddata);
+        $log = end(Yii::getLogger()->messages);
+        $messagestring = $log[0];
+        $expectedstring = 'user1 updated bucket: archived from \'0\' to \'1\' in client client1';
+        expect_that(substr($messagestring, 0, strlen($expectedstring)) === $expectedstring);
+    }
+    public function testLogDeleteBucket()
+    {
+        $user = new User();
+        $user->setAttribute('username', 'user1');
+        $olddata = array (
+            'id' => 1,
+            'name' => 'test',
+            'timecreated' => 1600000000,
+            'clientid' => 1,
+            'archived' => 1,
+            'prepaid' => 0,
+            'hours' =>
+                array (
+                    0 =>
+                        array (
+                            'id' => 1,
+                            'month' => 11,
+                            'year' => 2020,
+                            'invoice' => NULL,
+                            'description' => NULL,
+                            'in' => 2,
+                            'out' => 0,
+                            'touched' => 1,
+                            'bucketid' => 1,
+                            'remaining' => 2,
+                        ),
+                    1 =>
+                        array (
+                            'id' => 2,
+                            'month' => 12,
+                            'year' => 2020,
+                            'invoice' => NULL,
+                            'description' => NULL,
+                            'in' => 3,
+                            'out' => 0,
+                            'touched' => 1,
+                            'bucketid' => 1,
+                            'remaining' => 5,
+                        ),
+                ),
+        );
+        Yii::setLogger(new Logger());
+        Log::log($user, 'delete', null, 'bucket', [], $olddata);
+        $log = end(Yii::getLogger()->messages);
+        $messagestring = $log[0];
+        $jsondata = json_encode($olddata);
+        var_dump($messagestring);
+        //die;
+        $expectedstring = 'user1 deleted bucket: with data ' . $jsondata . ' from client client1';
         expect_that(substr($messagestring, 0, strlen($expectedstring)) === $expectedstring);
     }
 }

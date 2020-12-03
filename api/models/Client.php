@@ -107,22 +107,8 @@ class Client extends \yii\db\ActiveRecord
         $buckets = $client->getBuckets()->all();
         $bucketdata = [];
         foreach ($buckets as $key => $bucket) {
-            $thisbucket = $bucket->getAttributes();
-            $hours = $bucket->getHours()->orderBy('year ASC, month ASC')->all();
-            $remaining = 0;
-            foreach ($hours as $hoursrecord) {
-                $hoursrecord = $hoursrecord->getAttributes();
-                $in = $hoursrecord['in'];
-                $out = $hoursrecord['out'];
-                $remaining = $in - $out + $remaining;
-                $hoursrecord['remaining'] = $remaining;
-                $thisbucket['hours'][] = $hoursrecord;
-            }
-            if (!$hours) {
-                // Add a blank array if the bucket has no hours data set yet.
-                $thisbucket['hours'][] = [];
-            }
-            $bucketdata[] = $thisbucket;
+            /* @var $bucket Bucket for IDE to understand */
+            $bucketdata[] = $bucket->getBucketData();
         }
         $data['client']['buckets'] = $bucketdata;
 

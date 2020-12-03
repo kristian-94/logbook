@@ -92,10 +92,9 @@ class Log extends \yii\db\ActiveRecord
      * @param $result array|null the result returned from the controller handling this request after processing it.
      * @param $modeltype string the model we are updating
      * @param $bodyparams array
-     * @param $queryparams array
      * @param array $olddata
      */
-    public static function log(User $user, string $actiontype, $result, string $modeltype, array $bodyparams = [], array $queryparams = [], array $olddata = [])
+    public static function log(User $user, string $actiontype, $result, string $modeltype, array $bodyparams = [], array $olddata = [])
     {
         $username = $user ? $user->getAttribute('username') : 'no username';
         $message = '';
@@ -119,6 +118,15 @@ class Log extends \yii\db\ActiveRecord
             }
             if ($modeltype === 'client') {
                 $clientid = $result['id'];
+            }
+        } else {
+            // This is a delete without a result.
+            if ($modeltype === 'hours') {
+                $bucketid = $olddata['bucketid'];
+                $clientid = Bucket::findOne(['id' => $bucketid])->getAttribute('clientid');
+            }
+            if ($modeltype === 'bucket') {
+                $clientid = $olddata['clientid'];
             }
         }
         if ($actiontype === 'update') {
@@ -189,10 +197,11 @@ class Log extends \yii\db\ActiveRecord
                 $message .= " in client $clientname";
             }
             $actionverb = 'created';
-        } else if ($actiontype === 'delete') {
-            if ($modeltype === 'client' || $modeltype === 'hours') {
+        }
+        else if ($actiontype === 'delete') {
+            if ($modeltype === 'client' || $modeltype === 'hours' || $modeltype === 'bucket') {
                 $message .= 'with data ' . json_encode($olddata);
-                if ($modeltype === 'hours') {
+                if ($modeltype === 'hours' || $modeltype === 'bucket') {
                     $clientname = Client::findOne(['id' => $clientid])->getAttribute('name');
                     $message .= ' from client ' . $clientname;
                 }

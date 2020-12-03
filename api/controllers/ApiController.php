@@ -1,6 +1,7 @@
 <?php
 
 namespace app\controllers;
+use app\models\Bucket;
 use app\models\Client;
 use app\models\Log;
 use Yii;
@@ -44,6 +45,9 @@ class ApiController extends ActiveController
             $modelid = $queryparams['id'];
             if ($this->modelClass === 'app\models\Client') {
                 $this->olddata = Client::getSingleClientData($modelid);
+            } else if ($this->modelClass === 'app\models\Bucket') {
+                $model = Bucket::findOne(array_merge(['id' => $modelid], $params));
+                $this->olddata = $model->getBucketData();
             } else {
                 $model = $this->modelClass::findOne(array_merge(['id' => $modelid], $params));
                 $this->olddata = $model->getAttributes();
@@ -60,7 +64,7 @@ class ApiController extends ActiveController
             $user = Yii::$app->user->identity;
             $request = Yii::$app->request;
             /* @var $user \app\models\User for IDE to understand, user is both classes. */
-            Log::log($user, $actionid, $result, $this->id, $request->getBodyParams(), $request->getQueryParams(), $olddata);
+            Log::log($user, $actionid, $result, $this->id, $request->getBodyParams(), $olddata);
         }
         return $result;
     }
