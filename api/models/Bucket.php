@@ -75,4 +75,28 @@ class Bucket extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Hours::className(), ['bucketid' => 'id']);
     }
+    /**
+     * Get all month by month hours data, prepaid, and other data for this bucket.
+     *
+     * @return array
+     */
+    public function getBucketData()
+    {
+        $bucketdata = $this->getAttributes();
+        $hours = $this->getHours()->orderBy('year ASC, month ASC')->all();
+        $remaining = 0;
+        foreach ($hours as $hoursrecord) {
+            $hoursrecord = $hoursrecord->getAttributes();
+            $in = $hoursrecord['in'];
+            $out = $hoursrecord['out'];
+            $remaining = $in - $out + $remaining;
+            $hoursrecord['remaining'] = $remaining;
+            $bucketdata['hours'][] = $hoursrecord;
+        }
+        if (!$hours) {
+            // Add a blank array if the bucket has no hours data set yet.
+            $bucketdata['hours'][] = [];
+        }
+        return $bucketdata;
+    }
 }

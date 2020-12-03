@@ -1,4 +1,5 @@
 DB_HOST=api-db
 DB_DATABASE=logbook
+DB_DATABASE_TEST=logbooktest
 DB_USERNAME=logbook
 DB_PASSWORD=password

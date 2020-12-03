@@ -3,7 +3,7 @@
 namespace app\controllers;
 use app\models\Bucket;
 use app\models\Client;
-use DateTime;
+use app\models\Log;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\auth\HttpBasicAuth;
@@ -43,8 +43,15 @@ class ApiController extends ActiveController
             $this->olddata = $olddata;
         } else if ($action->id === 'delete') {
             $modelid = $queryparams['id'];
-            $model = $this->modelClass::findOne(array_merge(['id' => $modelid], $params));
-            $this->olddata = $model->getAttributes();
+            if ($this->modelClass === 'app\models\Client') {
+                $this->olddata = Client::getSingleClientData($modelid);
+            } else if ($this->modelClass === 'app\models\Bucket') {
+                $model = Bucket::findOne(array_merge(['id' => $modelid], $params));
+                $this->olddata = $model->getBucketData();
+            } else {
+                $model = $this->modelClass::findOne(array_merge(['id' => $modelid], $params));
+                $this->olddata = $model->getAttributes();
+            }
         }
         return true;
     }
@@ -52,92 +59,12 @@ class ApiController extends ActiveController
     {
         $result = parent::afterAction($action, $result);
         $actionid = $action->id;
-
-        // Get the current user.
-        /* @var $user \app\models\User for IDE to understand. */
-        $user = Yii::$app->user->identity;
-        $request = Yii::$app->request;
-        $params = $request->getBodyParams();
-        $username = $user ? $user->getAttribute('username') : 'no username';
-        $queryparams = $request->getQueryParams();
-        $message = '';
-        $modeltype = $this->id;
-        $clientid = null;
-        $name = '';
-        if ($actionid === 'update') {
-            $modelid = $queryparams['id'];
-            $model = $this->modelClass::findOne(['id' => $modelid])->getAttributes();
-            // Log who, when, what.
-            $olddata = $this->olddata;
-            foreach ($params as $attribute => $value) {
-                if ($olddata[$attribute] !== $value) {
-                    // Check if we should add a comma, always after the first message.
-                    if ($message !== '') {
-                        $message .= ',';
-                    }
-                    // We did actually update.
-                    $message .= " $attribute from '$olddata[$attribute]' to '$value'";
-                }
-            }
-            // We should log more information about where this was updated.
-            if ($modeltype === 'hours') {
-                $month = $result['month'];
-                $year = $result['year'];
-                $dateObj   = DateTime::createFromFormat('m Y', $month . ' ' . $year);
-                $monthandyear = $dateObj->format('F Y'); // March
-                $message .= ' in ' . $monthandyear . ',';
-                $bucketid = $result['bucketid'] ?? null;
-                if ($bucketid) {
-                    $bucket = Bucket::findOne(['id' => $bucketid]);
-                    $message .= ' in bucket ' . $bucket->getAttribute('name') . ',';
-                    $clientid = $bucket->getAttribute('clientid');
-                }
-            }
-            if ($modeltype === 'bucket' || $modeltype === 'hours' || $modeltype === 'communication') {
-                $name = $model['name'] ?? $name;
-                $clientid = $result[$modeltype]['clientid'] ?? $clientid;
-                $clientid = $result['clientid'] ?? $clientid;
-                if ($clientid) {
-                    $clientname = Client::findOne(['id' => $clientid])->getAttribute('name');
-                    $message .= " in client $clientname";
-                }
-            }
-            if ($message !== '') {
-                Yii::info("$username updated $modeltype $name:$message", $modeltype);
-            }
-        } else if ($actionid === 'create') {
-            foreach ($params as $attribute => $value) {
-                if ($message !== '') {
-                    $message .= ',';
-                }
-                $message .= " $attribute '$value'";
-            }
-            // We should log more information about where this was created.
-            $clientid = $result[$modeltype]['clientid'] ?? null;
-            if ($modeltype === 'hours') {
-                $bucketid = $result['bucketid'] ?? null;
-                if ($bucketid) {
-                    $bucket = Bucket::findOne(['id' => $bucketid]);
-                    $message .= ' in bucket ' . $bucket->getAttribute('name') . ',';
-                    $clientid = $bucket->getAttribute('clientid');
-                }
-            }
-            if ($modeltype === 'bucket' || $modeltype === 'hours' || $modeltype === 'communication') {
-                $clientid = $result[$modeltype]['clientid'] ?? $clientid;
-                $clientid = $result['clientid'] ?? $clientid;
-                if ($clientid) {
-                    $clientname = Client::findOne(['id' => $clientid])->getAttribute('name');
-                    $message .= " in client $clientname";
-                }
-            }
-            Yii::info("$username created a $modeltype:$message", $modeltype);
-        } else if ($actionid === 'delete') {
-            $modelid = $queryparams['id'];
-            $message .= " '$modelid'";
-            $model = $this->olddata;
-            // We should log what data it had.
-            $message .= ' with data: ' . json_encode($model);
-            Yii::info("$username deleted a $modeltype:$message", $modeltype);
+        $olddata = $this->olddata ?? [];
+        if ($actionid === 'create' || $actionid === 'update' || $actionid === 'delete') {
+            $user = Yii::$app->user->identity;
+            $request = Yii::$app->request;
+            /* @var $user \app\models\User for IDE to understand, user is both classes. */
+            Log::log($user, $actionid, $result, $this->id, $request->getBodyParams(), $olddata);
         }
         return $result;
     }
