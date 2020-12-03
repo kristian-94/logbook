@@ -455,4 +455,83 @@ class LogTest extends \Codeception\Test\Unit
         $expectedstring = 'user1 created month of hours: June 2020 in bucket bucket1, in client client1';
         expect($messagestring)->equals($expectedstring);
     }
+    public function testLogUpdateHoursIn()
+    {
+        $result = array (
+            'id' => 1,
+            'month' => 4,
+            'year' => 2020,
+            'invoice' => NULL,
+            'description' => NULL,
+            'in' => '4',
+            'out' => 0,
+            'touched' => 0,
+            'bucketid' => 1,
+        );
+        $bodyparams = array (
+            'in' => '4',
+        );
+        $olddata = array (
+            'in' => 0,
+        );
+        $user = new User();
+        $user->setAttribute('username', 'user1');
+        Yii::setLogger(new Logger());
+        Log::log($user, 'update', $result, 'hours', $bodyparams, $olddata);
+        $log = end(Yii::getLogger()->messages);
+        $messagestring = $log[0];
+        $expectedstring = 'user1 updated month of hours: in from \'0\' to \'4\' in April 2020, in bucket bucket1, in client client1';
+        expect($messagestring)->equals($expectedstring);
+    }
+    public function testLogUpdateHoursDescription()
+    {
+        $result = array (
+            'id' => 1,
+            'month' => 4,
+            'year' => 2020,
+            'invoice' => NULL,
+            'description' => NULL,
+            'in' => '4',
+            'out' => 0,
+            'touched' => 0,
+            'bucketid' => 1,
+        );
+        $bodyparams = array (
+            'description' => 'new description',
+        );
+        $olddata = array (
+            'description' => NULL,
+        );
+        $user = new User();
+        $user->setAttribute('username', 'user1');
+        Yii::setLogger(new Logger());
+        Log::log($user, 'update', $result, 'hours', $bodyparams, $olddata);
+        $log = end(Yii::getLogger()->messages);
+        $messagestring = $log[0];
+        $expectedstring = 'user1 updated month of hours: description from \'\' to \'new description\' in April 2020, in bucket bucket1, in client client1';
+        expect($messagestring)->equals($expectedstring);
+    }
+    public function testLogDeleteHours()
+    {
+        $olddata = array (
+            'id' => 1,
+            'month' => 4,
+            'year' => 2020,
+            'invoice' => 'XXXYYY',
+            'description' => 'a description',
+            'in' => 4,
+            'out' => 0,
+            'touched' => 1,
+            'bucketid' => 1,
+        );
+        $user = new User();
+        $user->setAttribute('username', 'user1');
+        Yii::setLogger(new Logger());
+        Log::log($user, 'delete', [], 'hours', [], $olddata);
+        $log = end(Yii::getLogger()->messages);
+        $messagestring = $log[0];
+        $jsondata = json_encode($olddata);
+        $expectedstring = 'user1 deleted month of hours: with data ' . $jsondata . ' from client client1';
+        expect($messagestring)->equals($expectedstring);
+    }
 }
