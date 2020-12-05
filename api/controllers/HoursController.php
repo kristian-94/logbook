@@ -6,6 +6,7 @@ use app\models\Bucket;
 use app\models\Hours;
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\db\Exception;
 
 class HoursController extends ApiController
 {
@@ -27,61 +28,10 @@ class HoursController extends ApiController
         $year = Yii::$app->request->getBodyParam('year');
         $month = Yii::$app->request->getBodyParam('month');
 
-        // Check if we already have this month.
-        $existingmonth = Hours::findOne([
-            'bucketid' => $bucketid,
-            'year' => $year,
-            'month' => $month,
-                                        ]);
-        if (!$existingmonth) {
-            // Add the given month.
-            $hours = Hours::instance();
-            $hours->setAttribute('bucketid', $bucketid);
-            $hours->setAttribute('month', $month);
-            $hours->setAttribute('year', $year);
-            $hours->setAttribute('in', 0);
-            $hours->setAttribute('out', 0);
-            $hours->setAttribute('touched', 0);
-            $hours->save();
-            return $hours->getAttributes();
+        if (!$bucketid || !$year || !$month) {
+           throw new Exception('Missing bucketid, year, or month param');
         }
-        // Otherwise find the last month that doesn't exist and add that instead.
-        $buckethours = Bucket::findOne(['id' => $bucketid])
-                             ->getHours()
-                             ->where(['and', ['=', 'year', $year], ['<=', 'month', $month]])
-                             ->orWhere(['<', 'year', $year])
-                             ->orderBy('year DESC, month DESC')
-                             ->all();
-        $monthtoadd = $month;
-        $yeartoadd = $year;
-        foreach ($buckethours as $buckethour) {
-            $bucketmonth = $buckethour->getAttribute('month');
-            $bucketyear = $buckethour->getAttribute('year');
-            // Check if we should create this mont/year combo.
-            if ($bucketmonth === $monthtoadd && $bucketyear === $yeartoadd) {
-                // That means this month and year already exist, so we can't create it.
-                if ($bucketmonth === 1) {
-                    // Previous month is now actually December the year before.
-                    $monthtoadd = 12;
-                    $yeartoadd--;
-                } else {
-                    $monthtoadd--;
-                }
-                continue;
-            }
-            // If we get here, this month doesn't exist. Break and create it.
-            break;
-        }
-        $newhours = Hours::instance();
-        $newhours->setAttribute('month', $monthtoadd);
-        $newhours->setAttribute('year', $yeartoadd);
-        $newhours->setAttribute('in', 0);
-        $newhours->setAttribute('out', 0);
-        $newhours->setAttribute('touched', 0);
-        $newhours->setAttribute('bucketid', $bucketid);
-        $newhours->save();
-
-        return $newhours->getAttributes();
+        return Hours::createMonth($bucketid, $year, $month);
     }
 
     public function prepareDataProvider()

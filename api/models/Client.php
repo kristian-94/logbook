@@ -95,7 +95,7 @@ class Client extends \yii\db\ActiveRecord
      * @param int $clientid
      * @return array
      */
-    public static function getSingleClientData(int $clientid)
+    public static function getSingleClientData(int $clientid): array
     {
         $client = Client::findOne($clientid);
         if (!$client) {

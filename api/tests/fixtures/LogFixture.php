@@ -2,9 +2,7 @@
 
 namespace app\tests\fixtures;
 
-use yii\test\ActiveFixture;
-
-class LogFixture extends ActiveFixture
+class LogFixture extends FixActiveFixture
 {
     public $modelClass = 'app\models\Log';
 }

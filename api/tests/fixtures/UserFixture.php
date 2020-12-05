@@ -2,9 +2,7 @@
 
 namespace app\tests\fixtures;
 
-use yii\test\ActiveFixture;
-
-class UserFixture extends ActiveFixture
+class UserFixture extends FixActiveFixture
 {
     public $modelClass = 'app\models\User';
 }

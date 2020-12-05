@@ -2,9 +2,7 @@
 
 namespace app\tests\fixtures;
 
-use yii\test\ActiveFixture;
-
-class BucketFixture extends ActiveFixture
+class BucketFixture extends FixActiveFixture
 {
     public $modelClass = 'app\models\Bucket';
     public $depends = ['app\tests\fixtures\ClientFixture'];
