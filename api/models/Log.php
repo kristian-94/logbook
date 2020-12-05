@@ -114,7 +114,7 @@ class Log extends \yii\db\ActiveRecord
                 $bucket = Bucket::findOne(['id' => $bucketid]);
                 $clientid = $bucket->getAttribute('clientid');
             }
-            if ($modeltype === 'bucket' || $modeltype === 'hours' || $modeltype === 'communication') {
+            if ($modeltype === 'bucket' || $modeltype === 'communication') {
                 $clientid = $result[$modeltype]['clientid'] ?? $clientid;
                 $clientid = $result['clientid'] ?? $clientid;
             }
@@ -131,6 +131,7 @@ class Log extends \yii\db\ActiveRecord
                 $clientid = $olddata['clientid'];
             }
         }
+        $clientname = $clientid ? Client::findOne(['id' => $clientid])->getAttribute('name') : null;
         if ($actiontype === 'update') {
             $changedname = false;
             // Log who, when, what.
@@ -171,8 +172,7 @@ class Log extends \yii\db\ActiveRecord
                 $message .= ' in bucket ' . $bucket->getAttribute('name') . ',';
             }
             // Don't want to log the client if we changed the client name.
-            if ($clientid && !$changedname) {
-                $clientname = Client::findOne(['id' => $clientid])->getAttribute('name');
+            if ($clientname && !$changedname) {
                 $message .= " in client $clientname";
             }
             $actionverb = 'updated';
@@ -199,8 +199,7 @@ class Log extends \yii\db\ActiveRecord
                 $bucket = Bucket::findOne(['id' => $bucketid]);
                 $message .= ' in bucket ' . $bucket->getAttribute('name') . ',';
             }
-            if ($clientid && $modeltype !== 'client') {
-                $clientname = Client::findOne(['id' => $clientid])->getAttribute('name');
+            if ($clientname && $modeltype !== 'client') {
                 $message .= " in client $clientname";
             }
             $actionverb = 'created';
@@ -214,8 +213,7 @@ class Log extends \yii\db\ActiveRecord
                 $olddate = self::convertEpochDay($olddata['date']);
                 $message .= 'note \'' . $oldnote . '\', date ' . $olddate;
             }
-            if ($clientid && $modeltype !== 'client') {
-                $clientname = Client::findOne(['id' => $clientid])->getAttribute('name');
+            if ($clientname && $modeltype !== 'client') {
                 $message .= " from client $clientname";
             }
             $actionverb = 'deleted';
