@@ -81,7 +81,7 @@ class LogTest extends \Codeception\Test\Unit
         // TODO call logger->flush() here and read from database log table. But not working.
         $log = end($messages);
         $messagestring = $log[0];
-        $expectedstring = 'user1 deleted communication: note \'example note\', date Sep 13th 2020 in client client1';
+        $expectedstring = 'user1 deleted communication: note \'example note\', date Sep 13th 2020 from client client1';
         expect($messagestring)->equals($expectedstring);
     }
     public function testLogCreateClient()

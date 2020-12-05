@@ -102,6 +102,8 @@ class Log extends \yii\db\ActiveRecord
         $bucketid = null;
         $monthandyear = null;
         $actionverb = '';
+
+        // Find the clientid and bucketid if available.
         if ($result) {
             if ($modeltype === 'hours') {
                 $month = $result['month'];
@@ -125,7 +127,7 @@ class Log extends \yii\db\ActiveRecord
                 $bucketid = $olddata['bucketid'];
                 $clientid = Bucket::findOne(['id' => $bucketid])->getAttribute('clientid');
             }
-            if ($modeltype === 'bucket') {
+            if ($modeltype === 'bucket' || $modeltype === 'communication') {
                 $clientid = $olddata['clientid'];
             }
         }
@@ -206,21 +208,15 @@ class Log extends \yii\db\ActiveRecord
         else if ($actiontype === 'delete') {
             if ($modeltype === 'client' || $modeltype === 'hours' || $modeltype === 'bucket') {
                 $message .= 'with data ' . json_encode($olddata);
-                if ($modeltype === 'hours' || $modeltype === 'bucket') {
-                    $clientname = Client::findOne(['id' => $clientid])->getAttribute('name');
-                    $message .= ' from client ' . $clientname;
-                }
             } else if ($modeltype === 'communication') {
                 // We should log what data it had.
                 $oldnote = $olddata['note'];
                 $olddate = self::convertEpochDay($olddata['date']);
                 $message .= 'note \'' . $oldnote . '\', date ' . $olddate;
-                // Also log from where it was deleted. When we delete something there is no result.
-                $clientid = $olddata['clientid'] ?? null;
-                if ($clientid) {
-                    $clientname = Client::findOne(['id' => $clientid])->getAttribute('name');
-                    $message .= " in client $clientname";
-                }
+            }
+            if ($clientid && $modeltype !== 'client') {
+                $clientname = Client::findOne(['id' => $clientid])->getAttribute('name');
+                $message .= " from client $clientname";
             }
             $actionverb = 'deleted';
         }
