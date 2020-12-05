@@ -99,4 +99,35 @@ class Bucket extends \yii\db\ActiveRecord
         }
         return $bucketdata;
     }
+
+    /**
+     * Create a bucket, with a default month of hours in it, and return the bucket data in an array.
+     *
+     * @param $bucketname
+     * @param $clientid
+     * @return array
+     */
+    public static function createBucketandHours($bucketname, $clientid): array
+    {
+        $bucket = Bucket::instance();
+        $bucket->setAttribute('name', $bucketname);
+        $bucket->setAttribute('clientid', $clientid);
+        $bucket->setAttribute('timecreated', time());
+        $bucket->setAttribute('archived', 0);
+        $bucket->setAttribute('prepaid', 0);
+        $bucket->save();
+
+        $hours = Hours::instance();
+        $hours->setAttribute('bucketid', $bucket->getAttribute('id'));
+        $hours->setAttribute('month', date("m"));
+        $hours->setAttribute('year', date("Y"));
+        $hours->setAttribute('in', 0);
+        $hours->setAttribute('out', 0);
+        $hours->setAttribute('touched', 0);
+        $hours->save();
+        $returndata = [];
+        $returndata['bucket'] = $bucket->getAttributes();
+        $returndata['bucket']['hours'] = $hours->getAttributes();
+        return $returndata;
+    }
 }

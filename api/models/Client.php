@@ -132,31 +132,40 @@ class Client extends \yii\db\ActiveRecord
         $data['client']['lastupdated'] = $lastupdated;
         return $data;
     }
+
     /**
      * Return all the clients that have buckets with hours out in the last given months.
      * Only returns the buckets within that client that have this recent activity.
      *
      * @param $numberofmonths int number of months back to get summary data for.
+     * @param int $time unix timestamp for unit tests or 0 for current time.
      * @return array
+     * @throws \yii\base\Exception
      */
-    public static function getSummary(int $numberofmonths)
+    public static function getSummary(int $numberofmonths, $time = 0): array
     {
         // TODO could do this filtering all in the initial query here.
         $clients = Client::find()->orderBy('name')->all();
 
-        $currentyear = (int)date("Y");
-        $currentmonth = (int)date("m");
+        if ($time === 0) {
+            $time = time();
+        }
+        $currentyear = (int)date("Y", $time);
+        $currentmonth = (int)date("m", $time);
 
         $returndata = [];
 
         // Need to drill down and find if this client has months with activity.
+        /* @var $client Client */
         foreach ($clients as $client) {
             // Only want to return prepaid buckets here.
             $buckets = $client->getBuckets()->where(['prepaid' => 1])->all();
             $bucketdata = [];
+            /* @var $bucket Bucket */
             foreach ($buckets as $bucket) {
                 $hours = $bucket->getHours()->all();
                 $hoursdata = [];
+                /* @var $hour Hours */
                 foreach ($hours as $hour) {
                     if ($hour->out > 0) {
                         // Now we know this month was active.
@@ -172,29 +181,29 @@ class Client extends \yii\db\ActiveRecord
                     // We found some matching hours, add this bucket and hours.
                     $thisbucket = $bucket->getAttributes();
                     // Before adding hours data, check to make sure we have hours for each of the last numberofmonths.
-                        // We need to add in empty hours records for the other months which don't exist.
-                        for ($i = 1 + $currentmonth - $numberofmonths; $i <= $currentmonth; $i++) {
-                            $addedmonth = false;
-                            foreach ($hoursdata as $hoursdatum) {
-                                if ($hoursdatum['month'] === $i) {
-                                    $hoursDataordered[] = $hoursdatum;
-                                    $addedmonth = true;
-                                    continue;
-                                }
-                            }
-                            if (count($hoursDataordered) === $numberofmonths) {
-                                break;
-                            }
-                            if (!$addedmonth) {
-                                // Only require out, month and id.
-                                $newhours = [
-                                    'out' => 0,
-                                    'id' => Yii::$app->security->generateRandomString(3),
-                                    'month' => $i
-                                ];
-                                $hoursDataordered[] = $newhours;
+                    // We need to add in empty hours records for the other months which don't exist.
+                    for ($i = 1 + $currentmonth - $numberofmonths; $i <= $currentmonth; $i++) {
+                        $addedmonth = false;
+                        foreach ($hoursdata as $hoursdatum) {
+                            if ($hoursdatum['month'] === $i) {
+                                $hoursDataordered[] = $hoursdatum;
+                                $addedmonth = true;
+                                continue;
                             }
                         }
+                        if (count($hoursDataordered) === $numberofmonths) {
+                            break;
+                        }
+                        if (!$addedmonth) {
+                            // Only require out, month and id.
+                            $newhours = [
+                                'out' => 0,
+                                'id' => Yii::$app->security->generateRandomString(3),
+                                'month' => $i
+                            ];
+                            $hoursDataordered[] = $newhours;
+                        }
+                    }
                     $thisbucket['hours'] = $hoursDataordered;
                     $bucketdata[] = $thisbucket;
                 }

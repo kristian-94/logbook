@@ -21,37 +21,17 @@ class BucketController extends ApiController
      * @return array
      * @throws \yii\db\Exception
      */
-    public function actionCreate() {
+    public function actionCreate(): array
+    {
         $clientid = \Yii::$app->request->getBodyParam('clientid');
         $bucketname = \Yii::$app->request->getBodyParam('name');
-
         if (!$bucketname || !$clientid) {
             return ['message' => 'invalid content body, missing clientid or bucket name!'];
         }
-        $bucket = Bucket::instance();
-        $bucket->setAttribute('name', $bucketname);
-        $bucket->setAttribute('clientid', $clientid);
-        $bucket->setAttribute('timecreated', time());
-        $bucket->setAttribute('archived', 0);
-        $bucket->setAttribute('prepaid', 0);
-        $bucket->save();
-
-        $hours = Hours::instance();
-        $hours->setAttribute('bucketid', $bucket->getAttribute('id'));
-        $hours->setAttribute('month', date("m"));
-        $hours->setAttribute('year', date("Y"));
-        $hours->setAttribute('in', 0);
-        $hours->setAttribute('out', 0);
-        $hours->setAttribute('touched', 0);
-        $hours->save();
-
-        $returndata = [];
-        $returndata['bucket'] = $bucket->getAttributes();
-        $returndata['bucket']['hours'] = $hours->getAttributes();
-        return $returndata;
+        return Bucket::createBucketandHours($bucketname, $clientid);
     }
 
-    public function prepareDataProvider()
+    public function prepareDataProvider(): ActiveDataProvider
     {
         return new ActiveDataProvider([
                                           'query' => Bucket::find()->andWhere(['clientid' => \Yii::$app->request->get('clientid')])
