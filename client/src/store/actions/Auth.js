@@ -27,6 +27,8 @@ export const signIn = (email, password) => {
       email: email,
       password: password,
     };
+    // It is standard practice to send "plaintext" passwords over HTTPS.
+    // The passwords are ultimately not plaintext, since the client-server communication is encrypted as per TLS.
     const response = await axios.post(BACKEND_URL + 'user/login', data, config.CONFIG_JSON);
     if (response.status !== 200) {
       throw new Error('Didnt get 200 response when signing in');
