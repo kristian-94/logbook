@@ -21,6 +21,9 @@ code {
   z-index: 100;
   box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
 }
+.logtablecell {
+  vertical-align: top;
+}
 
 #sidebar-wrapper {
   min-height: 100vh !important;

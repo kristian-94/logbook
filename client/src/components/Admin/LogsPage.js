@@ -82,7 +82,7 @@ const LogsPage = () => {
       <table style={{ width: '95%' }}>
         <thead>
         <tr style={{ borderBottom: '1px solid black' }}>
-          <th>Date</th>
+          <th style={{ minWidth: '250px' }}>Date</th>
           <th>Category</th>
           <th>Message</th>
         </tr>
@@ -91,9 +91,9 @@ const LogsPage = () => {
         {logs.map(log => {
           return (
             <tr className="text-left" key={log.id}>
-              <td>{log.date}</td>
-              <td>{log.category}</td>
-              <td>{log.message}</td>
+              <td className="logtablecell">{log.date}</td>
+              <td className="logtablecell">{log.category}</td>
+              <td className="logtablecell">{log.message}</td>
             </tr>
           );
         })}
