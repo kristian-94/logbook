@@ -42,6 +42,11 @@ const BucketTable = ({ data, updateData, onRemoveMonth, readOnly }) => {
       return null;
     }
 
+    if (cell.column.id === 'remaining' && cell.value % 1 !== 0) {
+      // Make sure the remaining column only displays values to 2 decimal places maximum.
+      return cell.value.toFixed(2);
+    }
+
     return cell.value;
   };
 

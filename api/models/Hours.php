@@ -12,8 +12,8 @@ use Yii;
  * @property int $year
  * @property string|null $invoice
  * @property string|null $description
- * @property int $in
- * @property int $out
+ * @property float $in
+ * @property float $out
  * @property int $touched
  * @property int $bucketid
  *
@@ -37,7 +37,8 @@ class Hours extends \yii\db\ActiveRecord
         return [
             [['month', 'year', 'bucketid'], 'required'],
             [['month', 'year', 'in', 'out', 'touched', 'bucketid'], 'default', 'value' => null],
-            [['month', 'year', 'in', 'out', 'touched', 'bucketid'], 'integer'],
+            [['month', 'year', 'touched', 'bucketid'], 'integer'],
+            [['in', 'out'], 'number'],
             [['invoice', 'description'], 'string', 'max' => 255],
             [['bucketid'], 'exist', 'skipOnError' => true, 'targetClass' => Bucket::className(), 'targetAttribute' => ['bucketid' => 'id']],
         ];
