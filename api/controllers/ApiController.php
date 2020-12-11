@@ -97,12 +97,12 @@ class ApiController extends ActiveController
                 ],
                 [
                     'allow' => true,
-                    'actions' => ['index', 'view'],
+                    'actions' => ['index', 'view', 'summary'],
                     'roles' => ['@'], // Only accessible by authenticated users.
                 ],
                 [
                     'allow' => true,
-                    'actions' => ['update', 'delete', 'create', 'summary', 'updaterole'],
+                    'actions' => ['update', 'delete', 'create', 'updaterole'],
                     'roles' => ['admin'], // Only accessible by admin users.
                 ],
             ],
