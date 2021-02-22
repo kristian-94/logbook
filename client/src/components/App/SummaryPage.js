@@ -51,6 +51,7 @@ const SummaryPage = () => {
             <FontAwesomeIcon icon={faCheck}/>
           </button></li>
           <li>The bucket has hours <u>out</u> in the last 3 months</li>
+          <li>The bucket is not archived</li>
         </ul>
       </div>
     );

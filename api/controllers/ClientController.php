@@ -45,6 +45,7 @@ class ClientController extends ApiController {
 
     /** Return all the clients that have buckets with hours out in the last given months.
      *  Only returns the buckets within that client that have this recent activity.
+     *  Does NOT return archived buckets.
      *
      * @return array
      */
