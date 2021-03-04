@@ -163,6 +163,9 @@ class Client extends \yii\db\ActiveRecord
             $bucketdata = [];
             /* @var $bucket Bucket */
             foreach ($buckets as $bucket) {
+                if ($bucket->archived === 1) {
+                    continue;
+                }
                 $hours = $bucket->getHours()->all();
                 $hoursdata = [];
                 /* @var $hour Hours */

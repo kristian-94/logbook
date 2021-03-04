@@ -45,6 +45,9 @@ const SingleReportPage = ({ clientID }) => {
         </thead>
         <tbody>
         {activeClient.buckets && activeClient.buckets.map(bucket => {
+          if (bucket.archived === 1) {
+            return null; // No reports on archived buckets.
+          }
           let remainingCurrent = 0;
           const hoursarraylength = bucket.hours.length;
           if (hoursarraylength > 0) {

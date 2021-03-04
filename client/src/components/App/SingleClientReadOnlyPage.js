@@ -44,7 +44,7 @@ const SingleClientReadOnlyPage = ({ clientID }) => {
 
   if (viewingArchive) {
     return (
-      <ArchivePage onBackToClientPage={onBackToClientPage} clientID={clientID} restorable={false}/>
+      <ArchivePage buckets={activeClient.buckets} onBackToClientPage={onBackToClientPage} clientID={clientID} restorable={false}/>
     );
   }
 
@@ -90,12 +90,15 @@ const SingleClientReadOnlyPage = ({ clientID }) => {
         <div className="row">
           <div className="col-8">
             {activeClient.buckets && activeClient.buckets.map(bucket => {
-              return (
-                <div key={bucket.id} className="singlebucket">
-                  <ReadOnlyBucket clientID={clientID} bucket={bucket} buttons={false}/>
-                  <hr/>
-                </div>
-              );
+              if (bucket.archived === 0) {
+                return (
+                    <div key={bucket.id} className="singlebucket">
+                      <ReadOnlyBucket clientID={clientID} bucket={bucket} buttons={false}/>
+                      <hr/>
+                    </div>
+                );
+              }
+              return null;
             })}
           </div>
           <div className="col-4">
