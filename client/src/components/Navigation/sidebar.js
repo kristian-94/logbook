@@ -7,12 +7,20 @@ import {useSelector} from 'react-redux';
 
 const Sidebar = () => {
   const _isMounted = useRef(true); // Initial value _isMounted = true
-  const [filterUserId, setFilterUser] = useState('');
+  const [filterUserId, setFilterUser] = useState();
   const clientList = useSelector(state => state.clients.clients);
   const adminUsers = useSelector(state => state.auth.adminUsers);
 
-  // Need this to do a componentwillunmount and cleanup memory leaks.
+  // Need this to do a ComponentWillUnmount and cleanup memory leaks.
   useEffect(() => {
+    let filterUser = localStorage.getItem('filterUserId');
+    if (filterUser !== undefined && filterUser !== null && filterUser !== '') {
+      // Make sure the id is an int.
+      if (filterUser !== NOOWNER) {
+        filterUser = parseInt(filterUser);
+      }
+      setFilterUser(filterUser);
+    }
     // ComponentWillUnmount in Class Component
     return () => {
       _isMounted.current = false;
@@ -21,6 +29,7 @@ const Sidebar = () => {
 
   const Filter = () => {
     const onFilterClicked = (id) => {
+      localStorage.setItem('filterUserId', id);
       setFilterUser(id);
     }
     return (
@@ -50,7 +59,13 @@ const Sidebar = () => {
         </div>
       );
     }
+    if (adminUsers.length === 0) {
+      return true;
+    }
     const filteredUser = adminUsers.filter(user => user.id === filterUserId)[0];
+    if (!filteredUser) {
+      return true;
+    }
     return (
       <div className="text-center">
         <em>Filtering by {filteredUser.username}</em>
