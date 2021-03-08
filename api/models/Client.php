@@ -187,11 +187,19 @@ class Client extends \yii\db\ActiveRecord
                     // We need to add in empty hours records for the other months which don't exist.
                     for ($i = 1 + $currentmonth - $numberofmonths; $i <= $currentmonth; $i++) {
                         $addedmonth = false;
+                        // If we're at the beginning of a year, we need to choose december and november to compare to.
+                        $comparemonth = $i;
+                        if ($i === 0) {
+                            $comparemonth = 12;
+                        }
+                        if ($i === -1) {
+                            $comparemonth = 11;
+                        }
                         foreach ($hoursdata as $hoursdatum) {
-                            if ($hoursdatum['month'] === $i) {
+                            if ($hoursdatum['month'] === $comparemonth) {
                                 $hoursDataordered[] = $hoursdatum;
                                 $addedmonth = true;
-                                continue;
+                                break;
                             }
                         }
                         if (count($hoursDataordered) === $numberofmonths) {
@@ -202,7 +210,7 @@ class Client extends \yii\db\ActiveRecord
                             $newhours = [
                                 'out' => 0,
                                 'id' => Yii::$app->security->generateRandomString(3),
-                                'month' => $i
+                                'month' => $comparemonth
                             ];
                             $hoursDataordered[] = $newhours;
                         }
