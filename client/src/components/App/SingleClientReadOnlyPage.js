@@ -102,7 +102,7 @@ const SingleClientReadOnlyPage = ({ clientID }) => {
             })}
           </div>
           <div className="col-4">
-            <Communications clientComms={activeClient.communication} editable={false}/>
+            <Communications clientID={clientID} clientComms={activeClient.communication} editable={false}/>
           </div>
         </div>
       </div>
