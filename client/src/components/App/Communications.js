@@ -8,7 +8,7 @@ import 'rc-tooltip/assets/bootstrap.css';
 import * as clientActions from '../../store/actions/Clients';
 import { useDispatch } from 'react-redux';
 
-const Communications = ({ clientComms, editable }) => {
+const Communications = ({ clientID, clientComms, editable }) => {
   const [newCommText, SetNewCommText] = useState('');
   const [newCommDate, SetNewCommDate] = useState(new Date());
   const _isMounted = useRef(true); // Initial value _isMounted = true
@@ -21,6 +21,12 @@ const Communications = ({ clientComms, editable }) => {
       _isMounted.current = false;
     };
   }, []);
+
+  useEffect(() => {
+    // Reset state when switching clients.
+    SetNewCommText('');
+    SetNewCommDate(new Date());
+  }, [clientID]);
 
   const onNewCommChangeText = (e) => {
     SetNewCommText(e.target.value);
@@ -53,6 +59,7 @@ const Communications = ({ clientComms, editable }) => {
             <div className="form-group row text-center">
               <input className="form-control m-1"
                      placeholder="Your text here"
+                     value={newCommText}
                      onChange={onNewCommChangeText}
               />
               <Tooltip
