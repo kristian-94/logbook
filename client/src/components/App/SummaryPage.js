@@ -107,8 +107,8 @@ const SummaryPage = () => {
             return (
               <tbody key={client.id}>
               <tr key={client.id}>
-                <th rowSpan="5">{client.name}</th>
-                <th rowSpan="5">{user}</th>
+                <th rowSpan="0">{client.name}</th>
+                <th rowSpan="0">{user}</th>
               </tr>
               {bucketRender}
               </tbody>
