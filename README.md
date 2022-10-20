@@ -36,6 +36,7 @@ Tracks hours billed to clients - different to total hours actually spent on a pr
 6.  Run database migrations from yii api container.
     ```
     ./control api
+    composer install
     php /siteroot/api/vendor/bin/yii migrate --appconfig=/siteroot/api/config/console.php
     ```
 7.  Initialize auth roles inside yii auth database tables and create an initial admin user.
@@ -83,8 +84,8 @@ We don't use `npm run build`.
 
 ### Production
 
-In production we need the back and front end served from the same container. This is
-acheived with some special nginx config to serve the backend at `localhost/api`, and the
+In production, we need the back and front end served from the same origin. This is
+achieved with a reverse proxy, some special nginx config to serve the backend at `localhost/api`, and the
 front end at `localhost`. This config is found in `docker/build/nginx-site.conf`.
 
 We need to also create the build folder expected in the nginx config at
