@@ -35,15 +35,17 @@ RUN cd /usr/local/lib/ && curl -sS https://getcomposer.org/installer | php -- --
 
 RUN mkdir /siteroot
 
-COPY xdebug.ini /etc/php/7.2/mods-available/xdebug.ini
-COPY php.ini /etc/php/7.2/fpm/php.ini
+COPY docker/api/xdebug.ini /etc/php/7.2/mods-available/xdebug.ini
+COPY docker/api/php.ini /etc/php/7.2/fpm/php.ini
 
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY nginx-site.conf /etc/nginx/sites-available/default
+COPY docker/api/nginx.conf /etc/nginx/nginx.conf
+COPY docker/api/nginx-site.conf /etc/nginx/sites-available/default
+COPY . /siteroot
 
 EXPOSE 80
 EXPOSE 443
 
 WORKDIR /siteroot/api
+RUN composer install --no-dev
 
 CMD service php7.2-fpm start && nginx

@@ -2,11 +2,13 @@ version: "3.6"
 
 services:
   api:
-    build: ./docker/api
+    build:
+      context: ./
+      dockerfile: ./docker/api/Dockerfile
     ports:
       - "8080:80"
-    volumes:
-      - ./:/siteroot
+#    volumes:
+#      - ./:/siteroot
     restart: always
   api-db:
     image: postgres
@@ -18,20 +20,20 @@ services:
     container_name: logbook_api_db
     volumes:
       - "apidbdata:/var/lib/postgresql"
-  client:
-    build: ./docker/client
-    ports:
-      - "80:3000"
-    volumes:
-      - ./client:/siteroot
-    stdin_open: true
-    restart: always
-  build-test:
-    build: ./docker/build
-    ports:
-      - "8090:80"
-    volumes:
-      - ./:/var/www/site
-    restart: always
+#  client:
+#    build: ./docker/client
+#    ports:
+#      - "80:3000"
+#    volumes:
+#      - ./client:/siteroot
+#    stdin_open: true
+#    restart: always
+#  build-test:
+#    build: ./docker/build
+#    ports:
+#      - "8090:80"
+#    volumes:
+#      - ./:/var/www/site
+#    restart: always
 volumes:
   apidbdata:
