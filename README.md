@@ -17,7 +17,7 @@ Tracks hours billed to clients - different to total hours actually spent on a pr
 3.  Clone this code
 
     ```
-    git clone git@git.catalyst-au.net:kristianringer/logbook.git
+    git clone git@github.com:kristian-94/logbook.git
     ```
 
 4.  Copy .env into siteroot
