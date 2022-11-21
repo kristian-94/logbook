@@ -37,7 +37,7 @@ class Bucket extends \yii\db\ActiveRecord
             [['timecreated', 'clientid', 'archived', 'prepaid'], 'default', 'value' => null],
             [['timecreated', 'clientid', 'archived', 'prepaid'], 'integer'],
             [['name'], 'string', 'max' => 255],
-            [['clientid'], 'exist', 'skipOnError' => true, 'targetClass' => Client::className(), 'targetAttribute' => ['clientid' => 'id']],
+            [['clientid'], 'exist', 'skipOnError' => true, 'targetClass' => Client::class, 'targetAttribute' => ['clientid' => 'id']],
         ];
     }
 
@@ -63,7 +63,7 @@ class Bucket extends \yii\db\ActiveRecord
      */
     public function getClient()
     {
-        return $this->hasOne(Client::className(), ['id' => 'clientid']);
+        return $this->hasOne(Client::class, ['id' => 'clientid']);
     }
 
     /**
@@ -73,7 +73,7 @@ class Bucket extends \yii\db\ActiveRecord
      */
     public function getHours()
     {
-        return $this->hasMany(Hours::className(), ['bucketid' => 'id']);
+        return $this->hasMany(Hours::class, ['bucketid' => 'id']);
     }
     /**
      * Get all month by month hours data, prepaid, and other data for this bucket.

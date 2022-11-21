@@ -22,17 +22,17 @@ class LogTest extends \Codeception\Test\Unit
     {
         return [
             'user' => [
-                'class' => UserFixture::className(),
+                'class' => UserFixture::class,
                 // fixture data located in tests/_data/user.php
                 'dataFile' => codecept_data_dir() . 'user.php'
             ],
             'client' => [
-                'class' => ClientFixture::className(),
+                'class' => ClientFixture::class,
                 // fixture data located in tests/_data/client.php
                 'dataFile' => codecept_data_dir() . 'client.php'
             ],
             'bucket' => [
-                'class' => BucketFixture::className(),
+                'class' => BucketFixture::class,
                 // fixture data located in tests/_data/bucket.php
                 'dataFile' => codecept_data_dir() . 'bucket.php'
             ],

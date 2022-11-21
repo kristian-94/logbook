@@ -17,7 +17,7 @@ class UserTest extends \Codeception\Test\Unit
     {
         return [
             'user' => [
-                'class' => UserFixture::className(),
+                'class' => UserFixture::class,
                 // fixture data located in tests/_data/user.php
                 'dataFile' => codecept_data_dir() . 'user.php'
             ]

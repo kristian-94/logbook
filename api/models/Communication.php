@@ -34,7 +34,7 @@ class Communication extends \yii\db\ActiveRecord
             [['date', 'clientid'], 'default', 'value' => null],
             [['date', 'clientid'], 'integer'],
             [['note'], 'string'],
-            [['clientid'], 'exist', 'skipOnError' => true, 'targetClass' => Client::className(), 'targetAttribute' => ['clientid' => 'id']],
+            [['clientid'], 'exist', 'skipOnError' => true, 'targetClass' => Client::class, 'targetAttribute' => ['clientid' => 'id']],
         ];
     }
 
@@ -58,6 +58,6 @@ class Communication extends \yii\db\ActiveRecord
      */
     public function getClient()
     {
-        return $this->hasOne(Client::className(), ['id' => 'clientid']);
+        return $this->hasOne(Client::class, ['id' => 'clientid']);
     }
 }

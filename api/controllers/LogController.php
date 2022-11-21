@@ -18,7 +18,7 @@ class LogController extends ActiveController
 
         // add CORS filter
         $behaviors['corsFilter'] = [
-            'class' => \yii\filters\Cors::className(),
+            'class' => \yii\filters\Cors::class,
             // Override cors default config to expose headers, contains pagination data.
             'cors' => [
                 'Origin' => ['*'],
@@ -32,12 +32,12 @@ class LogController extends ActiveController
 
         // Add authentication filter
         $behaviors['authenticator'] = [
-            'class' => HttpBasicAuth::className(),
+            'class' => HttpBasicAuth::class,
         ];
         // avoid authentication on CORS-pre-flight requests (HTTP OPTIONS method)
         $behaviors['authenticator']['except'] = ['options'];
         $behaviors['access'] = [
-            'class' => AccessControl::className(),
+            'class' => AccessControl::class,
             'rules' => [
                 [
                     'allow' => true,

@@ -40,7 +40,7 @@ class Hours extends \yii\db\ActiveRecord
             [['month', 'year', 'touched', 'bucketid'], 'integer'],
             [['in', 'out'], 'number'],
             [['invoice', 'description'], 'string', 'max' => 255],
-            [['bucketid'], 'exist', 'skipOnError' => true, 'targetClass' => Bucket::className(), 'targetAttribute' => ['bucketid' => 'id']],
+            [['bucketid'], 'exist', 'skipOnError' => true, 'targetClass' => Bucket::class, 'targetAttribute' => ['bucketid' => 'id']],
         ];
     }
 
@@ -69,7 +69,7 @@ class Hours extends \yii\db\ActiveRecord
      */
     public function getBucket()
     {
-        return $this->hasOne(Bucket::className(), ['id' => 'bucketid']);
+        return $this->hasOne(Bucket::class, ['id' => 'bucketid']);
     }
 
     /**

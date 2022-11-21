@@ -78,17 +78,17 @@ class ApiController extends ActiveController
 
         // add CORS filter
         $behaviors['corsFilter'] = [
-            'class' => \yii\filters\Cors::className(),
+            'class' => \yii\filters\Cors::class,
         ];
 
         // Add authentication filter
         $behaviors['authenticator'] = [
-            'class' => HttpBasicAuth::className(),
+            'class' => HttpBasicAuth::class,
         ];
         // avoid authentication on CORS-pre-flight requests (HTTP OPTIONS method)
         $behaviors['authenticator']['except'] = ['options', 'login', 'signup'];
         $behaviors['access'] = [
-            'class' => AccessControl::className(),
+            'class' => AccessControl::class,
             'rules' => [
                 [
                     'allow' => true,

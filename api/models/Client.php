@@ -41,7 +41,7 @@ class Client extends \yii\db\ActiveRecord
             [['ownerid'], 'default', 'value' => null],
             [['ownerid'], 'integer'],
             [['name'], 'string', 'max' => 255],
-            [['ownerid'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['ownerid' => 'id']],
+            [['ownerid'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['ownerid' => 'id']],
         ];
     }
 
@@ -66,7 +66,7 @@ class Client extends \yii\db\ActiveRecord
      */
     public function getBuckets()
     {
-        return $this->hasMany(Bucket::className(), ['clientid' => 'id']);
+        return $this->hasMany(Bucket::class, ['clientid' => 'id']);
     }
 
     /**
@@ -76,7 +76,7 @@ class Client extends \yii\db\ActiveRecord
      */
     public function getOwner()
     {
-        return $this->hasOne(User::className(), ['id' => 'ownerid']);
+        return $this->hasOne(User::class, ['id' => 'ownerid']);
     }
 
     /**
@@ -86,7 +86,7 @@ class Client extends \yii\db\ActiveRecord
      */
     public function getCommunications()
     {
-        return $this->hasMany(Communication::className(), ['clientid' => 'id']);
+        return $this->hasMany(Communication::class, ['clientid' => 'id']);
     }
 
     /**

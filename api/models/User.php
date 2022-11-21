@@ -72,7 +72,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public function getClients()
     {
-        return $this->hasMany(Client::className(), ['ownerid' => 'id']);
+        return $this->hasMany(Client::class, ['ownerid' => 'id']);
     }
     /**
      * Generate accessToken string
