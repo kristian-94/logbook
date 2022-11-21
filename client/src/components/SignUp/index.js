@@ -116,9 +116,15 @@ const SignUpLink = () => (
   </p>
 );
 
+const DemoSignInLink = () => (
+  <p>
+    <Link to={ROUTES.SIGN_UP}>Sign in to Demo Admin Account</Link>
+  </p>
+);
+
 const SignUpForm = compose(
   withRouter,
 )(SignUpFormBase);
 
 export default SignUpPage;
-export {SignUpForm, SignUpLink};
+export {SignUpForm, SignUpLink, DemoSignInLink};

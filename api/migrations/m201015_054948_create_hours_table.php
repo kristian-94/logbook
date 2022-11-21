@@ -21,10 +21,10 @@ class m201015_054948_create_hours_table extends Migration
             'year' => $this->integer(4)->notNull(),
             'invoice' => $this->string(),
             'description' => $this->string(),
-            'in' => $this->integer()->notNull()->defaultValue(0),
-            'out' => $this->integer()->notNull()->defaultValue(0),
+            'in' => $this->float()->notNull()->defaultValue(0),
+            'out' => $this->float()->notNull()->defaultValue(0),
             'touched' => $this->integer(1)->notNull()->defaultValue(0),
-            'bucketid' => $this->integer()->notNull(),
+            'bucketid' => 'integer NOT NULL REFERENCES bucket(id)',
         ]);
 
         // creates index for column `bucketid`
@@ -33,16 +33,6 @@ class m201015_054948_create_hours_table extends Migration
             '{{%hours}}',
             'bucketid'
         );
-
-        // add foreign key for table `{{%bucket}}`
-        $this->addForeignKey(
-            '{{%fk-hours-bucketid}}',
-            '{{%hours}}',
-            'bucketid',
-            '{{%bucket}}',
-            'id',
-            'CASCADE'
-        );
     }
 
     /**
@@ -50,12 +40,6 @@ class m201015_054948_create_hours_table extends Migration
      */
     public function safeDown()
     {
-        // drops foreign key for table `{{%bucket}}`
-        $this->dropForeignKey(
-            '{{%fk-hours-bucketid}}',
-            '{{%hours}}'
-        );
-
         // drops index for column `bucketid`
         $this->dropIndex(
             '{{%idx-hours-bucketid}}',

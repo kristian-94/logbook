@@ -15,12 +15,15 @@ class m201015_053026_create_client_table extends Migration
      */
     public function safeUp()
     {
+        // https://stackoverflow.com/questions/13194268/yii-create-table-with-foreign-key-using-sqlite
+        // Sqlite doesn't support separate addForeignKey method. Declare in create method.
+
         $this->createTable('{{%client}}', [
             'id' => $this->primaryKey(),
             'name' => $this->string()->notNull(),
             'support' => $this->text(),
             'note' => $this->text(),
-            'ownerid' => $this->integer(),
+            'ownerid'=>'integer REFERENCES client(id)'
         ]);
 
         // creates index for column `ownerid`
@@ -28,16 +31,6 @@ class m201015_053026_create_client_table extends Migration
             '{{%idx-client-ownerid}}',
             '{{%client}}',
             'ownerid'
-        );
-
-        // add foreign key for table `{{%user}}`
-        $this->addForeignKey(
-            '{{%fk-client-ownerid}}',
-            '{{%client}}',
-            'ownerid',
-            '{{%user}}',
-            'id',
-            'CASCADE'
         );
     }
 
@@ -47,10 +40,10 @@ class m201015_053026_create_client_table extends Migration
     public function safeDown()
     {
         // drops foreign key for table `{{%user}}`
-        $this->dropForeignKey(
-            '{{%fk-client-ownerid}}',
-            '{{%client}}'
-        );
+        //$this->dropForeignKey(
+        //    '{{%fk-client-ownerid}}',
+        //    '{{%client}}'
+        //);
 
         // drops index for column `ownerid`
         $this->dropIndex(

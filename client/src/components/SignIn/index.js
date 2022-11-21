@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { SignUpLink } from '../SignUp';
+import { DemoSignInForm } from './DemoSignIn';
 import * as ROUTES from '../../constants/routes';
 import Landing from '../Landing';
 import { connect } from 'react-redux';
@@ -14,10 +15,13 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 const SignInPage = props => (
-  <div className="text-center">
+  <div className="text-center mt-3">
+    {process.env.REACT_APP_ENVIRONMENT === 'demo' && <DemoSignInForm/>}
+    {console.log(process.env.REACT_APP_ENVIRONMENT)}
     <Landing/>
     <SignInForm/>
     <SignUpLink/>
+
   </div>
 );
 const INITIAL_STATE = {
@@ -53,7 +57,7 @@ class SignInFormBase extends Component {
     const { email, password, error } = this.state;
     const isInvalid = password === '' || email === '';
     return (
-      <div>
+      <div className="mx-auto w-25 shadow p-3 mb-5 bg-white rounded">
         <form onSubmit={this.onSubmit}>
           <div className="form-group">
             <input
@@ -83,8 +87,6 @@ class SignInFormBase extends Component {
   }
 }
 
-const SignInForm = compose(
-  withRouter,
-)(connect(null, mapDispatchToProps)(SignInFormBase));
+const SignInForm = compose(withRouter)(connect(null, mapDispatchToProps)(SignInFormBase));
 export default SignInPage;
 export {SignInForm};

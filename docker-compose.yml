@@ -6,20 +6,22 @@ services:
       context: ./
       dockerfile: ./docker/api/Dockerfile
     ports:
-      - "8080:80"
-#    volumes:
-#      - ./:/siteroot
-    restart: always
-  api-db:
-    image: postgres
+      - "8080:8080"
+    volumes:
+      - ./:/siteroot
     restart: always
     environment:
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: logbook
-      POSTGRES_USER: logbook
-    container_name: logbook_api_db
-    volumes:
-      - "apidbdata:/var/lib/postgresql"
+      PORT: 8080
+#  api-db:
+#    image: postgres
+#    restart: always
+#    environment:
+#      POSTGRES_PASSWORD: password
+#      POSTGRES_DB: logbook
+#      POSTGRES_USER: logbook
+#    container_name: logbook_api_db
+#    volumes:
+#      - "apidbdata:/var/lib/postgresql"
 #  client:
 #    build: ./docker/client
 #    ports:
@@ -28,6 +30,10 @@ services:
 #      - ./client:/siteroot
 #    stdin_open: true
 #    restart: always
+#    environment:
+#      REACT_APP_ENVIRONMENT: demo
+#      REACT_APP_ADMIN_PASSWORD: admin
+#      REACT_APP_ADMIN_USERNAME: admin
 #  build-test:
 #    build: ./docker/build
 #    ports:
@@ -35,5 +41,5 @@ services:
 #    volumes:
 #      - ./:/var/www/site
 #    restart: always
-volumes:
-  apidbdata:
+#volumes:
+#  apidbdata:

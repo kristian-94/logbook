@@ -7,7 +7,7 @@ $password = getenv('DB_PASSWORD');
 
 return [
     'class' => 'yii\db\Connection',
-    'dsn' => "pgsql:host={$host};dbname={$database}",
+    'dsn' => "sqlite:/db/logbook_db",
     'username' => $username,
     'password' => $password,
     'charset' => 'utf8',

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 const AccountPage = () => {
   const authUser = useSelector(state => state.auth.currentUser);
+  const role = authUser.role === 3 ? 'Admin' : 'Basic';
   return (
     <div>
       <div className="text-center">
@@ -10,7 +11,7 @@ const AccountPage = () => {
         <hr/>
         <h3>Username: {authUser.username}</h3>
         <hr/>
-        <h3>Role: {authUser.role}</h3>
+        <h3>Role: {role}</h3>
       </div>
     </div>
   );

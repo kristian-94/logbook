@@ -19,6 +19,9 @@ RUN apt-get update -y \
     nginx \
     php-fpm \
     php-pgsql \
+    dialog \
+    php-sqlite3 \
+    gettext-base \
     graphviz \
     php-soap \
     php-zip \

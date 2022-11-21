@@ -19,7 +19,7 @@ class m201015_053526_create_bucket_table extends Migration
             'id' => $this->primaryKey(),
             'name' => $this->string()->notNull(),
             'timecreated' => $this->integer()->notNull(),
-            'clientid' => $this->integer(),
+            'clientid' => 'integer NOT NULL REFERENCES client(id)',
             'archived' => $this->integer(1)->notNull()->defaultValue(0),
         ]);
 
@@ -29,16 +29,6 @@ class m201015_053526_create_bucket_table extends Migration
             '{{%bucket}}',
             'clientid'
         );
-
-        // add foreign key for table `{{%client}}`
-        $this->addForeignKey(
-            '{{%fk-bucket-clientid}}',
-            '{{%bucket}}',
-            'clientid',
-            '{{%client}}',
-            'id',
-            'CASCADE'
-        );
     }
 
     /**
@@ -46,12 +36,6 @@ class m201015_053526_create_bucket_table extends Migration
      */
     public function safeDown()
     {
-        // drops foreign key for table `{{%client}}`
-        $this->dropForeignKey(
-            '{{%fk-bucket-clientid}}',
-            '{{%bucket}}'
-        );
-
         // drops index for column `clientid`
         $this->dropIndex(
             '{{%idx-bucket-clientid}}',

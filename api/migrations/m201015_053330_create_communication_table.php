@@ -19,7 +19,7 @@ class m201015_053330_create_communication_table extends Migration
             'id' => $this->primaryKey(),
             'date' => $this->integer()->notNull(),
             'note' => $this->text(),
-            'clientid' => $this->integer(),
+            'clientid' => 'integer NOT NULL REFERENCES client(id)',
         ]);
 
         // creates index for column `clientid`
@@ -28,16 +28,6 @@ class m201015_053330_create_communication_table extends Migration
             '{{%communication}}',
             'clientid'
         );
-
-        // add foreign key for table `{{%client}}`
-        $this->addForeignKey(
-            '{{%fk-communication-clientid}}',
-            '{{%communication}}',
-            'clientid',
-            '{{%client}}',
-            'id',
-            'CASCADE'
-        );
     }
 
     /**
@@ -45,12 +35,6 @@ class m201015_053330_create_communication_table extends Migration
      */
     public function safeDown()
     {
-        // drops foreign key for table `{{%client}}`
-        $this->dropForeignKey(
-            '{{%fk-communication-clientid}}',
-            '{{%communication}}'
-        );
-
         // drops index for column `clientid`
         $this->dropIndex(
             '{{%idx-communication-clientid}}',
