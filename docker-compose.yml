@@ -12,28 +12,29 @@ services:
     restart: always
     environment:
       PORT: 8080
-#  api-db:
-#    image: postgres
-#    restart: always
-#    environment:
-#      POSTGRES_PASSWORD: password
-#      POSTGRES_DB: logbook
-#      POSTGRES_USER: logbook
-#    container_name: logbook_api_db
-#    volumes:
-#      - "apidbdata:/var/lib/postgresql"
-#  client:
-#    build: ./docker/client
-#    ports:
-#      - "80:3000"
-#    volumes:
-#      - ./client:/siteroot
-#    stdin_open: true
-#    restart: always
-#    environment:
-#      REACT_APP_ENVIRONMENT: demo
-#      REACT_APP_ADMIN_PASSWORD: admin
-#      REACT_APP_ADMIN_USERNAME: admin
+  api-db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: logbook
+      POSTGRES_USER: logbook
+    container_name: logbook_api_db
+    volumes:
+      - "apidbdata:/var/lib/postgresql"
+  client:
+    build: ./docker/client
+    ports:
+      - "80:3000"
+    volumes:
+      - ./client:/siteroot
+    stdin_open: true
+    restart: always
+    environment:
+      REACT_APP_ENVIRONMENT: demo
+      REACT_APP_API_URL: http://localhost:8080/index.php/
+      REACT_APP_ADMIN_PASSWORD: admin
+      REACT_APP_ADMIN_USERNAME: admin
 #  build-test:
 #    build: ./docker/build
 #    ports:
@@ -41,5 +42,5 @@ services:
 #    volumes:
 #      - ./:/var/www/site
 #    restart: always
-#volumes:
-#  apidbdata:
+volumes:
+  apidbdata:
