@@ -17,7 +17,6 @@ const mapDispatchToProps = (dispatch) => {
 const SignInPage = props => (
   <div className="text-center mt-3">
     {process.env.REACT_APP_ENVIRONMENT === 'demo' && <DemoSignInForm/>}
-    {console.log(process.env.REACT_APP_ENVIRONMENT)}
     <Landing/>
     <SignInForm/>
     <SignUpLink/>

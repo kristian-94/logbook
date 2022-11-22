@@ -1,17 +1,20 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import * as ROUTES from "../../constants/routes";
+import {useHistory} from "react-router-dom";
 
 const Landing = () => {
-  const authUser = useSelector(state => state.auth.currentUser);
-  if (authUser === null || !authUser) {
+    const history = useHistory();
+    const authUser = useSelector(state => state.auth.currentUser);
+
+    if (authUser.role === 3 || authUser.role === 1) {
+        return <Auth authUser={authUser}/>;
+    }
+
+    if (window.location.pathname === ROUTES.LANDING) {
+        history.push(ROUTES.SIGN_IN);
+    }
     return <NonAuth/>;
-  }
-
-  if (authUser.role === 3 || authUser.role === 1) {
-    return <Auth authUser={authUser}/>;
-  }
-
-  return <NonAuth/>;
 };
 
 export default Landing;
