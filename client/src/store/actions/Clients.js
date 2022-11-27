@@ -8,6 +8,7 @@ import { SIGNED_OUT } from './Auth';
 export const SET_CLIENTDATA = 'SET_CLIENTDATA';
 export const SET_CLIENT_SUMMARY_DATA = 'SET_CLIENT_SUMMARY_DATA';
 export const FETCH_CLIENT = 'FETCH_CLIENT';
+export const REMOVE_CLIENT = 'REMOVE_CLIENT';
 export const RESET_CLIENTDATA = 'RESET_CLIENTDATA';
 
 export const getAuthConfig = (unencoded_token, content = true) => {
@@ -57,6 +58,12 @@ export const fetchClient = (clientid) => {
     }
 
     dispatch({ type: FETCH_CLIENT, activeClient: responseClient.data.client });
+  };
+};
+
+export const removeActiveClient = () => {
+  return (dispatch, getState) => {
+    dispatch({ type: REMOVE_CLIENT });
   };
 };
 // Here we fetch all clients, buckets, months data that have activity in the last numberOfMonths.

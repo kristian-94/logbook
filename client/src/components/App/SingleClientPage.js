@@ -10,6 +10,7 @@ import { useHistory } from 'react-router-dom';
 import OwnerDisplay from './OwnerDisplay';
 import { useDispatch, useSelector } from 'react-redux';
 import * as clientActions from '../../store/actions/Clients';
+import {BallTriangle} from "react-loader-spinner";
 
 const SingleClientPage = ({ clientID }) => {
   const [addingNewBucket, setAddingNewBucket] = useState(false);
@@ -21,6 +22,7 @@ const SingleClientPage = ({ clientID }) => {
   const dispatch = useDispatch();
   useEffect(() => {
     // Got to reset some state when switching clients.
+    dispatch(clientActions.removeActiveClient());
     setAddingNewBucket(false);
     setEditingClient(false);
     setViewingArchive(false);
@@ -116,11 +118,7 @@ const SingleClientPage = ({ clientID }) => {
   };
   // Do not start rendering if we can't find the activeClient yet. Still being fetched.
   if (Object.keys(activeClient).length === 0 && activeClient.constructor === Object) {
-    return (
-      <div>
-        <h1>no active client found</h1>
-      </div>
-    );
+    return <BallTriangle height={100} width={100} radius={5} color="#4fa94d" ariaLabel="ball-triangle-loading" wrapperClass="" wrapperStyle="" visible={true}/>;
   }
 
   if (addingNewBucket) {
