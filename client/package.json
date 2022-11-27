@@ -61,7 +61,7 @@
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "string-strip-html": "^4.5.0",
-    "victory": "^34.3.11",
+    "victory": "^36.6.8",
     "yup": "^0.29.0"
   }
 }
