@@ -69,10 +69,11 @@ const SingleClientReadOnlyPage = ({ clientID }) => {
 
   return (
     <div>
-      <button onClick={onViewArchive} className="btn btn-warning m-1 float-right" type="submit">View Bucket Archive
-      </button>
-      <button onClick={onViewClientReport} className="btn btn-warning m-1 float-right" type="submit">To Report</button>
-      {currentUser.role === 3 && <ToAdminPage/>}
+      <div className="float-right" style={{width: '200px'}}>
+        <button onClick={onViewArchive} className="btn btn-warning m-1 float-right" type="submit">View Bucket Archive</button>
+        <button onClick={onViewClientReport} className="btn btn-warning m-1 float-right" type="submit">To Report</button>
+        {currentUser.role === 3 && <ToAdminPage/>}
+      </div>
       <div className="card mt-3">
         <div className="card-header">
           <h1>

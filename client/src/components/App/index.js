@@ -19,7 +19,7 @@ const App = () => (
   <Router>
     <div>
       <Navigation/>
-      <Switch>
+      <Switch style={{minWidth: '900px', overflow: 'scroll'}}>
         <Route exact path={ROUTES.LANDING} component={LandingPage}/>
         <Route path={ROUTES.SIGN_UP} component={SignUpPage}/>
         <Route path={ROUTES.SIGN_IN} component={SignInPage}/>

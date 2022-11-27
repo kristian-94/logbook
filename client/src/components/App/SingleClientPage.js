@@ -150,12 +150,12 @@ const SingleClientPage = ({ clientID }) => {
 
   return (
     <div>
-      <button onClick={onViewArchive} className="btn btn-warning m-1 float-right" type="submit">View Bucket Archive
-      </button>
-      <button onClick={onCreateBucket} className="btn btn-primary m-1 float-right" type="submit">Create a bucket
-      </button>
-      <button onClick={onEditClient} className="btn btn-secondary m-1 float-right" type="submit">Edit Client</button>
-      <button onClick={onViewClient} className="btn btn-warning m-1 float-right" type="submit">To Client Page</button>
+      <div className="float-right" style={{width: '200px'}}>
+        <button onClick={onViewArchive} className="btn btn-warning m-1" type="submit">View Bucket Archive</button>
+        <button onClick={onCreateBucket} className="btn btn-primary m-1" type="submit">Create a bucket</button>
+        <button onClick={onEditClient} className="btn btn-secondary m-1" type="submit">Edit Client</button>
+        <button onClick={onViewClient} className="btn btn-warning m-1" type="submit">To Client Page</button>
+      </div>
       <div className="card mt-3 mb-3">
         <div className="card-header">
           <h1>

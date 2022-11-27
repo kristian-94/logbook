@@ -33,8 +33,7 @@ const Sidebar = () => {
       setFilterUser(id);
     }
     return (
-      <DropdownButton id="dropdown-basic-button" variant="secondary" className="m-3 text-center" title="Filter by owner"
-                      size="sm">
+      <DropdownButton id="dropdown-basic-button" variant="secondary" className="m-3 text-center" title="Filter by owner" size="sm">
         <Dropdown.Item onClick={() => onFilterClicked('')}>
           Reset
         </Dropdown.Item>
@@ -108,7 +107,7 @@ const Sidebar = () => {
   }
   return (
     <>
-      <Nav className="col-md-12 d-none d-md-block bg-light sidebar"
+      <Nav className="col-sm-12 d-md-block bg-light sidebar"
            activeKey="/home"
            onSelect={selectedKey => alert(`selected ${selectedKey}`)}
       >

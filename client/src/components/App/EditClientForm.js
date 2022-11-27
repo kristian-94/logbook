@@ -73,7 +73,6 @@ const EditClientForm = ({ clientData, onFinishSubmission, onDeleteClient, owner 
                   className="form-control col-8 m-1"
                   type="text"
                   name="name"
-                  value=""
                   placeholder={clientData.name}
                 />
                 <ErrorMessage name="name"/>
@@ -84,7 +83,6 @@ const EditClientForm = ({ clientData, onFinishSubmission, onDeleteClient, owner 
                   className="form-control col-8 m-1"
                   type="text"
                   name="support"
-                  value=""
                   placeholder={clientData.support}
                 />
               </div>
@@ -92,10 +90,8 @@ const EditClientForm = ({ clientData, onFinishSubmission, onDeleteClient, owner 
                 <label htmlFor="owner" className="m-1 mt-2">Set Owner</label>
                 <Field as="select"
                        name="owner"
-                       value=""
                        style={{ display: 'block' }}
                 >
-                  <option value="" label="Select an owner"/>
                   {adminusers && adminusers.map(user => <option key={user.id} value={user.id} label={user.username}/>)}
                   <option value={0} label="No owner"/>
                 </Field>

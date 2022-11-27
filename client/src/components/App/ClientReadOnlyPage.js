@@ -25,11 +25,11 @@ const ClientReadOnlyPage = () => {
   return (
     <div>
       <Container fluid>
-        <Row>
-          <Col xs={2} id="sidebar-wrapper">
+        <Row className="mainRow">
+          <Col xs={5} md={2} sm={3} id="sidebar-wrapper">
             <Sidebar/>
           </Col>
-          <Col xs={10}>
+          <Col style={{overflow: 'scroll', minWidth: '1100px'}} xs={5} md={10} sm={9} >
             {noClient && <ClientBlankPage type={'view'}/>}
             {!noClient && <SingleClientReadOnlyPage clientID={clientIDinurl}/>}
           </Col>
