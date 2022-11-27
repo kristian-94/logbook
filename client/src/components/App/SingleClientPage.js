@@ -11,6 +11,7 @@ import OwnerDisplay from './OwnerDisplay';
 import { useDispatch, useSelector } from 'react-redux';
 import * as clientActions from '../../store/actions/Clients';
 import {BallTriangle} from "react-loader-spinner";
+import {removeActiveClient} from "../../store/actions/Clients";
 
 const SingleClientPage = ({ clientID }) => {
   const [addingNewBucket, setAddingNewBucket] = useState(false);
@@ -77,8 +78,10 @@ const SingleClientPage = ({ clientID }) => {
     setViewingArchive(false);
   };
 
-  const onDeleteClient = () => {
-    dispatch(clientActions.deleteClient(clientID));
+  const onDeleteClient = async () => {
+    await dispatch(clientActions.deleteClient(clientID));
+    await dispatch(removeActiveClient());
+    await dispatch(clientActions.fetchClients());
   };
 
   const history = useHistory();

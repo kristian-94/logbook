@@ -100,7 +100,6 @@ export const deleteClient = (clientid) => {
     }
     // Updated in backend. Fetch all client data again.
     history.push(ROUTES.CLIENTADMIN);
-    window.location.reload(); // That's nasty.. proabaly not using history properly here.
   };
 };
 
@@ -116,7 +115,7 @@ export const createClient = (name) => {
     }
 
     history.push(ROUTES.CLIENTADMIN + '/' + responseClient.data.id);
-    window.location.reload(); // That's nasty.. proabaly not using history properly here.
+    return responseClient.data.id;
   };
 };
 

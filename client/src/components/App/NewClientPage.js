@@ -7,9 +7,6 @@ import * as clientActions from '../../store/actions/Clients';
 const NewClientForm = () => {
   const dispatch = useDispatch();
   return (
-
-
-
 <div className="col-8">
       <h1>New client</h1>
       <Formik
@@ -19,9 +16,10 @@ const NewClientForm = () => {
         })}
         onSubmit={async (values, { setSubmitting }) => {
           setSubmitting(true);
-          await dispatch(clientActions.createClient(values.name));
-          setSubmitting(false);
-          console.log('successfully created client ' + values.name);
+          dispatch(clientActions.removeActiveClient());
+          const clientId = await dispatch(clientActions.createClient(values.name));
+          await dispatch(clientActions.fetchClients());
+          await dispatch(clientActions.fetchClient(clientId));
         }}
       >
         {props => {

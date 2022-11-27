@@ -35,7 +35,7 @@ const ClientPage = () => {
       dispatch(clientActions.fetchClients());
       dispatch(authActions.fetchUsers());
     }
-  }, [dispatch, currentUser]);
+  }, [dispatch, currentUser, activeClient]);
 
   const onConfirmEditOtherOwnersClient = () => {
     console.log('confirmed to edit this client, log this?');
