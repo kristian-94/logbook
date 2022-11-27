@@ -8,6 +8,7 @@ import * as ROUTES from '../../constants/routes';
 import OwnerDisplay from './OwnerDisplay';
 import * as clientActions from '../../store/actions/Clients';
 import { useDispatch, useSelector } from 'react-redux';
+import {BallTriangle} from "react-loader-spinner";
 
 // Display all the client information in a non editable way.
 const SingleClientReadOnlyPage = ({ clientID }) => {
@@ -31,6 +32,7 @@ const SingleClientReadOnlyPage = ({ clientID }) => {
     };
   }, []);
   useEffect(() => {
+    dispatch(clientActions.removeActiveClient());
     dispatch(clientActions.fetchClient(clientID));
   }, [clientID, dispatch]);
 
@@ -61,12 +63,17 @@ const SingleClientReadOnlyPage = ({ clientID }) => {
       Admin</button>;
   };
 
+  if (Object.keys(activeClient).length === 0 && activeClient.constructor === Object) {
+    return <BallTriangle height={100} width={100} radius={5} color="#4fa94d" ariaLabel="ball-triangle-loading" wrapperClass="" wrapperStyle="" visible={true}/>;
+  }
+
   return (
     <div>
-      <button onClick={onViewArchive} className="btn btn-warning m-1 float-right" type="submit">View Bucket Archive
-      </button>
-      <button onClick={onViewClientReport} className="btn btn-warning m-1 float-right" type="submit">To Report</button>
-      {currentUser.role === 3 && <ToAdminPage/>}
+      <div className="float-right" style={{width: '200px'}}>
+        <button onClick={onViewArchive} className="btn btn-warning m-1 float-right" type="submit">View Bucket Archive</button>
+        <button onClick={onViewClientReport} className="btn btn-warning m-1 float-right" type="submit">To Report</button>
+        {currentUser.role === 3 && <ToAdminPage/>}
+      </div>
       <div className="card mt-3">
         <div className="card-header">
           <h1>

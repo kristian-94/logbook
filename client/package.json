@@ -16,6 +16,7 @@
     "react-datepicker": "^3.0.0",
     "react-dom": "^16.13.1",
     "react-js-pagination": "^3.0.3",
+    "react-loader-spinner": "^5.3.4",
     "react-router": "^5.2.0",
     "react-scripts": "3.4.1",
     "react-table": "^7.1.0",

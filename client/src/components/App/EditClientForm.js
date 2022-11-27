@@ -92,7 +92,6 @@ const EditClientForm = ({ clientData, onFinishSubmission, onDeleteClient, owner 
                        name="owner"
                        style={{ display: 'block' }}
                 >
-                  <option value="" label="Select an owner"/>
                   {adminusers && adminusers.map(user => <option key={user.id} value={user.id} label={user.username}/>)}
                   <option value={0} label="No owner"/>
                 </Field>

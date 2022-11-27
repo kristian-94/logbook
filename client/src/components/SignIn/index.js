@@ -40,7 +40,6 @@ class SignInFormBase extends Component {
     this.props.signIn(email, password).then(() => {
       this.setState({ ...INITIAL_STATE });
       this.props.history.push(ROUTES.LANDING);
-      //window.location.reload(); // Ugly.. but means we grab and keep our auth state once each time.
     })
       .catch(error => {
         this.setState({ error });

@@ -10,6 +10,8 @@ import { useHistory } from 'react-router-dom';
 import OwnerDisplay from './OwnerDisplay';
 import { useDispatch, useSelector } from 'react-redux';
 import * as clientActions from '../../store/actions/Clients';
+import {BallTriangle} from "react-loader-spinner";
+import {removeActiveClient} from "../../store/actions/Clients";
 
 const SingleClientPage = ({ clientID }) => {
   const [addingNewBucket, setAddingNewBucket] = useState(false);
@@ -21,6 +23,7 @@ const SingleClientPage = ({ clientID }) => {
   const dispatch = useDispatch();
   useEffect(() => {
     // Got to reset some state when switching clients.
+    dispatch(clientActions.removeActiveClient());
     setAddingNewBucket(false);
     setEditingClient(false);
     setViewingArchive(false);
@@ -75,8 +78,10 @@ const SingleClientPage = ({ clientID }) => {
     setViewingArchive(false);
   };
 
-  const onDeleteClient = () => {
-    dispatch(clientActions.deleteClient(clientID));
+  const onDeleteClient = async () => {
+    await dispatch(clientActions.deleteClient(clientID));
+    await dispatch(removeActiveClient());
+    await dispatch(clientActions.fetchClients());
   };
 
   const history = useHistory();
@@ -116,11 +121,7 @@ const SingleClientPage = ({ clientID }) => {
   };
   // Do not start rendering if we can't find the activeClient yet. Still being fetched.
   if (Object.keys(activeClient).length === 0 && activeClient.constructor === Object) {
-    return (
-      <div>
-        <h1>no active client found</h1>
-      </div>
-    );
+    return <BallTriangle height={100} width={100} radius={5} color="#4fa94d" ariaLabel="ball-triangle-loading" wrapperClass="" wrapperStyle="" visible={true}/>;
   }
 
   if (addingNewBucket) {
@@ -149,12 +150,12 @@ const SingleClientPage = ({ clientID }) => {
 
   return (
     <div>
-      <button onClick={onViewArchive} className="btn btn-warning m-1 float-right" type="submit">View Bucket Archive
-      </button>
-      <button onClick={onCreateBucket} className="btn btn-primary m-1 float-right" type="submit">Create a bucket
-      </button>
-      <button onClick={onEditClient} className="btn btn-secondary m-1 float-right" type="submit">Edit Client</button>
-      <button onClick={onViewClient} className="btn btn-warning m-1 float-right" type="submit">To Client Page</button>
+      <div className="float-right" style={{width: '200px'}}>
+        <button onClick={onViewArchive} className="btn btn-warning m-1" type="submit">View Bucket Archive</button>
+        <button onClick={onCreateBucket} className="btn btn-primary m-1" type="submit">Create a bucket</button>
+        <button onClick={onEditClient} className="btn btn-secondary m-1" type="submit">Edit Client</button>
+        <button onClick={onViewClient} className="btn btn-warning m-1" type="submit">To Client Page</button>
+      </div>
       <div className="card mt-3 mb-3">
         <div className="card-header">
           <h1>
