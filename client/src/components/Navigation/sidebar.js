@@ -4,6 +4,7 @@ import {useHistory} from "react-router-dom";
 import * as ROUTES from "../../constants/routes";
 import {NOOWNER} from "../../constants/names";
 import {useSelector} from 'react-redux';
+import { BallTriangle } from 'react-loader-spinner'
 
 const Sidebar = () => {
   const _isMounted = useRef(true); // Initial value _isMounted = true
@@ -115,6 +116,7 @@ const Sidebar = () => {
         {filterUserId && filteringText()}
         <hr/>
         <div className="sidebar-sticky"/>
+        {clientList.length === 0 && <BallTriangle height={100} width={100} radius={5} color="#4fa94d" ariaLabel="ball-triangle-loading" wrapperClass="" wrapperStyle="" visible={true}/>}
         {clientList && clientList.filter(client => {
           if (filterUserId === NOOWNER) {
             // Return clients that don't have an owner set.

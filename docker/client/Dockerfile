@@ -6,6 +6,7 @@ RUN apt-get update -y \
     && apt-get install -y \
     curl \
     nodejs \
+    git \
     npm
 
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && apt-get install -y nodejs

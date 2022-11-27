@@ -39,7 +39,6 @@ export const fetchClients = () => {
         dispatch({ type: RESET_CLIENTDATA });
         dispatch({ type: SIGNED_OUT });
         history.push(ROUTES.SIGN_IN);
-        window.location.reload();
       }
     }
   };
