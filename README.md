@@ -2,11 +2,13 @@
 
 Tracks hours billed to clients - different to total hours actually spent on a project.
 
-## Containers
+## Demo Site
 
-- Ubuntu 1804 apache webserver for the API
-- Ubuntu 1804 node sever for the front end
-- Postgres
+Check out a demo at <a href="https://kristian-94.github.io/logbook" target="_blank">https://kristian-94.github.io/logbook </a>
+
+<p>
+  <img src="./Screenshot-2022.png" title="Logbook" alt="Logbook screenshot">
+</p>
 
 ## Setup
 
@@ -20,34 +22,22 @@ Tracks hours billed to clients - different to total hours actually spent on a pr
     git clone git@github.com:kristian-94/logbook.git
     ```
 
-4.  Copy .env into siteroot
-
-    ```
-    cp logbook/docker/api/env logbook/.env
-    ```
-
-5.  Spin up environment
+4. Spin up environment
 
     ```
     cd logbook
     docker-compose up
     ```
 
-6.  Run database migrations from yii api container.
-    ```
-    ./control api
-    composer install
-    php /siteroot/api/vendor/bin/yii migrate --appconfig=/siteroot/api/config/console.php
-    ```
-7.  Initialize auth roles inside yii auth database tables and create an initial admin user.
-
-    ```
-    php /siteroot/api/vendor/bin/yii rbac/init --appconfig=/siteroot/api/config/console.php
-
-    ```
-
-8.  Now you should be able to visit the site in your browser at `localhost`
+5. Now you should be able to visit the site in your browser at `localhost`
     and log in with username = 'admin' and password = 'admin'
+
+
+## Local docker compose containers
+
+- Ubuntu 1804 apache webserver for the API
+- Ubuntu 1804 node sever for the front end
+- Postgres database
 
 ## Utility Commands
 
@@ -82,7 +72,7 @@ We separate the backend and frontend into separate containers and mount the fron
 directory `./client:/siteroot` inside the client, so that we can take advantage of hot reloading.
 We don't use `npm run build`.
 
-### Production
+### Production Build
 
 In production, we need the back and front end served from the same origin. This is
 achieved with a reverse proxy, some special nginx config to serve the backend at `localhost/api`, and the
