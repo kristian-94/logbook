@@ -69,7 +69,7 @@ const Communications = ({ clientID, clientComms, editable }) => {
                 trigger="hover"
                 overlay={<div>Add comms record</div>}
               >
-                <button onClick={() => onAddComm()} className="btn btn-success m-1" type="submit">
+                <button onClick={() => onAddComm()} className="btn btn-success m-1" style={{ width: '50px' }} type="submit">
                   <FontAwesomeIcon style={{ cursor: 'pointer' }} icon={faPlus}/>
                 </button>
               </Tooltip>

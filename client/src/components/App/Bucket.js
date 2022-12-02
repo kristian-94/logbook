@@ -83,8 +83,7 @@ const Bucket = ({ bucket, onArchiveBucket, onRemoveMonth, onAddMonth, handleOnUp
           trigger="hover"
           overlay={<div>Add month</div>}
         >
-          <button onClick={() => onAddMonth(bucket, newMonth)} className="btn btn-success m-1 ml-5 float-left"
-                  type="submit">
+          <button onClick={() => onAddMonth(bucket, newMonth)} className="btn btn-success m-1 ml-5 float-left" style={{width: '50px'}} type="submit">
             <FontAwesomeIcon style={{ cursor: 'pointer' }} icon={faPlus}/>
           </button>
         </Tooltip>
@@ -95,7 +94,7 @@ const Bucket = ({ bucket, onArchiveBucket, onRemoveMonth, onAddMonth, handleOnUp
           trigger="hover"
           overlay={<div>Archive bucket</div>}
         >
-          <button onClick={() => onClickArchive(bucket)} className="btn btn-warning m-1 float-left" type="submit">
+          <button onClick={() => onClickArchive(bucket)} className="btn btn-warning m-1 float-left" style={{width: '50px'}} type="submit">
             <FontAwesomeIcon style={{ cursor: 'pointer' }} icon={faArchive}/>
           </button>
         </Tooltip>

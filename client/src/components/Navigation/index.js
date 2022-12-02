@@ -7,6 +7,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 import {useSelector} from 'react-redux';
+import LogoBg from '../../images/logbook-removebg-preview.png';
 
 const Navigation = () => {
   const authUser = useSelector(state => state.auth.currentUser);
@@ -28,8 +29,11 @@ const Navigation = () => {
 const NavigationAdminAuth = ({authUser}) => {
   return (
       <Navbar bg="primary" expand="lg" variant="dark">
-        <Container style={{maxWidth: '85%'}}>
-          <Navbar.Brand to="/">{NAMES.SITENAME}</Navbar.Brand>
+        <Container style={{maxWidth: '88%'}}>
+          <Navbar.Brand href={ROUTES.LANDING}>
+            <img width="70px" height="auto" className="img-responsive d-inline-block align-middle" src={LogoBg}  alt="logo" />
+            {NAMES.SITENAME}
+          </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav"/>
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">

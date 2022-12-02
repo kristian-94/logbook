@@ -1,2 +1,8 @@
 // Overrides could go here.
 @import '../node_modules/bootstrap-scss/bootstrap';
+body {
+  margin: 0;
+  font-family: Verdana, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
