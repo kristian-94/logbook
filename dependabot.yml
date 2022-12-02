@@ -1,0 +1,16 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/client"
+    schedule:
+      interval: "daily"
+    # Always increase the version requirement
+    # to match the new version.
+    versioning-strategy: increase
+  - package-ecosystem: "composer"
+    directory: "/api"
+    schedule:
+      interval: "daily"
+    # Always increase the version requirement
+    # to match the new version.
+    versioning-strategy: increase
