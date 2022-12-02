@@ -30,7 +30,7 @@ const NavigationAdminAuth = ({authUser}) => {
   return (
       <Navbar bg="primary" expand="lg" variant="dark">
         <Container style={{maxWidth: '88%'}}>
-          <Navbar.Brand href={ROUTES.LANDING}>
+          <Navbar.Brand as={Link} to={ROUTES.LANDING}>
             <img width="70px" height="auto" className="img-responsive d-inline-block align-middle" src={LogoBg}  alt="logo" />
             {NAMES.SITENAME}
           </Navbar.Brand>
@@ -54,8 +54,7 @@ const NavigationAdminAuth = ({authUser}) => {
                 Client Summary
               </Link>
             </Nav>
-            <Navbar.Brand to="/">You
-              are <strong>{authUser.username}</strong></Navbar.Brand>
+            <Navbar.Brand as={Link} to={ROUTES.ADMIN}>You are <strong>{authUser.username}</strong></Navbar.Brand>
             <Link className="btn btn-primary" to={ROUTES.ADMIN}>
               Admin
             </Link>
@@ -71,7 +70,7 @@ const NavigationAdminAuth = ({authUser}) => {
 
 const NavigationBasicAuth = ({authUser}) => (
     <Navbar bg="primary" variant="dark">
-      <Navbar.Brand to="/">{NAMES.SITENAME}</Navbar.Brand>
+      <Navbar.Brand as={Link} to="/">{NAMES.SITENAME}</Navbar.Brand>
       <Nav className="mr-auto">
         <Link className="btn btn-success ml-1 mr-1" to={ROUTES.CLIENTS}>
           Clients
