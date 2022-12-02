@@ -92,11 +92,11 @@ const NavigationBasicAuth = ({authUser}) => (
 
 const NavigationNonAuth = () => (
     <Navbar bg="primary" variant="dark">
-      <Navbar.Brand to="/">{NAMES.SITENAME}</Navbar.Brand>
+      <Navbar.Brand as={Link} to={ROUTES.SIGN_IN}>
+        <img width="70px" height="auto" className="img-responsive d-inline-block align-middle" src={LogoBg}  alt="logo" />
+        {NAMES.SITENAME}
+      </Navbar.Brand>
       <Nav className="mr-auto">
-        <Link className="btn btn-primary" to={ROUTES.LANDING}>
-          Landing
-        </Link>
         <Link className="btn btn-primary" to={ROUTES.SIGN_IN}>
           Sign In
         </Link>

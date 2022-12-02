@@ -36,7 +36,7 @@ class DemoSignInFormBase extends Component {
             <div>
                 <form onSubmit={this.onSubmit}>
                     <button className="btn btn-primary" type="submit">
-                        Use Demo Admin Account
+                        <h4 style={{color: 'white'}} className="mt-2">Use Demo Admin Account</h4>
                     </button>
                 </form>
                 OR:
